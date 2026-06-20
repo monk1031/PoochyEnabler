@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="FileReaders\IniFileReader.cs" />
+    <Compile Include="FileReaders\TblFileReader.cs" />
     <Compile Include="Helpers\IOHelper.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

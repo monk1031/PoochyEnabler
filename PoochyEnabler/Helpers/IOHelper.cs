@@ -1,4 +1,6 @@
-﻿namespace PoochyEnabler.Helpers
+﻿using System;
+
+namespace PoochyEnabler.Helpers
 {
     public static class IOHelper
     {
@@ -36,6 +38,33 @@
 
             resultOffset = rawAddr - Constants.BaseAddr;
             return true;
+        }
+
+        // align for variable data
+        public static void WriteDataToRom(
+            byte[] romData,
+            uint offset,
+            byte[] bytes,
+            bool align = false,
+            byte alignPaddingByte = Constants.PaddingByte)
+        {
+            Array.Copy(bytes, 0, romData, offset, bytes.Length);
+
+            if (align)
+            {
+                uint endOffset = offset + (uint)bytes.Length;
+                uint remainder = endOffset % sizeof(uint);
+
+                if (remainder != 0)
+                {
+                    uint paddingCount = sizeof(uint) - remainder;
+                    for (uint i = 0; i < paddingCount; i++)
+                    {
+                        uint padOffset = endOffset + i;
+                        romData[padOffset] = alignPaddingByte;
+                    }
+                }
+            }
         }
     }
 }
