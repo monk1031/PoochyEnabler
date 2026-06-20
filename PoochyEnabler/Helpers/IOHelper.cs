@@ -1,4 +1,4 @@
-﻿namespace PoochyEnabler
+﻿namespace PoochyEnabler.Helpers
 {
     public static class IOHelper
     {
