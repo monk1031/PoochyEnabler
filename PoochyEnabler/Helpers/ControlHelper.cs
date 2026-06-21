@@ -289,5 +289,33 @@ namespace PoochyEnabler.Helpers
                 return false;
             }
         }
+
+        // confirm unsaved changes
+        public static DialogResult HandleUnsavedChanges(
+            Action saveAction,
+            Action discardAction,
+            Action cancelAction = null)
+        {
+            DialogResult result = MessageBox.Show(
+                "Changes have not been saved. Save now?",
+                "",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            switch (result)
+            {
+                case DialogResult.Yes:
+                    saveAction?.Invoke();
+                    break;
+                case DialogResult.No:
+                    discardAction?.Invoke();
+                    break;
+                case DialogResult.Cancel:
+                    cancelAction?.Invoke();
+                    break;
+            }
+
+            return result;
+        }
     }
 }
