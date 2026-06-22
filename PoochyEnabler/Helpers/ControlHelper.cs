@@ -239,20 +239,20 @@ namespace PoochyEnabler.Helpers
 
         // cmb setup
         public static void SetupComboBoxItems(
-            ComboBox cmb,
+            ComboBox comboBox,
             int defaultIndex,
             params string[] items)
         {
-            cmb.BeginUpdate();
+            comboBox.BeginUpdate();
             try
             {
-                cmb.Items.Clear();
-                cmb.Items.AddRange(items);
-                cmb.SelectedIndex = defaultIndex;
+                comboBox.Items.Clear();
+                comboBox.Items.AddRange(items);
+                comboBox.SelectedIndex = defaultIndex;
             }
             finally
             {
-                cmb.EndUpdate();
+                comboBox.EndUpdate();
             }
         }
 
@@ -288,6 +288,34 @@ namespace PoochyEnabler.Helpers
                 entry = default(KeyValuePair<int, string>);
                 return false;
             }
+        }
+
+        // confirm unsaved changes
+        public static DialogResult HandleUnsavedChanges(
+            Action saveAction,
+            Action discardAction,
+            Action cancelAction = null)
+        {
+            DialogResult result = MessageBox.Show(
+                "Changes have not been saved. Save now?",
+                "",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+
+            switch (result)
+            {
+                case DialogResult.Yes:
+                    saveAction?.Invoke();
+                    break;
+                case DialogResult.No:
+                    discardAction?.Invoke();
+                    break;
+                case DialogResult.Cancel:
+                    cancelAction?.Invoke();
+                    break;
+            }
+
+            return result;
         }
     }
 }

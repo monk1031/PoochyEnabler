@@ -23,28 +23,33 @@ namespace PoochyEnabler.FileReaders
         private readonly Dictionary<string, object> _iniCache = 
             new Dictionary<string, object>();
 
-        // to get value
-        public T ReadValue<T>(string key, T defaultValue = default) where T : struct
+        public bool TryReadValue<T>(string key, out T? value) where T : struct
         {
+            value = null;
             if (_iniCache.TryGetValue(key, out var val))
             {
-                Type t = typeof(T);
+                if (val == null) return true; // null pointer
 
-                if (t == typeof(uint)) // offset
+                if (typeof(T) == typeof(uint))
                 {
-                    return (T)(object)(uint)val;
+                    value = (T)(object)(uint)val;
+                    return true;
                 }
-                else if (t == typeof(int)) // number
+
+                if (typeof(T) == typeof(int))
                 {
-                    return (T)(object)(int)(uint)val;
+                    value = (T)(object)(int)(uint)val;
+                    return true;
                 }
-                else if (t == typeof(bool))
+
+                if (typeof(T) == typeof(bool))
                 {
-                    return (T)(object)(bool)val;
+                    value = (T)(object)(bool)val;
+                    return true;
                 }
             }
 
-            return defaultValue;
+            return false; // no key
         }
 
         // for cmb items, still contain empty lines
@@ -91,7 +96,7 @@ namespace PoochyEnabler.FileReaders
             }
         }
 
-        // create _inicache, need romdata to get value
+        // create _inicache
         public void LoadConfig(string selectedConfig, byte[] data)
         {
             if (!_configBlocks.ContainsKey(selectedConfig)) return;
@@ -99,9 +104,9 @@ namespace PoochyEnabler.FileReaders
             // analyze lines
             foreach (string line in _configBlocks[selectedConfig])
             {
-                if (TryParseLine(line, out string key, out string rawValue))
+                if (TryParseLine(line, out string key, out string rawString))
                 {
-                    if (TryParseValue(rawValue, data, out object parsedValue))
+                    if (TryParseValue(rawString, data, out object parsedValue))
                     {
                         _iniCache[key] = parsedValue;
                     }
@@ -110,53 +115,53 @@ namespace PoochyEnabler.FileReaders
         }
 
         // remove empty lines
-        private bool TryParseLine(string line, out string key, out string rawValue)
+        private bool TryParseLine(string line, out string key, out string rawString)
         {
             key = string.Empty;
-            rawValue = string.Empty;
+            rawString = string.Empty;
             if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";")) return false;
 
             string[] parts = line.Split('=');
             key = parts[0].Trim();
-            rawValue = parts[1].Trim();
+            rawString = parts[1].Trim();
             return true;
         }
 
-        // offset -> uint, number -> int, bool -> bool
-        private bool TryParseValue(string rawValue, byte[] data, out object parsedValue)
+        private bool TryParseValue(string rawString, byte[] data, out object parsedValue)
         {
-            if (bool.TryParse(rawValue, out bool boolValue))
+            if (bool.TryParse(rawString, out bool boolValue))
             {
                 parsedValue = boolValue;
                 return true;
             }
 
-            switch (rawValue[0])
+            switch (rawString[0])
             {
                 case '*':
                     return TryReadPointerAddress(
-                        rawValue.Substring(1), data, out parsedValue);
+                        rawString.Substring(1), data, out parsedValue);
 
                 case '$':
                     return TrySearchBinaryAndReadPointer(
-                        rawValue.Substring(1), data, out parsedValue);
+                        rawString.Substring(1), data, out parsedValue);
             }
 
-            return TryParseNumber(rawValue, out parsedValue);
+            return TryParseNumber(rawString, out parsedValue);
         }
 
-        private bool TryParseNumber(string rawValue, out object parsedValue)
+        // offset, number -> uint? or uint
+        private bool TryParseNumber(string rawString, out object parsedValue)
         {
-            if (rawValue.StartsWith(HexPrefix)) // 0x
+            if (rawString.StartsWith(HexPrefix)) // 0x
             {
-                string hexPart = rawValue.Substring(HexPrefix.Length);
+                string hexPart = rawString.Substring(HexPrefix.Length);
                 if (uint.TryParse(hexPart, NumberStyles.HexNumber, null, out uint hexResult))
                 {
                     parsedValue = hexResult;
                     return true;
                 }
             }
-            else if (uint.TryParse(rawValue, out uint decResult))
+            else if (uint.TryParse(rawString, out uint decResult))
             {
                 parsedValue = decResult;
                 return true;
