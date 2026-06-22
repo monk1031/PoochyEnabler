@@ -26,9 +26,13 @@ namespace PoochyEnabler.FileReaders
         public bool TryReadValue<T>(string key, out T? value) where T : struct
         {
             value = null;
+
             if (_iniCache.TryGetValue(key, out var val))
             {
-                if (val == null) return true; // null pointer
+                if (val == null)
+                {
+                    return true; // null pointer
+                }
 
                 if (typeof(T) == typeof(uint))
                 {
