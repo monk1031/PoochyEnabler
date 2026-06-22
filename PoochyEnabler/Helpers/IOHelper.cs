@@ -225,18 +225,18 @@ namespace PoochyEnabler.Helpers
             length = 0;
             return dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
         }
+    }
 
-        [AttributeUsage(AttributeTargets.Field)]
-        public class DynamicStringAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Field)]
+    public class DynamicStringAttribute : Attribute
+    {
+        public string EntryLength { get; }
+        public string AllowedLength { get; }
+
+        public DynamicStringAttribute(string entryLength, string allowedLength = null)
         {
-            public string EntryLength { get; }
-            public string AllowedLength { get; }
-
-            public DynamicStringAttribute(string entryLength, string allowedLength = null)
-            {
-                EntryLength = entryLength;
-                AllowedLength = allowedLength;
-            }
+            EntryLength = entryLength;
+            AllowedLength = allowedLength;
         }
     }
 }
