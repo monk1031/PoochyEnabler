@@ -143,12 +143,12 @@ namespace PoochyEnabler.Helpers
             byte paddingByte1 = Constants.FreeSpaceByte,
             byte paddingByte2 = Constants.PaddingByte)
         {
+            int currentOffset = (int)offset;
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
             try
             {
                 IntPtr basePtr = handle.AddrOfPinnedObject();
-                int currentOffset = (int)offset;
 
                 FieldInfo[] fields = typeof(T)
                     .GetFields(BindingFlags.Public | BindingFlags.Instance)
@@ -157,18 +157,13 @@ namespace PoochyEnabler.Helpers
 
                 foreach (var item in items)
                 {
-                    if (item == null) continue;
-
                     foreach (var field in fields)
                     {
                         if (field.FieldType == typeof(string))
                         {
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
                             if (!TryGetLength(attr.EntryLength, dynamicLengths, out int entryLength) || entryLength <= 0) continue;
-
-                            string strVal = field.GetValue(item) is string s
-                                ? s
-                                : string.Empty;
+                            string strVal = (string)field.GetValue(item) ?? string.Empty;
 
                             if (TryGetLength(attr.AllowedLength, dynamicLengths, out int allowedLength) && allowedLength > 0)
                             {
