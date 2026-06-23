@@ -17,6 +17,8 @@ namespace PoochyEnabler.FileReaders
         // read charmap.tbl
         public TblFileReader(string filePath)
         {
+            if (!File.Exists(filePath)) return;
+
             foreach (string line in File.ReadLines(filePath, Encoding.UTF8))
             {
                 if (string.IsNullOrEmpty(line) || line.StartsWith(";")) continue;

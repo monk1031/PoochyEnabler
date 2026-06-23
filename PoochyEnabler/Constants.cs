@@ -14,5 +14,11 @@
         public const uint BaseAddr = 0x8000000U;
         public const int PaddingByte = 0x0;
         public const int FreeSpaceByte = 0xFF;
+
+        public const string RomFileFilter = "ROM Files|*.gba";
+        public const string RomFileTitle = "Select ROM";
+        public const string ImageImportFilter = "Image Files (*.png;*.bmp)|*.png;*.bmp";
+        public const string ImageExportFilter = "PNG Image (*.png)|*.png|BMP Image (*.bmp)|*.bmp";
+        public const string BinImportExportFilter = "BIN Files (*.bin)|*.bin";
     }
 }
