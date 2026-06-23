@@ -232,12 +232,13 @@ namespace PoochyEnabler
                     int curStart = currentOffset;
                     int curEnd = currentOffset + neededBytes;
 
+                    // no further
                     if (resStart >= curEnd)
                     {
                         break;
                     }
 
-                    // over check
+                    // overlap check
                     if (curStart < resEnd && curEnd > resStart)
                     {
                         isFreeSpace = false;
@@ -260,7 +261,7 @@ namespace PoochyEnabler
                     }
                 }
 
-                // end
+                // found?
                 if (isFreeSpace)
                 {
                     foundOffset = currentOffset;
