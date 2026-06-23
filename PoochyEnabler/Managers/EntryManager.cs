@@ -28,7 +28,7 @@ namespace PoochyEnabler.Managers
             _dynamicLengths = dynamicLengths;
         }
 
-        // load all entry
+        // load all entries
         public void Load(uint offset, int count)
         {
             Offset = offset;

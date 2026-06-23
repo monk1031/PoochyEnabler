@@ -272,12 +272,12 @@ namespace PoochyEnabler
             // show result
             if (foundOffset != -1)
             {
-                txtStartOffset.Text = foundOffset.ToString("X8");
+                txtResult.Text = foundOffset.ToString("X8");
             }
             else
             {
                 MessageBox.Show("Not found.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                txtStartOffset.Text = string.Empty;
+                txtResult.Text = string.Empty;
             }
         }
     }
