@@ -33,37 +33,37 @@ namespace PoochyEnabler
             this.btnLoadData = new System.Windows.Forms.Button();
             this.btnSaveData = new System.Windows.Forms.Button();
             this.grpEditors = new System.Windows.Forms.GroupBox();
-            this.btnPokemon = new System.Windows.Forms.Button();
-            this.btnPokedexNational = new System.Windows.Forms.Button();
-            this.btnPokedexRegional = new System.Windows.Forms.Button();
-            this.btnHabitat = new System.Windows.Forms.Button();
-            this.btnSortOrder = new System.Windows.Forms.Button();
-            this.btnTMHMTutor = new System.Windows.Forms.Button();
             this.btnEggMove = new System.Windows.Forms.Button();
-            this.btnWildEncounter = new System.Windows.Forms.Button();
-            this.btnSwarm = new System.Windows.Forms.Button();
-            this.btnRoaming = new System.Windows.Forms.Button();
-            this.btnMap = new System.Windows.Forms.Button();
-            this.btnOverworld = new System.Windows.Forms.Button();
-            this.btnTileset = new System.Windows.Forms.Button();
-            this.btnWorldMap = new System.Windows.Forms.Button();
-            this.btnItem = new System.Windows.Forms.Button();
-            this.btnMail = new System.Windows.Forms.Button();
-            this.btnTrainerClass = new System.Windows.Forms.Button();
-            this.btnTrainerList = new System.Windows.Forms.Button();
-            this.btnTrainerSprite = new System.Windows.Forms.Button();
             this.btnTrade = new System.Windows.Forms.Button();
+            this.btnWorldMap = new System.Windows.Forms.Button();
+            this.btnSortOrder = new System.Windows.Forms.Button();
+            this.btnRoaming = new System.Windows.Forms.Button();
+            this.btnTrainerSprite = new System.Windows.Forms.Button();
+            this.btnTileset = new System.Windows.Forms.Button();
+            this.btnPokedexRegional = new System.Windows.Forms.Button();
+            this.btnTMHMTutor = new System.Windows.Forms.Button();
+            this.btnTrainerList = new System.Windows.Forms.Button();
+            this.btnOverworld = new System.Windows.Forms.Button();
+            this.btnHabitat = new System.Windows.Forms.Button();
+            this.btnMail = new System.Windows.Forms.Button();
+            this.btnSwarm = new System.Windows.Forms.Button();
+            this.btnTrainerClass = new System.Windows.Forms.Button();
+            this.btnMap = new System.Windows.Forms.Button();
+            this.btnPokedexNational = new System.Windows.Forms.Button();
+            this.btnItem = new System.Windows.Forms.Button();
+            this.btnWildEncounter = new System.Windows.Forms.Button();
+            this.btnPokemon = new System.Windows.Forms.Button();
             this.lblProfile = new System.Windows.Forms.Label();
             this.cmbProfile = new System.Windows.Forms.ComboBox();
             this.btnUnloadData = new System.Windows.Forms.Button();
             this.grpFreeSpaceFinder = new System.Windows.Forms.GroupBox();
-            this.lblStartAddress = new System.Windows.Forms.Label();
-            this.txtStartAddress = new System.Windows.Forms.TextBox();
-            this.lblRequiredSize = new System.Windows.Forms.Label();
-            this.nudRequiredSize = new System.Windows.Forms.NumericUpDown();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.lblResults = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.nudRequiredSize = new System.Windows.Forms.NumericUpDown();
+            this.lblRequiredSize = new System.Windows.Forms.Label();
+            this.txtResult = new System.Windows.Forms.TextBox();
+            this.txtStartOffset = new System.Windows.Forms.TextBox();
+            this.lblResult = new System.Windows.Forms.Label();
+            this.lblStartOffset = new System.Windows.Forms.Label();
             this.picPoochyena = new System.Windows.Forms.PictureBox();
             this.grpEditors.SuspendLayout();
             this.grpFreeSpaceFinder.SuspendLayout();
@@ -118,60 +118,6 @@ namespace PoochyEnabler
             this.grpEditors.TabStop = false;
             this.grpEditors.Text = "Editors";
             // 
-            // btnPokemon
-            // 
-            this.btnPokemon.Location = new System.Drawing.Point(20, 28);
-            this.btnPokemon.Name = "btnPokemon";
-            this.btnPokemon.Size = new System.Drawing.Size(120, 23);
-            this.btnPokemon.TabIndex = 0;
-            this.btnPokemon.Text = "Pokemon";
-            this.btnPokemon.UseVisualStyleBackColor = true;
-            // 
-            // btnPokedexNational
-            // 
-            this.btnPokedexNational.Location = new System.Drawing.Point(20, 58);
-            this.btnPokedexNational.Name = "btnPokedexNational";
-            this.btnPokedexNational.Size = new System.Drawing.Size(120, 23);
-            this.btnPokedexNational.TabIndex = 0;
-            this.btnPokedexNational.Text = "Pokedex (National)";
-            this.btnPokedexNational.UseVisualStyleBackColor = true;
-            // 
-            // btnPokedexRegional
-            // 
-            this.btnPokedexRegional.Location = new System.Drawing.Point(20, 88);
-            this.btnPokedexRegional.Name = "btnPokedexRegional";
-            this.btnPokedexRegional.Size = new System.Drawing.Size(120, 23);
-            this.btnPokedexRegional.TabIndex = 0;
-            this.btnPokedexRegional.Text = "Pokedex (Regional)";
-            this.btnPokedexRegional.UseVisualStyleBackColor = true;
-            // 
-            // btnHabitat
-            // 
-            this.btnHabitat.Location = new System.Drawing.Point(20, 118);
-            this.btnHabitat.Name = "btnHabitat";
-            this.btnHabitat.Size = new System.Drawing.Size(120, 23);
-            this.btnHabitat.TabIndex = 0;
-            this.btnHabitat.Text = "Habitat";
-            this.btnHabitat.UseVisualStyleBackColor = true;
-            // 
-            // btnSortOrder
-            // 
-            this.btnSortOrder.Location = new System.Drawing.Point(20, 148);
-            this.btnSortOrder.Name = "btnSortOrder";
-            this.btnSortOrder.Size = new System.Drawing.Size(120, 23);
-            this.btnSortOrder.TabIndex = 0;
-            this.btnSortOrder.Text = "Sort Order";
-            this.btnSortOrder.UseVisualStyleBackColor = true;
-            // 
-            // btnTMHMTutor
-            // 
-            this.btnTMHMTutor.Location = new System.Drawing.Point(20, 208);
-            this.btnTMHMTutor.Name = "btnTMHMTutor";
-            this.btnTMHMTutor.Size = new System.Drawing.Size(120, 23);
-            this.btnTMHMTutor.TabIndex = 0;
-            this.btnTMHMTutor.Text = "TM, HM, Tutor";
-            this.btnTMHMTutor.UseVisualStyleBackColor = true;
-            // 
             // btnEggMove
             // 
             this.btnEggMove.Location = new System.Drawing.Point(20, 238);
@@ -181,59 +127,14 @@ namespace PoochyEnabler
             this.btnEggMove.Text = "Egg Move";
             this.btnEggMove.UseVisualStyleBackColor = true;
             // 
-            // btnWildEncounter
+            // btnTrade
             // 
-            this.btnWildEncounter.Location = new System.Drawing.Point(152, 28);
-            this.btnWildEncounter.Name = "btnWildEncounter";
-            this.btnWildEncounter.Size = new System.Drawing.Size(120, 23);
-            this.btnWildEncounter.TabIndex = 0;
-            this.btnWildEncounter.Text = "Wild Encounter";
-            this.btnWildEncounter.UseVisualStyleBackColor = true;
-            // 
-            // btnSwarm
-            // 
-            this.btnSwarm.Location = new System.Drawing.Point(152, 58);
-            this.btnSwarm.Name = "btnSwarm";
-            this.btnSwarm.Size = new System.Drawing.Size(120, 23);
-            this.btnSwarm.TabIndex = 0;
-            this.btnSwarm.Text = "Swarm";
-            this.btnSwarm.UseVisualStyleBackColor = true;
-            // 
-            // btnRoaming
-            // 
-            this.btnRoaming.Location = new System.Drawing.Point(152, 88);
-            this.btnRoaming.Name = "btnRoaming";
-            this.btnRoaming.Size = new System.Drawing.Size(120, 23);
-            this.btnRoaming.TabIndex = 0;
-            this.btnRoaming.Text = "Roaming";
-            this.btnRoaming.UseVisualStyleBackColor = true;
-            // 
-            // btnMap
-            // 
-            this.btnMap.Location = new System.Drawing.Point(152, 148);
-            this.btnMap.Name = "btnMap";
-            this.btnMap.Size = new System.Drawing.Size(120, 23);
-            this.btnMap.TabIndex = 0;
-            this.btnMap.Text = "Map";
-            this.btnMap.UseVisualStyleBackColor = true;
-            // 
-            // btnOverworld
-            // 
-            this.btnOverworld.Location = new System.Drawing.Point(152, 208);
-            this.btnOverworld.Name = "btnOverworld";
-            this.btnOverworld.Size = new System.Drawing.Size(120, 23);
-            this.btnOverworld.TabIndex = 0;
-            this.btnOverworld.Text = "Overworld";
-            this.btnOverworld.UseVisualStyleBackColor = true;
-            // 
-            // btnTileset
-            // 
-            this.btnTileset.Location = new System.Drawing.Point(152, 178);
-            this.btnTileset.Name = "btnTileset";
-            this.btnTileset.Size = new System.Drawing.Size(120, 23);
-            this.btnTileset.TabIndex = 0;
-            this.btnTileset.Text = "Tileset";
-            this.btnTileset.UseVisualStyleBackColor = true;
+            this.btnTrade.Location = new System.Drawing.Point(284, 208);
+            this.btnTrade.Name = "btnTrade";
+            this.btnTrade.Size = new System.Drawing.Size(120, 23);
+            this.btnTrade.TabIndex = 0;
+            this.btnTrade.Text = "Trade";
+            this.btnTrade.UseVisualStyleBackColor = true;
             // 
             // btnWorldMap
             // 
@@ -244,41 +145,23 @@ namespace PoochyEnabler
             this.btnWorldMap.Text = "World Map";
             this.btnWorldMap.UseVisualStyleBackColor = true;
             // 
-            // btnItem
+            // btnSortOrder
             // 
-            this.btnItem.Location = new System.Drawing.Point(284, 28);
-            this.btnItem.Name = "btnItem";
-            this.btnItem.Size = new System.Drawing.Size(120, 23);
-            this.btnItem.TabIndex = 0;
-            this.btnItem.Text = "Item";
-            this.btnItem.UseVisualStyleBackColor = true;
+            this.btnSortOrder.Location = new System.Drawing.Point(20, 148);
+            this.btnSortOrder.Name = "btnSortOrder";
+            this.btnSortOrder.Size = new System.Drawing.Size(120, 23);
+            this.btnSortOrder.TabIndex = 0;
+            this.btnSortOrder.Text = "Sort Order";
+            this.btnSortOrder.UseVisualStyleBackColor = true;
             // 
-            // btnMail
+            // btnRoaming
             // 
-            this.btnMail.Location = new System.Drawing.Point(284, 58);
-            this.btnMail.Name = "btnMail";
-            this.btnMail.Size = new System.Drawing.Size(120, 23);
-            this.btnMail.TabIndex = 0;
-            this.btnMail.Text = "Mail";
-            this.btnMail.UseVisualStyleBackColor = true;
-            // 
-            // btnTrainerClass
-            // 
-            this.btnTrainerClass.Location = new System.Drawing.Point(284, 118);
-            this.btnTrainerClass.Name = "btnTrainerClass";
-            this.btnTrainerClass.Size = new System.Drawing.Size(120, 23);
-            this.btnTrainerClass.TabIndex = 0;
-            this.btnTrainerClass.Text = "Trainer Class";
-            this.btnTrainerClass.UseVisualStyleBackColor = true;
-            // 
-            // btnTrainerList
-            // 
-            this.btnTrainerList.Location = new System.Drawing.Point(284, 178);
-            this.btnTrainerList.Name = "btnTrainerList";
-            this.btnTrainerList.Size = new System.Drawing.Size(120, 23);
-            this.btnTrainerList.TabIndex = 0;
-            this.btnTrainerList.Text = "Trainer List";
-            this.btnTrainerList.UseVisualStyleBackColor = true;
+            this.btnRoaming.Location = new System.Drawing.Point(152, 88);
+            this.btnRoaming.Name = "btnRoaming";
+            this.btnRoaming.Size = new System.Drawing.Size(120, 23);
+            this.btnRoaming.TabIndex = 0;
+            this.btnRoaming.Text = "Roaming";
+            this.btnRoaming.UseVisualStyleBackColor = true;
             // 
             // btnTrainerSprite
             // 
@@ -289,14 +172,131 @@ namespace PoochyEnabler
             this.btnTrainerSprite.Text = "Trainer Sprite";
             this.btnTrainerSprite.UseVisualStyleBackColor = true;
             // 
-            // btnTrade
+            // btnTileset
             // 
-            this.btnTrade.Location = new System.Drawing.Point(284, 208);
-            this.btnTrade.Name = "btnTrade";
-            this.btnTrade.Size = new System.Drawing.Size(120, 23);
-            this.btnTrade.TabIndex = 0;
-            this.btnTrade.Text = "Trade";
-            this.btnTrade.UseVisualStyleBackColor = true;
+            this.btnTileset.Location = new System.Drawing.Point(152, 178);
+            this.btnTileset.Name = "btnTileset";
+            this.btnTileset.Size = new System.Drawing.Size(120, 23);
+            this.btnTileset.TabIndex = 0;
+            this.btnTileset.Text = "Tileset";
+            this.btnTileset.UseVisualStyleBackColor = true;
+            // 
+            // btnPokedexRegional
+            // 
+            this.btnPokedexRegional.Location = new System.Drawing.Point(20, 88);
+            this.btnPokedexRegional.Name = "btnPokedexRegional";
+            this.btnPokedexRegional.Size = new System.Drawing.Size(120, 23);
+            this.btnPokedexRegional.TabIndex = 0;
+            this.btnPokedexRegional.Text = "Pokedex (Regional)";
+            this.btnPokedexRegional.UseVisualStyleBackColor = true;
+            // 
+            // btnTMHMTutor
+            // 
+            this.btnTMHMTutor.Location = new System.Drawing.Point(20, 208);
+            this.btnTMHMTutor.Name = "btnTMHMTutor";
+            this.btnTMHMTutor.Size = new System.Drawing.Size(120, 23);
+            this.btnTMHMTutor.TabIndex = 0;
+            this.btnTMHMTutor.Text = "TM, HM, Tutor";
+            this.btnTMHMTutor.UseVisualStyleBackColor = true;
+            // 
+            // btnTrainerList
+            // 
+            this.btnTrainerList.Location = new System.Drawing.Point(284, 178);
+            this.btnTrainerList.Name = "btnTrainerList";
+            this.btnTrainerList.Size = new System.Drawing.Size(120, 23);
+            this.btnTrainerList.TabIndex = 0;
+            this.btnTrainerList.Text = "Trainer List";
+            this.btnTrainerList.UseVisualStyleBackColor = true;
+            // 
+            // btnOverworld
+            // 
+            this.btnOverworld.Location = new System.Drawing.Point(152, 208);
+            this.btnOverworld.Name = "btnOverworld";
+            this.btnOverworld.Size = new System.Drawing.Size(120, 23);
+            this.btnOverworld.TabIndex = 0;
+            this.btnOverworld.Text = "Overworld";
+            this.btnOverworld.UseVisualStyleBackColor = true;
+            // 
+            // btnHabitat
+            // 
+            this.btnHabitat.Location = new System.Drawing.Point(20, 118);
+            this.btnHabitat.Name = "btnHabitat";
+            this.btnHabitat.Size = new System.Drawing.Size(120, 23);
+            this.btnHabitat.TabIndex = 0;
+            this.btnHabitat.Text = "Habitat";
+            this.btnHabitat.UseVisualStyleBackColor = true;
+            // 
+            // btnMail
+            // 
+            this.btnMail.Location = new System.Drawing.Point(284, 58);
+            this.btnMail.Name = "btnMail";
+            this.btnMail.Size = new System.Drawing.Size(120, 23);
+            this.btnMail.TabIndex = 0;
+            this.btnMail.Text = "Mail";
+            this.btnMail.UseVisualStyleBackColor = true;
+            // 
+            // btnSwarm
+            // 
+            this.btnSwarm.Location = new System.Drawing.Point(152, 58);
+            this.btnSwarm.Name = "btnSwarm";
+            this.btnSwarm.Size = new System.Drawing.Size(120, 23);
+            this.btnSwarm.TabIndex = 0;
+            this.btnSwarm.Text = "Swarm";
+            this.btnSwarm.UseVisualStyleBackColor = true;
+            // 
+            // btnTrainerClass
+            // 
+            this.btnTrainerClass.Location = new System.Drawing.Point(284, 118);
+            this.btnTrainerClass.Name = "btnTrainerClass";
+            this.btnTrainerClass.Size = new System.Drawing.Size(120, 23);
+            this.btnTrainerClass.TabIndex = 0;
+            this.btnTrainerClass.Text = "Trainer Class";
+            this.btnTrainerClass.UseVisualStyleBackColor = true;
+            // 
+            // btnMap
+            // 
+            this.btnMap.Location = new System.Drawing.Point(152, 148);
+            this.btnMap.Name = "btnMap";
+            this.btnMap.Size = new System.Drawing.Size(120, 23);
+            this.btnMap.TabIndex = 0;
+            this.btnMap.Text = "Map";
+            this.btnMap.UseVisualStyleBackColor = true;
+            // 
+            // btnPokedexNational
+            // 
+            this.btnPokedexNational.Location = new System.Drawing.Point(20, 58);
+            this.btnPokedexNational.Name = "btnPokedexNational";
+            this.btnPokedexNational.Size = new System.Drawing.Size(120, 23);
+            this.btnPokedexNational.TabIndex = 0;
+            this.btnPokedexNational.Text = "Pokedex (National)";
+            this.btnPokedexNational.UseVisualStyleBackColor = true;
+            // 
+            // btnItem
+            // 
+            this.btnItem.Location = new System.Drawing.Point(284, 28);
+            this.btnItem.Name = "btnItem";
+            this.btnItem.Size = new System.Drawing.Size(120, 23);
+            this.btnItem.TabIndex = 0;
+            this.btnItem.Text = "Item";
+            this.btnItem.UseVisualStyleBackColor = true;
+            // 
+            // btnWildEncounter
+            // 
+            this.btnWildEncounter.Location = new System.Drawing.Point(152, 28);
+            this.btnWildEncounter.Name = "btnWildEncounter";
+            this.btnWildEncounter.Size = new System.Drawing.Size(120, 23);
+            this.btnWildEncounter.TabIndex = 0;
+            this.btnWildEncounter.Text = "Wild Encounter";
+            this.btnWildEncounter.UseVisualStyleBackColor = true;
+            // 
+            // btnPokemon
+            // 
+            this.btnPokemon.Location = new System.Drawing.Point(20, 28);
+            this.btnPokemon.Name = "btnPokemon";
+            this.btnPokemon.Size = new System.Drawing.Size(120, 23);
+            this.btnPokemon.TabIndex = 0;
+            this.btnPokemon.Text = "Pokemon";
+            this.btnPokemon.UseVisualStyleBackColor = true;
             // 
             // lblProfile
             // 
@@ -330,10 +330,10 @@ namespace PoochyEnabler
             this.grpFreeSpaceFinder.Controls.Add(this.btnSearch);
             this.grpFreeSpaceFinder.Controls.Add(this.nudRequiredSize);
             this.grpFreeSpaceFinder.Controls.Add(this.lblRequiredSize);
-            this.grpFreeSpaceFinder.Controls.Add(this.textBox1);
-            this.grpFreeSpaceFinder.Controls.Add(this.txtStartAddress);
-            this.grpFreeSpaceFinder.Controls.Add(this.lblResults);
-            this.grpFreeSpaceFinder.Controls.Add(this.lblStartAddress);
+            this.grpFreeSpaceFinder.Controls.Add(this.txtResult);
+            this.grpFreeSpaceFinder.Controls.Add(this.txtStartOffset);
+            this.grpFreeSpaceFinder.Controls.Add(this.lblResult);
+            this.grpFreeSpaceFinder.Controls.Add(this.lblStartOffset);
             this.grpFreeSpaceFinder.Location = new System.Drawing.Point(464, 60);
             this.grpFreeSpaceFinder.Name = "grpFreeSpaceFinder";
             this.grpFreeSpaceFinder.Size = new System.Drawing.Size(210, 144);
@@ -341,30 +341,14 @@ namespace PoochyEnabler
             this.grpFreeSpaceFinder.TabStop = false;
             this.grpFreeSpaceFinder.Text = "Free Space Finder";
             // 
-            // lblStartAddress
+            // btnSearch
             // 
-            this.lblStartAddress.AutoSize = true;
-            this.lblStartAddress.Location = new System.Drawing.Point(20, 28);
-            this.lblStartAddress.Name = "lblStartAddress";
-            this.lblStartAddress.Size = new System.Drawing.Size(82, 12);
-            this.lblStartAddress.TabIndex = 0;
-            this.lblStartAddress.Text = "Start Address :";
-            // 
-            // txtStartAddress
-            // 
-            this.txtStartAddress.Location = new System.Drawing.Point(108, 24);
-            this.txtStartAddress.Name = "txtStartAddress";
-            this.txtStartAddress.Size = new System.Drawing.Size(80, 19);
-            this.txtStartAddress.TabIndex = 1;
-            // 
-            // lblRequiredSize
-            // 
-            this.lblRequiredSize.AutoSize = true;
-            this.lblRequiredSize.Location = new System.Drawing.Point(20, 54);
-            this.lblRequiredSize.Name = "lblRequiredSize";
-            this.lblRequiredSize.Size = new System.Drawing.Size(81, 12);
-            this.lblRequiredSize.TabIndex = 2;
-            this.lblRequiredSize.Text = "Required Size :";
+            this.btnSearch.Location = new System.Drawing.Point(20, 76);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(168, 23);
+            this.btnSearch.TabIndex = 4;
+            this.btnSearch.Text = "Search";
+            this.btnSearch.UseVisualStyleBackColor = true;
             // 
             // nudRequiredSize
             // 
@@ -378,30 +362,46 @@ namespace PoochyEnabler
             this.nudRequiredSize.Size = new System.Drawing.Size(80, 19);
             this.nudRequiredSize.TabIndex = 3;
             // 
-            // btnSearch
+            // lblRequiredSize
             // 
-            this.btnSearch.Location = new System.Drawing.Point(20, 76);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(168, 23);
-            this.btnSearch.TabIndex = 4;
-            this.btnSearch.Text = "Search";
-            this.btnSearch.UseVisualStyleBackColor = true;
+            this.lblRequiredSize.AutoSize = true;
+            this.lblRequiredSize.Location = new System.Drawing.Point(20, 54);
+            this.lblRequiredSize.Name = "lblRequiredSize";
+            this.lblRequiredSize.Size = new System.Drawing.Size(81, 12);
+            this.lblRequiredSize.TabIndex = 2;
+            this.lblRequiredSize.Text = "Required Size :";
             // 
-            // lblResults
+            // txtResult
             // 
-            this.lblResults.AutoSize = true;
-            this.lblResults.Location = new System.Drawing.Point(20, 110);
-            this.lblResults.Name = "lblResults";
-            this.lblResults.Size = new System.Drawing.Size(50, 12);
-            this.lblResults.TabIndex = 0;
-            this.lblResults.Text = "Results :";
+            this.txtResult.Location = new System.Drawing.Point(108, 106);
+            this.txtResult.Name = "txtResult";
+            this.txtResult.Size = new System.Drawing.Size(80, 19);
+            this.txtResult.TabIndex = 1;
             // 
-            // textBox1
+            // txtStartOffset
             // 
-            this.textBox1.Location = new System.Drawing.Point(108, 106);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(80, 19);
-            this.textBox1.TabIndex = 1;
+            this.txtStartOffset.Location = new System.Drawing.Point(108, 24);
+            this.txtStartOffset.Name = "txtStartOffset";
+            this.txtStartOffset.Size = new System.Drawing.Size(80, 19);
+            this.txtStartOffset.TabIndex = 1;
+            // 
+            // lblResult
+            // 
+            this.lblResult.AutoSize = true;
+            this.lblResult.Location = new System.Drawing.Point(20, 110);
+            this.lblResult.Name = "lblResult";
+            this.lblResult.Size = new System.Drawing.Size(44, 12);
+            this.lblResult.TabIndex = 0;
+            this.lblResult.Text = "Result :";
+            // 
+            // lblStartOffset
+            // 
+            this.lblStartOffset.AutoSize = true;
+            this.lblStartOffset.Location = new System.Drawing.Point(20, 28);
+            this.lblStartOffset.Name = "lblStartOffset";
+            this.lblStartOffset.Size = new System.Drawing.Size(72, 12);
+            this.lblStartOffset.TabIndex = 0;
+            this.lblStartOffset.Text = "Start Offset :";
             // 
             // picPoochyena
             // 
@@ -470,10 +470,10 @@ namespace PoochyEnabler
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.NumericUpDown nudRequiredSize;
         private System.Windows.Forms.Label lblRequiredSize;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox txtStartAddress;
-        private System.Windows.Forms.Label lblResults;
-        private System.Windows.Forms.Label lblStartAddress;
+        private System.Windows.Forms.TextBox txtResult;
+        private System.Windows.Forms.TextBox txtStartOffset;
+        private System.Windows.Forms.Label lblResult;
+        private System.Windows.Forms.Label lblStartOffset;
         private System.Windows.Forms.PictureBox picPoochyena;
     }
 }

@@ -97,51 +97,51 @@ namespace PoochyEnabler.Helpers
             return ctrl is Panel || ctrl is GroupBox || ctrl is TabControl || ctrl is TabPage;
         }
 
-        // string addr -> uint addr
-        public static bool TryParseAddress(string addrStr, out uint addrValue)
+        // string offset -> uint offset
+        public static bool TryParseoffset(string offsetStr, out uint offsetValue)
         {
-            return uint.TryParse(addrStr, NumberStyles.HexNumber, null, out addrValue);
+            return uint.TryParse(offsetStr, NumberStyles.HexNumber, null, out offsetValue);
         }
 
         // for textbox, validating, formatting
         public static bool ValidateAndFormatInputTextBox(
             TextBox txt, 
-            out uint? addrValue,
+            out uint? offsetValue, // not exsit true, null
             bool showMessage = true)
         {
-            string addrStr = txt.Text.Trim();
+            string offsetStr = txt.Text.Trim();
 
-            if (!TryParseAddress(addrStr, out uint resultValue))
+            if (!TryParseoffset(offsetStr, out uint resultValue))
             {
                 if (showMessage)
                 {
                     MessageBox.Show(
-                        "Enter a hexadecimal address.",
+                        "Enter a hexadecimal offset.",
                         "",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                 }
 
-                addrValue = null;
+                offsetValue = null;
                 return false;
             }
 
-            addrValue = resultValue;
+            offsetValue = resultValue;
             txt.Text = resultValue.ToString("X8");
             return true;
         }
 
         // for textbox, only formatting
-        public static void AttachAddressAutoFormat(params TextBox[] textboxes)
+        public static void AttachOffsetAutoFormat(params TextBox[] textboxes)
         {
             foreach (TextBox textbox in textboxes)
             {
-                textbox.Leave -= AddressTextBox_Leave;
-                textbox.Leave += AddressTextBox_Leave;
+                textbox.Leave -= OffsetTextBox_Leave;
+                textbox.Leave += OffsetTextBox_Leave;
             }
         }
 
-        private static void AddressTextBox_Leave(object sender, EventArgs e)
+        private static void OffsetTextBox_Leave(object sender, EventArgs e)
         {
             if (!(sender is TextBox txt)) return;
             if (string.IsNullOrWhiteSpace(txt.Text)) return;

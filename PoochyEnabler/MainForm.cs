@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -6,6 +7,7 @@ using System.Windows.Forms;
 
 using PoochyEnabler.FileReaders;
 using PoochyEnabler.Helpers;
+using PoochyEnabler.Managers;
 
 namespace PoochyEnabler
 {
@@ -20,6 +22,7 @@ namespace PoochyEnabler
         private IniFileReader _config;
         private TblFileReader _charmap;
         private Form _editorForm;
+        private ReservationManager _reservationManager;
 
         private const string ButtonPrefix = "btn";
         private const string EditorSuffix = "Editor";
@@ -33,6 +36,7 @@ namespace PoochyEnabler
 
             _config = new IniFileReader(_iniPath, cmbProfile);
             _charmap = new TblFileReader(_tblPath);
+            _reservationManager = new ReservationManager();
         }
 
         private void InitializeUIStates()
@@ -94,8 +98,8 @@ namespace PoochyEnabler
                     _config.LoadConfig(selectedConfig, _romData);
 
                     // txtStartAddress
-                    uint? rawOffset = _config.ReadOffset("FreeSpaceFinderAddress");
-                    txtStartAddress.Text = rawOffset is uint offsetValue
+                    uint? rawOffset = _config.ReadOffset("FreeSpaceFinderOffset");
+                    txtStartOffset.Text = rawOffset is uint offsetValue
                         ? offsetValue.ToString("X8")
                         : string.Empty;
 
@@ -186,7 +190,7 @@ namespace PoochyEnabler
                 _editorForm = null;
             }
 
-            // _reservationManager.ClearAllReservations();
+            _reservationManager.ClearAllReservations();
             MainFormUIUpdate();
         }
 
@@ -196,6 +200,84 @@ namespace PoochyEnabler
             {
                 e.Cancel = true;
                 MessageBox.Show("Please close the editor.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            // validate
+            if (!ControlHelper.ValidateAndFormatInputTextBox(txtStartOffset, out uint? startoffset))
+            {
+                txtStartOffset.Text = string.Empty;
+                return;
+            }
+
+            int neededBytes = (int)nudRequiredSize.Value;
+            int currentOffset = (int)(((uint)startoffset + sizeof(uint) - 1) & Constants.AlignMask);
+            int foundOffset = -1;
+
+            // sorting
+            var reservedInfos = _reservationManager.GetAllReservations()
+                .OrderBy(res => res.Offset)
+                .ToList();
+
+            // search
+            while (currentOffset + neededBytes <= _romData.Length)
+            {
+                bool isFreeSpace = true;
+
+                foreach (var res in reservedInfos)
+                {
+                    int resStart = (int)res.Offset;
+                    int resEnd = resStart + (res.Data?.Length ?? 0);
+                    int curStart = currentOffset;
+                    int curEnd = currentOffset + neededBytes;
+
+                    if (resStart >= curEnd)
+                    {
+                        break;
+                    }
+
+                    // over check
+                    if (curStart < resEnd && curEnd > resStart)
+                    {
+                        isFreeSpace = false;
+                        currentOffset = (int)(((uint)resEnd + sizeof(uint) - 1) & Constants.AlignMask);
+                        break;
+                    }
+                }
+
+                // 0xFF check
+                if (isFreeSpace)
+                {
+                    for (int i = 0; i < neededBytes; i++)
+                    {
+                        if (_romData[currentOffset + i] != Constants.FreeSpaceByte)
+                        {
+                            isFreeSpace = false;
+                            currentOffset = (int)(((uint)(currentOffset + i + sizeof(uint))) & Constants.AlignMask);
+                            break;
+                        }
+                    }
+                }
+
+                // end
+                if (isFreeSpace)
+                {
+                    foundOffset = currentOffset;
+                    break;
+                }
+            }
+
+            // show result
+            if (foundOffset != -1)
+            {
+                txtStartOffset.Text = foundOffset.ToString("X8");
+            }
+            else
+            {
+                MessageBox.Show("Not found.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtStartOffset.Text = string.Empty;
             }
         }
     }
