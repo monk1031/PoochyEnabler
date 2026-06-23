@@ -51,7 +51,7 @@ namespace PoochyEnabler.Helpers
             byte[] romData,
             uint offset,
             byte[] bytes,
-            bool align = false,
+            bool align = true,
             byte alignPaddingByte = Constants.PaddingByte)
         {
             Array.Copy(bytes, 0, romData, offset, bytes.Length);

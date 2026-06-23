@@ -93,6 +93,7 @@ namespace PoochyEnabler
                     _romPath = openFileDialog.FileName;
                     _romData = File.ReadAllBytes(_romPath);
 
+                    // load _config
                     string selectedConfig = cmbProfile.SelectedItem?.ToString() ?? string.Empty;
                     _config.LoadConfig(selectedConfig, _romData);
 
@@ -136,7 +137,7 @@ namespace PoochyEnabler
             ControlHelper.ResetControls(this);
             MainFormUIUpdate();
 
-            // reset config
+            // reset _config
             _config = new IniFileReader(_iniPath, cmbProfile);
         }
 

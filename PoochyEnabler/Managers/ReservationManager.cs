@@ -90,7 +90,7 @@ namespace PoochyEnabler.Managers
             }
         }
 
-        public IReadOnlyList<ReservationInfo> GetAllReservations()
+        public List<ReservationInfo> GetAllReservations()
         {
             return _reservations.Values.ToList();
         }
