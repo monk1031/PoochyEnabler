@@ -52,6 +52,12 @@
     <Compile Include="Constants.cs" />
     <Compile Include="FileReaders\IniFileReader.cs" />
     <Compile Include="FileReaders\TblFileReader.cs" />
+    <Compile Include="Forms\TrainerClassEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TrainerClassEditor.Designer.cs">
+      <DependentUpon>TrainerClassEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\ControlHelper.cs" />
     <Compile Include="Helpers\IOHelper.cs" />
     <Compile Include="MainForm.cs">
@@ -64,6 +70,9 @@
     <Compile Include="Managers\ReservationManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\TrainerClassEditor.resx">
+      <DependentUpon>TrainerClassEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -95,9 +104,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Forms\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="img\poochyena_icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
