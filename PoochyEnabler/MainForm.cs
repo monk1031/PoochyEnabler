@@ -159,7 +159,7 @@ namespace PoochyEnabler
 
             if (formType != null)
             {
-                if (Activator.CreateInstance(formType, _romData, _config, _charmap) is Form newForm)
+                if (Activator.CreateInstance(formType, _romData, _config, _charmap, _reservationManager) is Form newForm)
                 {
                     OpenEditorForm(newForm);
                 }
