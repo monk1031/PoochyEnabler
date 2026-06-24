@@ -76,7 +76,7 @@ namespace PoochyEnabler.Helpers
         // string -> variable length
         public static List<T> ReadStructures<T>(
             byte[] data,
-            uint offset,
+            uint offset, // index 0
             int count, 
             TblFileReader tblReader,
             Dictionary<string, int> dynamicLengths = null) where T : new()
