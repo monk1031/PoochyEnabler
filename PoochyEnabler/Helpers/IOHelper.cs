@@ -73,7 +73,7 @@ namespace PoochyEnabler.Helpers
             }
         }
 
-        // read and create, string -> variable
+        // string -> variable length
         public static List<T> ReadStructures<T>(
             byte[] data,
             uint offset,
@@ -130,20 +130,24 @@ namespace PoochyEnabler.Helpers
             return list;
         }
 
-        // write  structures
         // paddingByte1: Pad up to max characters
         // paddingByte2: Pad up to data length
         public static void WriteStructures<T>(
-            byte[] data,
-            uint offset,
-            IEnumerable<T> items,
-            TblFileReader tblReader,
-            Dictionary<string, int> dynamicLengths = null,
-            bool appendTerminator = true,
-            byte paddingByte1 = Constants.FreeSpaceByte,
-            byte paddingByte2 = Constants.PaddingByte)
+           byte[] data,
+           uint baseOffset,       // index 0 of offset
+           int startIndex,        // target index
+           IEnumerable<T> items,  // structure to write
+           TblFileReader tblReader,
+           Dictionary<string, int> dynamicLengths = null,
+           bool appendTerminator = true,
+           byte paddingByte1 = Constants.FreeSpaceByte,
+           byte paddingByte2 = Constants.PaddingByte)
         {
-            int currentOffset = (int)offset;
+            // calc structure size
+            int recordSize = GetStructureSize<T>(dynamicLengths);
+            // calc target offset
+            int currentOffset = (int)(baseOffset + (uint)(startIndex * recordSize));
+
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
             try
@@ -219,6 +223,32 @@ namespace PoochyEnabler.Helpers
         {
             length = 0;
             return dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
+        }
+
+        public static int GetStructureSize<T>(Dictionary<string, int> dynamicLengths = null)
+        {
+            int size = 0;
+            FieldInfo[] fields = typeof(T)
+                .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                .OrderBy(f => f.MetadataToken)
+                .ToArray();
+
+            foreach (var field in fields)
+            {
+                if (field.FieldType == typeof(string))
+                {
+                    var attr = field.GetCustomAttribute<DynamicStringAttribute>();
+                    if (attr != null && TryGetLength(attr.EntryLength, dynamicLengths, out int length) && length > 0)
+                    {
+                        size += length;
+                    }
+                }
+                else if (field.FieldType.IsValueType)
+                {
+                    size += Marshal.SizeOf(field.FieldType);
+                }
+            }
+            return size;
         }
     }
 
