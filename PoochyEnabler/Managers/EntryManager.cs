@@ -61,28 +61,28 @@ namespace PoochyEnabler.Managers
     public class TrainerClassPrizeMultiplierEntry
     {
         public byte _ClassIdx;
-        public byte _PrizeMulti;
+        public byte _ClassPrizeMulti;
         public byte _Padding1;
         public byte _Padding2;
     }
 
     public class TrainerClassEncounterMusicEntry
     {
-        public ushort EncounterMusic;
+        public ushort ClassEncounterMusic;
     }
 
     public class TrainerClassBattleMusicEntry
     {
-        public ushort BattleMusic;
+        public ushort ClassBattleMusic;
     }
 
     public class TrainerClassPokeBallEntry
     {
-        public byte PokeBall;
+        public byte ClassPokeBall;
     }
 
     public class TrainerClassBaseIVEntry
     {
-        public byte BaseIv;
+        public byte ClassBaseIv;
     }
 }

@@ -221,10 +221,25 @@ namespace PoochyEnabler.FileReaders
 
             string[] parts = searchStr.Split(',');
             string hexString = parts[0].Trim();
-            uint additionalOffset = 0;
-            if (parts.Length > 1 && TryParseNumber(parts[1].Trim(), out object parsedOffsetValue))
+            int additionalOffset = 0;
+
+            if (parts.Length > 1)
             {
-                additionalOffset = (uint)parsedOffsetValue;
+                string offsetStr = parts[1].Trim();
+                bool isNegative = offsetStr.StartsWith("-");
+                string numberStr = isNegative 
+                    ? offsetStr.Substring(1) 
+                    : offsetStr;
+
+                // consider minus
+                if (TryParseNumber(numberStr, out object parsedOffsetValue))
+                {
+                    additionalOffset = (int)(uint)parsedOffsetValue;
+                    if (isNegative)
+                    {
+                        additionalOffset = -additionalOffset;
+                    }
+                }
             }
 
             // get bytes to search for
@@ -263,7 +278,20 @@ namespace PoochyEnabler.FileReaders
                 return false;
             }
 
-            uint ptrOffset = startOffset + (uint)patternBytes.Length + additionalOffset;
+            uint ptrOffset;
+            if (additionalOffset < 0)
+            {
+                // minus
+                if (startOffset < (uint)(-additionalOffset)) return false;
+
+                ptrOffset = (uint)(startOffset + additionalOffset);
+            }
+            else
+            {
+                // 0 or plus
+                ptrOffset = startOffset + (uint)patternBytes.Length + (uint)additionalOffset;
+            }
+
             if (IOHelper.TryReadPointer(ptrOffset, data, out uint? resultOffset))
             {
                 parsedValue = resultOffset; // contain null
