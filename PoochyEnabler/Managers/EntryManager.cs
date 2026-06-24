@@ -60,7 +60,7 @@ namespace PoochyEnabler.Managers
 
     public class TrainerClassPrizeMultiplierEntry
     {
-        public byte _ClassNameIdx;
+        public byte _ClassIdx;
         public byte _PrizeMulti;
         public byte _Padding1;
         public byte _Padding2;
