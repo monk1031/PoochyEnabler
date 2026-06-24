@@ -23,6 +23,27 @@ namespace PoochyEnabler.FileReaders
         private readonly Dictionary<string, object> _iniCache = 
             new Dictionary<string, object>();
 
+        public uint? ReadOffset(string key)
+        {
+            return TryReadValue<uint>(key, out var value)
+                ? value // include null
+                : null;
+        }
+
+        public int ReadNumber(string key, int defaultValue = 0)
+        {
+            return TryReadValue<int>(key, out var value)
+                ? value ?? defaultValue
+                : defaultValue;
+        }
+
+        public bool ReadBool(string key, bool defaultValue = false)
+        {
+            return TryReadValue<bool>(key, out var value)
+                ? value ?? defaultValue
+                : defaultValue;
+        }
+
         public bool TryReadValue<T>(string key, out T? value) where T : struct
         {
             value = null;
@@ -54,27 +75,6 @@ namespace PoochyEnabler.FileReaders
             }
 
             return false; // no key
-        }
-
-        public uint? ReadOffset(string key)
-        {
-            return TryReadValue<uint>(key, out uint? value)
-                ? value
-                : null;
-        }
-
-        public int ReadNumber(string key, int defaultValue = 0)
-        {
-            return TryReadValue<int>(key, out int? value)
-                ? value ?? defaultValue
-                : defaultValue;
-        }
-
-        public bool ReadBool(string key, bool defaultValue = false)
-        {
-            return TryReadValue<bool>(key, out bool? value)
-                ? value ?? defaultValue
-                : defaultValue;
         }
 
         // for cmb items, still contain empty lines

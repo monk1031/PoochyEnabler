@@ -14,7 +14,7 @@ namespace PoochyEnabler.Managers
         private readonly TblFileReader _charmap;
         private readonly Dictionary<string, int> _dynamicLengths;
 
-        public List<T> Entry { get; set; } = new List<T>();
+        public List<T> Entries { get; set; } = new List<T>();
         public uint Offset { get; set; } // base offset
         public int Count { get; set; }
 
@@ -46,7 +46,7 @@ namespace PoochyEnabler.Managers
         {
             Offset = offset;
             Count = count;
-            Entry = IOHelper.ReadStructures<T>(_romData, Offset, Count, _charmap, _dynamicLengths);
+            Entries = IOHelper.ReadStructures<T>(_romData, Offset, Count, _charmap, _dynamicLengths);
         }
     }
 
