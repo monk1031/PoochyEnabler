@@ -160,15 +160,9 @@ namespace PoochyEnabler.FileReaders
                 return true;
             }
 
-            switch (rawString[0])
+            if (rawString[0] == '*')
             {
-                case '*':
-                    return TryReadPointerAddress(
-                        rawString.Substring(1), data, out parsedValue);
-
-                case '$':
-                    return TrySearchBinaryAndReadPointer(
-                        rawString.Substring(1), data, out parsedValue);
+                return TryReadPointerAddress(rawString.Substring(1), data, out parsedValue);
             }
 
             return TryParseNumber(rawString, out parsedValue);
@@ -209,93 +203,6 @@ namespace PoochyEnabler.FileReaders
                     parsedValue = resultOffset; // contain null
                     return true;
                 }
-            }
-
-            return false;
-        }
-
-        // search [AB CD EF 12 34 56], and then read that pointer
-        private bool TrySearchBinaryAndReadPointer(string searchStr, byte[] data, out object parsedValue)
-        {
-            parsedValue = null;
-
-            string[] parts = searchStr.Split(',');
-            string hexString = parts[0].Trim();
-            int additionalOffset = 0;
-
-            if (parts.Length > 1)
-            {
-                string offsetStr = parts[1].Trim();
-                bool isNegative = offsetStr.StartsWith("-");
-                string numberStr = isNegative 
-                    ? offsetStr.Substring(1) 
-                    : offsetStr;
-
-                // consider minus
-                if (TryParseNumber(numberStr, out object parsedOffsetValue))
-                {
-                    additionalOffset = (int)(uint)parsedOffsetValue;
-                    if (isNegative)
-                    {
-                        additionalOffset = -additionalOffset;
-                    }
-                }
-            }
-
-            // get bytes to search for
-            byte[] patternBytes = new byte[hexString.Length / Constants.CharPerByte];
-            for (int i = 0; i < patternBytes.Length; i++)
-            {
-                string targetStr = hexString.Substring(i * Constants.CharPerByte, Constants.CharPerByte);
-                patternBytes[i] = Convert.ToByte(targetStr, Constants.HexBase);
-            }
-
-            // searching
-            bool isPatternFound = false;
-            uint startOffset = 0;
-            for (uint i = 0; i <= data.Length - patternBytes.Length; i++)
-            {
-                bool isMatch = true;
-                for (int j = 0; j < patternBytes.Length; j++)
-                {
-                    if (data[i + j] != patternBytes[j])
-                    {
-                        isMatch = false;
-                        break;
-                    }
-                }
-
-                if (isMatch)
-                {
-                    startOffset = i;
-                    isPatternFound = true;
-                    break;
-                }
-            }
-
-            if (!isPatternFound)
-            {
-                return false;
-            }
-
-            uint ptrOffset;
-            if (additionalOffset < 0)
-            {
-                // minus
-                if (startOffset < (uint)(-additionalOffset)) return false;
-
-                ptrOffset = (uint)(startOffset + additionalOffset);
-            }
-            else
-            {
-                // 0 or plus
-                ptrOffset = startOffset + (uint)patternBytes.Length + (uint)additionalOffset;
-            }
-
-            if (IOHelper.TryReadPointer(ptrOffset, data, out uint? resultOffset))
-            {
-                parsedValue = resultOffset; // contain null
-                return true;
             }
 
             return false;
