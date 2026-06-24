@@ -134,7 +134,7 @@ namespace PoochyEnabler.Helpers
         // paddingByte2: Pad up to data length
         public static void WriteStructures<T>(
            byte[] data,
-           uint baseOffset,       // index 0 of offset
+           uint baseOffset,       // index 0 of table
            int startIndex,        // target index
            IEnumerable<T> items,  // structure to write
            TblFileReader tblReader,

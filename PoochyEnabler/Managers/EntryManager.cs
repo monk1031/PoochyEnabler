@@ -30,17 +30,59 @@ namespace PoochyEnabler.Managers
             _dynamicLengths = dynamicLengths;
         }
 
-        // when need inicache
+        // type A : when need inicache
         public void Load(string offsetKey, string countKey)
         {
-            // calc offse, count -> create table
             if (_config.TryReadValue<uint>(offsetKey, out var offsetValue) && offsetValue != null &&
                 _config.TryReadValue<int>(countKey, out var countValue) && countValue != null)
             {
-                Offset = offsetValue.Value;
-                Count = countValue.Value;
-                Entry = IOHelper.ReadStructures<T>(_romData, Offset, Count, _charmap, _dynamicLengths);
+                // type B
+                Load(offsetValue.Value, countValue.Value);
             }
         }
+
+        // type B : directly
+        public void Load(uint offset, int count)
+        {
+            Offset = offset;
+            Count = count;
+            Entry = IOHelper.ReadStructures<T>(_romData, Offset, Count, _charmap, _dynamicLengths);
+        }
+    }
+
+    /* ---------------------------------------------------------------- */
+
+    public class TrainerClassNameEntry
+    {
+        [DynamicString("TrainerClassNameEntryLength")]
+        public string _ClassName;
+    }
+
+    public class TrainerClassPrizeMultiplierEntry
+    {
+        public byte _ClassNameIdx;
+        public byte _PrizeMulti;
+        public byte _Padding1;
+        public byte _Padding2;
+    }
+
+    public class TrainerClassEncounterMusicEntry
+    {
+        public ushort EncounterMusic;
+    }
+
+    public class TrainerClassBattleMusicEntry
+    {
+        public ushort BattleMusic;
+    }
+
+    public class TrainerClassPokeBallEntry
+    {
+        public byte PokeBall;
+    }
+
+    public class TrainerClassBaseIVEntry
+    {
+        public byte BaseIv;
     }
 }

@@ -34,28 +34,28 @@ namespace PoochyEnabler.Forms
             this.nudClassIdx = new System.Windows.Forms.NumericUpDown();
             this.cmbClassIdx = new System.Windows.Forms.ComboBox();
             this.grpClassData = new System.Windows.Forms.GroupBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.lblClassName = new System.Windows.Forms.Label();
+            this.nudPrizeMulti = new System.Windows.Forms.NumericUpDown();
             this.txtClassName = new System.Windows.Forms.TextBox();
             this.lblPrizeMulti = new System.Windows.Forms.Label();
-            this.nudPrizeMulti = new System.Windows.Forms.NumericUpDown();
+            this.lblClassName = new System.Windows.Forms.Label();
+            this.btnSave = new System.Windows.Forms.Button();
             this.grpExtraData = new System.Windows.Forms.GroupBox();
-            this.lblEncounterMusic = new System.Windows.Forms.Label();
-            this.nudEncounterMusic = new System.Windows.Forms.NumericUpDown();
-            this.lblBattleMusic = new System.Windows.Forms.Label();
-            this.nudBattleMusic = new System.Windows.Forms.NumericUpDown();
-            this.lblPokeBallIdx = new System.Windows.Forms.Label();
-            this.nudPokeBallIdx = new System.Windows.Forms.NumericUpDown();
-            this.lblBaseIV = new System.Windows.Forms.Label();
             this.nudBaseIV = new System.Windows.Forms.NumericUpDown();
+            this.nudPokeBall = new System.Windows.Forms.NumericUpDown();
+            this.nudBattleMusic = new System.Windows.Forms.NumericUpDown();
+            this.nudEncounterMusic = new System.Windows.Forms.NumericUpDown();
+            this.lblBaseIV = new System.Windows.Forms.Label();
+            this.lblPokeBall = new System.Windows.Forms.Label();
+            this.lblBattleMusic = new System.Windows.Forms.Label();
+            this.lblEncounterMusic = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudClassIdx)).BeginInit();
             this.grpClassData.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPrizeMulti)).BeginInit();
             this.grpExtraData.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudEncounterMusic)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudBattleMusic)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudPokeBallIdx)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBaseIV)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPokeBall)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBattleMusic)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncounterMusic)).BeginInit();
             this.SuspendLayout();
             // 
             // lblClassIdx
@@ -106,23 +106,17 @@ namespace PoochyEnabler.Forms
             this.grpClassData.TabStop = false;
             this.grpClassData.Text = "Class Data";
             // 
-            // btnSave
+            // nudPrizeMulti
             // 
-            this.btnSave.Location = new System.Drawing.Point(20, 16);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(96, 23);
-            this.btnSave.TabIndex = 0;
-            this.btnSave.Text = "Save";
-            this.btnSave.UseVisualStyleBackColor = true;
-            // 
-            // lblClassName
-            // 
-            this.lblClassName.AutoSize = true;
-            this.lblClassName.Location = new System.Drawing.Point(20, 28);
-            this.lblClassName.Name = "lblClassName";
-            this.lblClassName.Size = new System.Drawing.Size(73, 12);
-            this.lblClassName.TabIndex = 0;
-            this.lblClassName.Text = "Class Name :";
+            this.nudPrizeMulti.Location = new System.Drawing.Point(104, 50);
+            this.nudPrizeMulti.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudPrizeMulti.Name = "nudPrizeMulti";
+            this.nudPrizeMulti.Size = new System.Drawing.Size(56, 19);
+            this.nudPrizeMulti.TabIndex = 2;
             // 
             // txtClassName
             // 
@@ -140,26 +134,32 @@ namespace PoochyEnabler.Forms
             this.lblPrizeMulti.TabIndex = 0;
             this.lblPrizeMulti.Text = "Prize Multi :";
             // 
-            // nudPrizeMulti
+            // lblClassName
             // 
-            this.nudPrizeMulti.Location = new System.Drawing.Point(104, 50);
-            this.nudPrizeMulti.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.nudPrizeMulti.Name = "nudPrizeMulti";
-            this.nudPrizeMulti.Size = new System.Drawing.Size(56, 19);
-            this.nudPrizeMulti.TabIndex = 2;
+            this.lblClassName.AutoSize = true;
+            this.lblClassName.Location = new System.Drawing.Point(20, 28);
+            this.lblClassName.Name = "lblClassName";
+            this.lblClassName.Size = new System.Drawing.Size(73, 12);
+            this.lblClassName.TabIndex = 0;
+            this.lblClassName.Text = "Class Name :";
+            // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(20, 16);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(96, 23);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
             // 
             // grpExtraData
             // 
             this.grpExtraData.Controls.Add(this.nudBaseIV);
-            this.grpExtraData.Controls.Add(this.nudPokeBallIdx);
+            this.grpExtraData.Controls.Add(this.nudPokeBall);
             this.grpExtraData.Controls.Add(this.nudBattleMusic);
             this.grpExtraData.Controls.Add(this.nudEncounterMusic);
             this.grpExtraData.Controls.Add(this.lblBaseIV);
-            this.grpExtraData.Controls.Add(this.lblPokeBallIdx);
+            this.grpExtraData.Controls.Add(this.lblPokeBall);
             this.grpExtraData.Controls.Add(this.lblBattleMusic);
             this.grpExtraData.Controls.Add(this.lblEncounterMusic);
             this.grpExtraData.Location = new System.Drawing.Point(20, 178);
@@ -169,35 +169,29 @@ namespace PoochyEnabler.Forms
             this.grpExtraData.TabStop = false;
             this.grpExtraData.Text = "Extra Data";
             // 
-            // lblEncounterMusic
+            // nudBaseIV
             // 
-            this.lblEncounterMusic.AutoSize = true;
-            this.lblEncounterMusic.Location = new System.Drawing.Point(20, 28);
-            this.lblEncounterMusic.Name = "lblEncounterMusic";
-            this.lblEncounterMusic.Size = new System.Drawing.Size(96, 12);
-            this.lblEncounterMusic.TabIndex = 0;
-            this.lblEncounterMusic.Text = "Encounter Music :";
-            // 
-            // nudEncounterMusic
-            // 
-            this.nudEncounterMusic.Location = new System.Drawing.Point(124, 24);
-            this.nudEncounterMusic.Maximum = new decimal(new int[] {
-            65535,
+            this.nudBaseIV.Location = new System.Drawing.Point(124, 102);
+            this.nudBaseIV.Maximum = new decimal(new int[] {
+            255,
             0,
             0,
             0});
-            this.nudEncounterMusic.Name = "nudEncounterMusic";
-            this.nudEncounterMusic.Size = new System.Drawing.Size(72, 19);
-            this.nudEncounterMusic.TabIndex = 2;
+            this.nudBaseIV.Name = "nudBaseIV";
+            this.nudBaseIV.Size = new System.Drawing.Size(56, 19);
+            this.nudBaseIV.TabIndex = 2;
             // 
-            // lblBattleMusic
+            // nudPokeBall
             // 
-            this.lblBattleMusic.AutoSize = true;
-            this.lblBattleMusic.Location = new System.Drawing.Point(20, 54);
-            this.lblBattleMusic.Name = "lblBattleMusic";
-            this.lblBattleMusic.Size = new System.Drawing.Size(76, 12);
-            this.lblBattleMusic.TabIndex = 0;
-            this.lblBattleMusic.Text = "Battle Music :";
+            this.nudPokeBall.Location = new System.Drawing.Point(124, 76);
+            this.nudPokeBall.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudPokeBall.Name = "nudPokeBall";
+            this.nudPokeBall.Size = new System.Drawing.Size(56, 19);
+            this.nudPokeBall.TabIndex = 2;
             // 
             // nudBattleMusic
             // 
@@ -211,26 +205,17 @@ namespace PoochyEnabler.Forms
             this.nudBattleMusic.Size = new System.Drawing.Size(72, 19);
             this.nudBattleMusic.TabIndex = 2;
             // 
-            // lblPokeBallIdx
+            // nudEncounterMusic
             // 
-            this.lblPokeBallIdx.AutoSize = true;
-            this.lblPokeBallIdx.Location = new System.Drawing.Point(20, 80);
-            this.lblPokeBallIdx.Name = "lblPokeBallIdx";
-            this.lblPokeBallIdx.Size = new System.Drawing.Size(71, 12);
-            this.lblPokeBallIdx.TabIndex = 0;
-            this.lblPokeBallIdx.Text = "PokeBall ID :";
-            // 
-            // nudPokeBallIdx
-            // 
-            this.nudPokeBallIdx.Location = new System.Drawing.Point(124, 76);
-            this.nudPokeBallIdx.Maximum = new decimal(new int[] {
-            255,
+            this.nudEncounterMusic.Location = new System.Drawing.Point(124, 24);
+            this.nudEncounterMusic.Maximum = new decimal(new int[] {
+            65535,
             0,
             0,
             0});
-            this.nudPokeBallIdx.Name = "nudPokeBallIdx";
-            this.nudPokeBallIdx.Size = new System.Drawing.Size(56, 19);
-            this.nudPokeBallIdx.TabIndex = 2;
+            this.nudEncounterMusic.Name = "nudEncounterMusic";
+            this.nudEncounterMusic.Size = new System.Drawing.Size(72, 19);
+            this.nudEncounterMusic.TabIndex = 2;
             // 
             // lblBaseIV
             // 
@@ -241,17 +226,32 @@ namespace PoochyEnabler.Forms
             this.lblBaseIV.TabIndex = 0;
             this.lblBaseIV.Text = "Base IV :";
             // 
-            // nudBaseIV
+            // lblPokeBall
             // 
-            this.nudBaseIV.Location = new System.Drawing.Point(124, 102);
-            this.nudBaseIV.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.nudBaseIV.Name = "nudBaseIV";
-            this.nudBaseIV.Size = new System.Drawing.Size(56, 19);
-            this.nudBaseIV.TabIndex = 2;
+            this.lblPokeBall.AutoSize = true;
+            this.lblPokeBall.Location = new System.Drawing.Point(20, 80);
+            this.lblPokeBall.Name = "lblPokeBall";
+            this.lblPokeBall.Size = new System.Drawing.Size(71, 12);
+            this.lblPokeBall.TabIndex = 0;
+            this.lblPokeBall.Text = "PokeBall ID :";
+            // 
+            // lblBattleMusic
+            // 
+            this.lblBattleMusic.AutoSize = true;
+            this.lblBattleMusic.Location = new System.Drawing.Point(20, 54);
+            this.lblBattleMusic.Name = "lblBattleMusic";
+            this.lblBattleMusic.Size = new System.Drawing.Size(76, 12);
+            this.lblBattleMusic.TabIndex = 0;
+            this.lblBattleMusic.Text = "Battle Music :";
+            // 
+            // lblEncounterMusic
+            // 
+            this.lblEncounterMusic.AutoSize = true;
+            this.lblEncounterMusic.Location = new System.Drawing.Point(20, 28);
+            this.lblEncounterMusic.Name = "lblEncounterMusic";
+            this.lblEncounterMusic.Size = new System.Drawing.Size(96, 12);
+            this.lblEncounterMusic.TabIndex = 0;
+            this.lblEncounterMusic.Text = "Encounter Music :";
             // 
             // TrainerClassEditor
             // 
@@ -274,10 +274,10 @@ namespace PoochyEnabler.Forms
             ((System.ComponentModel.ISupportInitialize)(this.nudPrizeMulti)).EndInit();
             this.grpExtraData.ResumeLayout(false);
             this.grpExtraData.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudEncounterMusic)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudBattleMusic)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudPokeBallIdx)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudBaseIV)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPokeBall)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudBattleMusic)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncounterMusic)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -300,8 +300,8 @@ namespace PoochyEnabler.Forms
         private System.Windows.Forms.Label lblBattleMusic;
         private System.Windows.Forms.Label lblEncounterMusic;
         private System.Windows.Forms.NumericUpDown nudBaseIV;
-        private System.Windows.Forms.NumericUpDown nudPokeBallIdx;
+        private System.Windows.Forms.NumericUpDown nudPokeBall;
         private System.Windows.Forms.Label lblBaseIV;
-        private System.Windows.Forms.Label lblPokeBallIdx;
+        private System.Windows.Forms.Label lblPokeBall;
     }
 }
