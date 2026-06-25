@@ -46,7 +46,36 @@ namespace PoochyEnabler.Managers
         {
             Offset = offset;
             Count = count;
-            Entries = IOHelper.ReadStructures<T>(_romData, Offset, Count, _charmap, _dynamicLengths);
+            Entries = IOHelper.ReadStructures<T>(
+                _romData, 
+                Offset, 
+                Count, 
+                _charmap, 
+                _dynamicLengths);
+        }
+
+        // write one entry
+        public void Save(
+            int index, 
+            T entry,
+            bool appendTerminator = true,
+            byte paddingByte1 = Constants.FreeSpaceByte,
+            byte paddingByte2 = Constants.PaddingByte)
+        {
+            // update
+            Entries[index] = entry;
+
+            // write
+            IOHelper.WriteStructures(
+                _romData,
+                Offset,
+                index,
+                new[] { entry },
+                _charmap,
+                _dynamicLengths,
+                appendTerminator,
+                paddingByte1,
+                paddingByte2);
         }
     }
 
