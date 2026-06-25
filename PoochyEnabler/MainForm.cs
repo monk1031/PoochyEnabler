@@ -15,7 +15,7 @@ namespace PoochyEnabler
         private byte[] _romData = Array.Empty<byte>();
         private bool _isRomLoaded = false;
         private string _romPath = string.Empty;
-        private string _iniFloder = Path.Combine(Application.StartupPath, "ini");
+        private string _iniFolder = Path.Combine(Application.StartupPath, "ini");
         private string _tblPath = Path.Combine(Application.StartupPath, "charmap.tbl");
 
         private IniFileReader _config;
@@ -33,7 +33,7 @@ namespace PoochyEnabler
             InitializeUIStates();
             InitializeEventHandlers();
 
-            _config = new IniFileReader(_iniFloder, cmbProfile);
+            _config = new IniFileReader(_iniFolder, cmbProfile);
             _charmap = new TblFileReader(_tblPath);
             _reservationManager = new ReservationManager();
         }
@@ -56,7 +56,6 @@ namespace PoochyEnabler
 
             // When ROM is loaded AND editor is not open
             bool canOpenEditor = _isRomLoaded && !isEditorOpen;
-            btnSaveData.Enabled = canOpenEditor;
             btnUnloadData.Enabled = canOpenEditor;
             ControlHelper.SetControlsEnabled(grpEditors, canOpenEditor);
 
@@ -67,7 +66,6 @@ namespace PoochyEnabler
         private void InitializeEventHandlers()
         {
             btnLoadData.Click += btnLoadData_Click;
-            btnSaveData.Click += btnSaveData_Click;
             btnUnloadData.Click += btnUnloadData_Click;
 
             // editors
@@ -113,21 +111,6 @@ namespace PoochyEnabler
             }
         }
 
-        private void btnSaveData_Click(object sender, EventArgs e)
-        {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.Filter = Constants.RomFileFilter;
-                saveFileDialog.Title = Constants.RomFileTitle;
-                saveFileDialog.FileName = Path.GetFileName(_romPath);
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    File.WriteAllBytes(saveFileDialog.FileName, _romData);
-                }
-            }
-        }
-
         private void btnUnloadData_Click(object sender, EventArgs e)
         {
             _romData = Array.Empty<byte>();
@@ -139,69 +122,7 @@ namespace PoochyEnabler
             MainFormUIUpdate();
 
             // reset _config
-            _config = new IniFileReader(_iniFloder, cmbProfile);
-        }
-
-        private void EditorButton_Click(object sender, EventArgs e)
-        {
-            if (!(sender is Button btn)) return;
-
-            // example: btnPokemon -> Pokemon -> PokemonEditor
-            string editorName = btn.Name.Substring(ButtonPrefix.Length);
-            string targetClassName = $"{editorName}{EditorSuffix}";
-
-            // search folder
-            string baseNamespace = GetType().Namespace ?? string.Empty;
-            string targetNamespace = $"{baseNamespace}.{FormsFolderName}";
-
-            Type formType = Assembly
-                .GetExecutingAssembly()
-                .GetTypes()
-                .FirstOrDefault(t => t.Name == targetClassName && t.Namespace == targetNamespace);
-
-            if (formType != null)
-            {
-                if (Activator.CreateInstance(formType, _romData, _config, _charmap, _reservationManager) is Form newForm)
-                {
-                    OpenEditorForm(newForm);
-                }
-            }
-        }
-
-        private void OpenEditorForm(Form form)
-        {
-            if (_editorForm != null && !_editorForm.IsDisposed)
-            {
-                _editorForm.Focus();
-                return;
-            }
-
-            _editorForm = form;
-            _editorForm.FormClosed += EditorForm_FormClosed;
-
-            _editorForm.Show();
-            MainFormUIUpdate();
-        }
-
-        private void EditorForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            if (_editorForm != null)
-            {
-                _editorForm.FormClosed -= EditorForm_FormClosed;
-                _editorForm = null;
-            }
-
-            _reservationManager.ClearAllReservations();
-            MainFormUIUpdate();
-        }
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (_editorForm != null && !_editorForm.IsDisposed)
-            {
-                e.Cancel = true;
-                MessageBox.Show("Please close the editor.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            _config = new IniFileReader(_iniFolder, cmbProfile);
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -280,6 +201,68 @@ namespace PoochyEnabler
             {
                 MessageBox.Show("Not found.", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtResult.Text = string.Empty;
+            }
+        }
+
+        private void EditorButton_Click(object sender, EventArgs e)
+        {
+            if (!(sender is Button btn)) return;
+
+            // example: btnPokemon -> Pokemon -> PokemonEditor
+            string editorName = btn.Name.Substring(ButtonPrefix.Length);
+            string targetClassName = $"{editorName}{EditorSuffix}";
+
+            // searching
+            string baseNamespace = GetType().Namespace ?? string.Empty;
+            string targetNamespace = $"{baseNamespace}.{FormsFolderName}";
+
+            Type formType = Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .FirstOrDefault(t => t.Name == targetClassName && t.Namespace == targetNamespace);
+
+            if (formType != null)
+            {
+                if (Activator.CreateInstance(
+                    formType, 
+                    _romData, 
+                    _config, 
+                    _charmap, 
+                    _reservationManager,
+                    (Action)WriteRomToFile) is Form newForm)
+                {
+                    _editorForm = newForm;
+                    _editorForm.FormClosed += EditorForm_FormClosed;
+                    _editorForm.Show();
+                    MainFormUIUpdate();
+                }
+            }
+        }
+
+        private void WriteRomToFile()
+        {
+            if (string.IsNullOrEmpty(_romPath)) return;
+            File.WriteAllBytes(_romPath, _romData);
+        }
+
+        private void EditorForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (_editorForm != null)
+            {
+                _editorForm.FormClosed -= EditorForm_FormClosed;
+                _editorForm = null;
+            }
+
+            _reservationManager.ClearAllReservations();
+            MainFormUIUpdate();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_editorForm != null && !_editorForm.IsDisposed)
+            {
+                e.Cancel = true;
+                MessageBox.Show("Please close the editor.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

@@ -31,7 +31,6 @@ namespace PoochyEnabler
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.btnLoadData = new System.Windows.Forms.Button();
-            this.btnSaveData = new System.Windows.Forms.Button();
             this.grpEditors = new System.Windows.Forms.GroupBox();
             this.btnEggMove = new System.Windows.Forms.Button();
             this.btnTrade = new System.Windows.Forms.Button();
@@ -73,21 +72,12 @@ namespace PoochyEnabler
             // 
             // btnLoadData
             // 
-            this.btnLoadData.Location = new System.Drawing.Point(20, 16);
+            this.btnLoadData.Location = new System.Drawing.Point(20, 36);
             this.btnLoadData.Name = "btnLoadData";
-            this.btnLoadData.Size = new System.Drawing.Size(96, 32);
+            this.btnLoadData.Size = new System.Drawing.Size(152, 23);
             this.btnLoadData.TabIndex = 0;
             this.btnLoadData.Text = "Load ROM";
             this.btnLoadData.UseVisualStyleBackColor = true;
-            // 
-            // btnSaveData
-            // 
-            this.btnSaveData.Location = new System.Drawing.Point(128, 16);
-            this.btnSaveData.Name = "btnSaveData";
-            this.btnSaveData.Size = new System.Drawing.Size(96, 32);
-            this.btnSaveData.TabIndex = 0;
-            this.btnSaveData.Text = "Save ROM";
-            this.btnSaveData.UseVisualStyleBackColor = true;
             // 
             // grpEditors
             // 
@@ -111,7 +101,7 @@ namespace PoochyEnabler
             this.grpEditors.Controls.Add(this.btnItem);
             this.grpEditors.Controls.Add(this.btnWildEncounter);
             this.grpEditors.Controls.Add(this.btnPokemon);
-            this.grpEditors.Location = new System.Drawing.Point(20, 60);
+            this.grpEditors.Location = new System.Drawing.Point(20, 68);
             this.grpEditors.Name = "grpEditors";
             this.grpEditors.Size = new System.Drawing.Size(426, 284);
             this.grpEditors.TabIndex = 1;
@@ -301,7 +291,7 @@ namespace PoochyEnabler
             // lblProfile
             // 
             this.lblProfile.AutoSize = true;
-            this.lblProfile.Location = new System.Drawing.Point(248, 12);
+            this.lblProfile.Location = new System.Drawing.Point(20, 14);
             this.lblProfile.Name = "lblProfile";
             this.lblProfile.Size = new System.Drawing.Size(44, 12);
             this.lblProfile.TabIndex = 2;
@@ -311,14 +301,14 @@ namespace PoochyEnabler
             // 
             this.cmbProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbProfile.FormattingEnabled = true;
-            this.cmbProfile.Location = new System.Drawing.Point(304, 8);
+            this.cmbProfile.Location = new System.Drawing.Point(76, 10);
             this.cmbProfile.Name = "cmbProfile";
             this.cmbProfile.Size = new System.Drawing.Size(96, 20);
             this.cmbProfile.TabIndex = 3;
             // 
             // btnUnloadData
             // 
-            this.btnUnloadData.Location = new System.Drawing.Point(248, 34);
+            this.btnUnloadData.Location = new System.Drawing.Point(184, 36);
             this.btnUnloadData.Name = "btnUnloadData";
             this.btnUnloadData.Size = new System.Drawing.Size(152, 23);
             this.btnUnloadData.TabIndex = 4;
@@ -334,7 +324,7 @@ namespace PoochyEnabler
             this.grpFreeSpaceFinder.Controls.Add(this.txtStartOffset);
             this.grpFreeSpaceFinder.Controls.Add(this.lblResult);
             this.grpFreeSpaceFinder.Controls.Add(this.lblStartOffset);
-            this.grpFreeSpaceFinder.Location = new System.Drawing.Point(464, 60);
+            this.grpFreeSpaceFinder.Location = new System.Drawing.Point(464, 68);
             this.grpFreeSpaceFinder.Name = "grpFreeSpaceFinder";
             this.grpFreeSpaceFinder.Size = new System.Drawing.Size(210, 144);
             this.grpFreeSpaceFinder.TabIndex = 5;
@@ -406,7 +396,7 @@ namespace PoochyEnabler
             // picPoochyena
             // 
             this.picPoochyena.Image = ((System.Drawing.Image)(resources.GetObject("picPoochyena.Image")));
-            this.picPoochyena.Location = new System.Drawing.Point(516, 240);
+            this.picPoochyena.Location = new System.Drawing.Point(516, 248);
             this.picPoochyena.Name = "picPoochyena";
             this.picPoochyena.Size = new System.Drawing.Size(136, 104);
             this.picPoochyena.TabIndex = 6;
@@ -416,14 +406,13 @@ namespace PoochyEnabler
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(696, 361);
+            this.ClientSize = new System.Drawing.Size(696, 369);
             this.Controls.Add(this.picPoochyena);
             this.Controls.Add(this.grpFreeSpaceFinder);
             this.Controls.Add(this.btnUnloadData);
             this.Controls.Add(this.cmbProfile);
             this.Controls.Add(this.lblProfile);
             this.Controls.Add(this.grpEditors);
-            this.Controls.Add(this.btnSaveData);
             this.Controls.Add(this.btnLoadData);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
@@ -441,7 +430,6 @@ namespace PoochyEnabler
         #endregion
 
         private System.Windows.Forms.Button btnLoadData;
-        private System.Windows.Forms.Button btnSaveData;
         private System.Windows.Forms.GroupBox grpEditors;
         private System.Windows.Forms.Button btnPokedexRegional;
         private System.Windows.Forms.Button btnPokedexNational;
