@@ -78,13 +78,13 @@ namespace PoochyEnabler.Helpers
         // string -> variable length
         public static List<T> ReadStructures<T>(
             byte[] data,
-            uint offset, // index 0
+            int offset, // index 0
             int count, 
             TblFileReader tblReader,
             Dictionary<string, int> dynamicLengths = null) where T : new()
         {
             var list = new List<T>(count);
-            int currentOffset = (int)offset;
+            int currentOffset = offset;
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
             try
@@ -136,7 +136,7 @@ namespace PoochyEnabler.Helpers
         // paddingByte2: Pad up to data length
         public static void WriteStructures<T>(
            byte[] data,
-           uint baseOffset,       // index 0 of table
+           int baseOffset,        // index 0 of table
            int startIndex,        // target index
            IEnumerable<T> items,  // structure to write
            TblFileReader tblReader,
@@ -148,7 +148,7 @@ namespace PoochyEnabler.Helpers
             // calc structure size
             int recordSize = GetStructureSize<T>(dynamicLengths);
             // calc target offset
-            int currentOffset = (int)(baseOffset + (uint)(startIndex * recordSize));
+            int currentOffset = baseOffset + startIndex * recordSize;
 
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
@@ -240,7 +240,7 @@ namespace PoochyEnabler.Helpers
                 if (field.FieldType == typeof(string))
                 {
                     var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                    if (attr != null && TryGetLength(attr.EntryLength, dynamicLengths, out int length) && length > 0)
+                    if (TryGetLength(attr.EntryLength, dynamicLengths, out int length) && length > 0)
                     {
                         size += length;
                     }
@@ -250,6 +250,7 @@ namespace PoochyEnabler.Helpers
                     size += Marshal.SizeOf(field.FieldType);
                 }
             }
+
             return size;
         }
     }
