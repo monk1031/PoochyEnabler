@@ -92,7 +92,7 @@ namespace PoochyEnabler.Helpers
             }
         }
 
-        public static bool ShouldRecurse(Control ctrl)
+        private static bool ShouldRecurse(Control ctrl)
         {
             return ctrl is Form || ctrl is Panel || ctrl is GroupBox || ctrl is TabControl || ctrl is TabPage;
         }
