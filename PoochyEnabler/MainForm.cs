@@ -128,7 +128,7 @@ namespace PoochyEnabler
         private void btnSearch_Click(object sender, EventArgs e)
         {
             // validate
-            if (!ControlHelper.ValidateAndFormatInputTextBox(txtStartOffset, out uint? startoffset))
+            if (!ControlHelper.ValidateAndFormatInputTextBox(txtStartOffset, out int startoffset))
             {
                 txtStartOffset.Text = string.Empty;
                 return;
