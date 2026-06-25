@@ -15,7 +15,7 @@ namespace PoochyEnabler.Managers
         private readonly Dictionary<string, int> _dynamicLengths;
 
         public List<T> Entries { get; set; } = new List<T>();
-        public uint Offset { get; set; } // base offset
+        public int Offset { get; set; } // base offset
         public int Count { get; set; }
 
         public EntryManager(
@@ -31,22 +31,18 @@ namespace PoochyEnabler.Managers
         }
 
         // type A : when need inicache
-
-        /*
         public void Load(string offsetKey, string countKey)
         {
-            if (_config.TryReadValue<uint>(offsetKey, out var offsetValue) && offsetValue != null &&
-                _config.TryReadValue<int>(countKey, out var countValue) && countValue != null)
+            if (_config.TryReadValue(offsetKey, out int offsetValue) &&
+                _config.TryReadValue(countKey, out int countValue))
             {
                 // type B
-                Load(offsetValue.Value, countValue.Value);
+                Load(offsetValue, countValue);
             }
         }
 
-        */
-
         // type B : directly
-        public void Load(uint offset, int count)
+        public void Load(int offset, int count)
         {
             Offset = offset;
             Count = count;
