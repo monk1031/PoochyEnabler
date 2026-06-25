@@ -8,153 +8,91 @@ namespace PoochyEnabler.Helpers
     {
         // radio button excluded due to complexity
         private static readonly string[] ControlPrefixes = { "txt", "nud", "cmb", "chk" };
-        // prevent loop
-        private static bool _isSyncing = false;
-
-        public static void StartAutoSync<T>(Control container, T data) where T : class
-        {
-            BindObjectToControls(container, data);
-
-            // recursive
-            void AttachEventsRecursive(Control current)
-            {
-                foreach (Control ctrl in current.Controls)
-                {
-                    if (ControlHelper.ShouldRecurse(ctrl))
-                    {
-                        AttachEventsRecursive(ctrl);
-                    }
-
-                    switch (ctrl)
-                    {
-                        case NumericUpDown nud:
-                            nud.ValueChanged += (s, e) => SyncToObject(container, data);
-                            break;
-                        case TextBox txt:
-                            txt.TextChanged += (s, e) => SyncToObject(container, data);
-                            break;
-                        case ComboBox cmb:
-                            cmb.SelectedIndexChanged += (s, e) => SyncToObject(container, data);
-                            break;
-                        case CheckBox chk:
-                            chk.CheckedChanged += (s, e) => SyncToObject(container, data);
-                            break;
-                    }
-                }
-            }
-
-            AttachEventsRecursive(container);
-        }
-
-        private static void SyncToObject<T>(Control container, T data) where T : class
-        {
-            if (_isSyncing) return; // guard
-            _isSyncing = true;
-
-            try
-            {
-                BindControlsToObject(container, data);
-            }
-            finally
-            {
-                _isSyncing = false;
-            }
-        }
 
         // structure -> UI, exclude string field
         public static void BindObjectToControls<T>(Control container, T data) where T : class
         {
-            if (_isSyncing) return; // prevent loop
-            _isSyncing = true;
-
-            try
+            foreach (var field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance))
             {
-                foreach (var field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance))
+                // skip
+                if (field.Name.StartsWith("_")) continue;
+
+                object value = field.GetValue(data);
+                if (value == null) continue;
+
+                // pointer (substract base address)
+                if (field.Name.StartsWith("p"))
                 {
-                    // skip
-                    if (field.Name.StartsWith("_")) continue;
-
-                    object value = field.GetValue(data);
-                    if (value == null) continue;
-
-                    // pointer (substract base address)
-                    if (field.Name.StartsWith("p"))
+                    uint ptrValue = (uint)value;
+                    int offset = ptrValue == 0
+                        ? unchecked((int)uint.MaxValue)
+                        : (int)(ptrValue - Constants.BaseAddr);
+                    SetControlValueByName(container, field.Name.Substring(1), offset, true);
+                }
+                // singed
+                else if (field.Name.StartsWith("s"))
+                {
+                    decimal signedValue;
+                    unchecked
                     {
-                        uint ptrValue = (uint)value;
-                        int offset = ptrValue == 0
-                            ? unchecked((int)uint.MaxValue)
-                            : (int)(ptrValue - Constants.BaseAddr);
-                        SetControlValueByName(container, field.Name.Substring(1), offset, true);
-                    }
-                    // singed
-                    else if (field.Name.StartsWith("s"))
-                    {
-                        decimal signedValue;
-                        unchecked
+                        switch (Type.GetTypeCode(field.FieldType))
                         {
-                            switch (Type.GetTypeCode(field.FieldType))
-                            {
-                                case TypeCode.Byte:
-                                    signedValue = (sbyte)(byte)value;
-                                    break;
-                                case TypeCode.UInt16:
-                                    signedValue = (short)(ushort)value;
-                                    break;
-                                case TypeCode.UInt32:
-                                    signedValue = (int)(uint)value;
-                                    break;
-                                default:
-                                    signedValue = 0m;
-                                    break;
-                            }
-                        }
-
-                        SetControlValueByName(container, field.Name.Substring(1), signedValue, false);
-                    }
-                    // nibble
-                    else if (field.Name.StartsWith("n"))
-                    {
-                        var attr = field.GetCustomAttribute<NibbleControlNamesAttribute>();
-                        if (value is byte byteVal)
-                        {
-                            // upper
-                            SetControlValueByName(
-                                container,
-                                attr.HighNibbleName,
-                                (byteVal >> Constants.NibbleShift) & Constants.NibbleMask,
-                                false);
-
-                            // lower
-                            SetControlValueByName(
-                                container,
-                                attr.LowNibbleName,
-                                byteVal & Constants.NibbleMask,
-                                false);
+                            case TypeCode.Byte:
+                                signedValue = (sbyte)(byte)value;
+                                break;
+                            case TypeCode.UInt16:
+                                signedValue = (short)(ushort)value;
+                                break;
+                            case TypeCode.UInt32:
+                                signedValue = (int)(uint)value;
+                                break;
+                            default:
+                                signedValue = 0m;
+                                break;
                         }
                     }
-                    // bit
-                    else if (field.Name.StartsWith("b"))
+
+                    SetControlValueByName(container, field.Name.Substring(1), signedValue, false);
+                }
+                // nibble
+                else if (field.Name.StartsWith("n"))
+                {
+                    var attr = field.GetCustomAttribute<NibbleControlNamesAttribute>();
+                    if (value is byte byteVal)
                     {
-                        var attr = field.GetCustomAttribute<BitControlNamesAttribute>();
-                        uint uintValue = Convert.ToUInt32(value);
-                        for (int i = 0; i < attr.BitNames.Length; i++)
-                        {
-                            string bitName = attr.BitNames[i];
-                            if (!string.IsNullOrEmpty(bitName))
-                            {
-                                SetControlValueByName(container, bitName, ((uintValue >> i) & 1) == 1, false);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        SetControlValueByName(container, field.Name, value, false);
+                        // upper
+                        SetControlValueByName(
+                            container,
+                            attr.HighNibbleName,
+                            (byteVal >> Constants.NibbleShift) & Constants.NibbleMask,
+                            false);
+
+                        // lower
+                        SetControlValueByName(
+                            container,
+                            attr.LowNibbleName,
+                            byteVal & Constants.NibbleMask,
+                            false);
                     }
                 }
-            }
-            finally
-            {
-                _isSyncing = false;
+                // bit
+                else if (field.Name.StartsWith("b"))
+                {
+                    var attr = field.GetCustomAttribute<BitControlNamesAttribute>();
+                    uint uintValue = Convert.ToUInt32(value);
+                    for (int i = 0; i < attr.BitNames.Length; i++)
+                    {
+                        string bitName = attr.BitNames[i];
+                        if (!string.IsNullOrEmpty(bitName))
+                        {
+                            SetControlValueByName(container, bitName, ((uintValue >> i) & 1) == 1, false);
+                        }
+                    }
+                }
+                else
+                {
+                    SetControlValueByName(container, field.Name, value, false);
+                }
             }
         }
 
