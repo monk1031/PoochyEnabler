@@ -10,13 +10,13 @@ namespace PoochyEnabler.Helpers
 {
     public static class IOHelper
     {
-        public static uint ReadUShortLE(byte[] data, uint offset)
+        public static uint ReadUShortLE(byte[] data, int offset)
         {
             return (uint)(data[offset]
                  | (data[offset + 1] << Constants.BitsPerByte));
         }
 
-        public static uint ReadUIntLE(byte[] data, uint offset)
+        public static uint ReadUIntLE(byte[] data, int offset)
         {
             return (uint)data[offset]
                  | ((uint)data[offset + 1] << Constants.BitsPerByte)
@@ -24,32 +24,34 @@ namespace PoochyEnabler.Helpers
                  | ((uint)data[offset + 3] << (Constants.BitsPerByte * 3));
         }
 
-        public static bool TryReadPointer(uint ptrOffset, byte[] data, out uint? resultOffset)
+        // uint -> address (consider bese address)
+        // int -> offset
+        public static bool TryReadGbaPointer(int ptrOffset, byte[] data, out int resultOffset)
         {
             uint rawAddr = ReadUIntLE(data, ptrOffset);
 
             // check null pointer
             if (rawAddr == 0)
             {
-                resultOffset = null;
+                resultOffset = -1;
                 return true;
             }
 
             // valid?
             if (rawAddr < Constants.BaseAddr)
             {
-                resultOffset = null;
+                resultOffset = -1;
                 return false;
             }
 
-            resultOffset = rawAddr - Constants.BaseAddr;
+            resultOffset = (int)(rawAddr - Constants.BaseAddr);
             return true;
         }
 
-        // align for variable data
+        // align for variable length
         public static void WriteDataToRom(
             byte[] romData,
-            uint offset,
+            int offset,
             byte[] bytes,
             bool align = true,
             byte alignPaddingByte = Constants.PaddingByte)
@@ -58,15 +60,15 @@ namespace PoochyEnabler.Helpers
 
             if (align)
             {
-                uint endOffset = offset + (uint)bytes.Length;
-                uint remainder = endOffset % sizeof(uint);
+                int endOffset = offset + bytes.Length;
+                int remainder = endOffset % sizeof(uint);
 
                 if (remainder != 0)
                 {
-                    uint paddingCount = sizeof(uint) - remainder;
-                    for (uint i = 0; i < paddingCount; i++)
+                    int paddingCount = sizeof(uint) - remainder;
+                    for (int i = 0; i < paddingCount; i++)
                     {
-                        uint padOffset = endOffset + i;
+                        int padOffset = endOffset + i;
                         romData[padOffset] = alignPaddingByte;
                     }
                 }

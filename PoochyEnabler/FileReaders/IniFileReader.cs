@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -11,110 +11,64 @@ namespace PoochyEnabler.FileReaders
 {
     public class IniFileReader
     {
-        private const string BeginPrefix = "[BEGIN][";
-        private const string EndPrefix = "[END][";
-        private const string Suffix = "]";
         private const string HexPrefix = "0x";
 
         // store all configs
-        private readonly Dictionary<string, List<string>> _configBlocks = 
-            new Dictionary<string, List<string>>();
+        private readonly Dictionary<string, List<string>> _configBlocks =  new Dictionary<string, List<string>>();
         // analyzed lines
-        private readonly Dictionary<string, object> _iniCache = 
-            new Dictionary<string, object>();
+        private readonly Dictionary<string, int> _iniCacheInt =  new Dictionary<string, int>();
+        private readonly Dictionary<string, bool> _iniCacheBool = new Dictionary<string, bool>();
 
-        public uint? ReadOffset(string key)
+        // get int
+        public bool TryReadValue(string key, out int value, int defaultValue = 0)
         {
-            return TryReadValue<uint>(key, out var value)
-                ? value // include null
-                : null;
-        }
-
-        public int ReadNumber(string key, int defaultValue = 0)
-        {
-            return TryReadValue<int>(key, out var value)
-                ? value ?? defaultValue
-                : defaultValue;
-        }
-
-        public bool ReadBool(string key, bool defaultValue = false)
-        {
-            return TryReadValue<bool>(key, out var value)
-                ? value ?? defaultValue
-                : defaultValue;
-        }
-
-        public bool TryReadValue<T>(string key, out T? value) where T : struct
-        {
-            value = null;
-
-            if (_iniCache.TryGetValue(key, out var val))
+            if (_iniCacheInt.TryGetValue(key, out value))
             {
-                if (val == null)
-                {
-                    return true; // null pointer
-                }
-
-                if (typeof(T) == typeof(uint))
-                {
-                    value = (T)(object)(uint)val;
-                    return true;
-                }
-
-                if (typeof(T) == typeof(int))
-                {
-                    value = (T)(object)(int)(uint)val;
-                    return true;
-                }
-
-                if (typeof(T) == typeof(bool))
-                {
-                    value = (T)(object)(bool)val;
-                    return true;
-                }
+                return true;
             }
 
-            return false; // no key
+            value = defaultValue;
+            return false;
+        }
+
+        // get bool
+        public bool TryReadValue(string key, out bool value, bool defaultValue = false)
+        {
+            if (_iniCacheBool.TryGetValue(key, out value))
+            {
+                return true;
+            }
+
+            value = defaultValue;
+            return false;
         }
 
         // for cmb items, still contain empty lines
-        public IniFileReader(string filePath, ComboBox targetCmb)
+        public IniFileReader(string folderPath, ComboBox targetCmb)
         {
-            if (!File.Exists(filePath)) return;
+            if (!Directory.Exists(folderPath)) return;
 
-            _iniCache.Clear();
+            // clear
+            _configBlocks.Clear();
+            _iniCacheInt.Clear();
+            _iniCacheBool.Clear();
             targetCmb.Items.Clear();
-            string currentConfigName = string.Empty;
-            List<string> currentBlockLines = new List<string>();
 
-            foreach (string line in File.ReadLines(filePath, Encoding.UTF8))
+            // search for .ini
+            foreach (string filePath in Directory.EnumerateFiles(folderPath, "*.ini"))
             {
-                if (line.StartsWith(BeginPrefix) && line.EndsWith(Suffix)) // [BEGIN][XXXX]
-                {
-                    int start = BeginPrefix.Length;
-                    int length = line.Length - Suffix.Length - BeginPrefix.Length;
-                    currentConfigName = line.Substring(start, length);
-                    currentBlockLines = new List<string>(); // new
-                }
-                else if (line.StartsWith(EndPrefix) && line.EndsWith(Suffix)) // [END][XXXX]
-                {
-                    int start = EndPrefix.Length;
-                    int length = line.Length - Suffix.Length - EndPrefix.Length;
-                    string endConfigName = line.Substring(start, length);
-                    if (currentConfigName == endConfigName) // same?
-                    {
-                        _configBlocks[currentConfigName] = currentBlockLines;
-                        targetCmb.Items.Add(currentConfigName);
-                    }
-                    currentConfigName = string.Empty;
-                    currentBlockLines = new List<string>(); // clear
-                }
-                else if (!string.IsNullOrEmpty(currentConfigName))
-                {
-                    currentBlockLines.Add(line);
-                }
+                // set config name
+                string configName = Path.GetFileNameWithoutExtension(filePath);
+
+                // scan lines
+                List<string> blockLines = File.ReadLines(filePath, Encoding.UTF8).ToList();
+
+                // add to dict and cmb
+                _configBlocks[configName] = blockLines;
+                targetCmb.Items.Add(configName);
             }
 
+            // select first index
             if (targetCmb.Items.Count > 0)
             {
                 targetCmb.SelectedIndex = 0;
@@ -129,12 +83,29 @@ namespace PoochyEnabler.FileReaders
             // analyze lines
             foreach (string line in _configBlocks[selectedConfig])
             {
-                if (TryParseLine(line, out string key, out string rawString))
+                if (!TryParseLine(line, out string key, out string rawString)) continue;
+
+                // check bool
+                if (bool.TryParse(rawString, out bool boolValue))
                 {
-                    if (TryParseValue(rawString, data, out object parsedValue))
+                    _iniCacheBool[key] = boolValue;
+                    continue;
+                }
+
+                // check pointer
+                if (rawString.StartsWith("*"))
+                {
+                    if (TryReadPointerAddress(rawString.Substring(1), data, out uint ptrValue))
                     {
-                        _iniCache[key] = parsedValue;
+                        _iniCacheInt[key] = (int)ptrValue;
                     }
+                    continue;
+                }
+
+                // number (hex, dec)
+                if (TryParseNumber(rawString, out int numValue))
+                {
+                    _iniCacheInt[key] = numValue;
                 }
             }
         }
@@ -147,61 +118,40 @@ namespace PoochyEnabler.FileReaders
             if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";")) return false;
 
             string[] parts = line.Split('=');
+            if (parts.Length < 2) return false; // fail
+
             key = parts[0].Trim();
             rawString = parts[1].Trim();
             return true;
         }
 
-        private bool TryParseValue(string rawString, byte[] data, out object parsedValue)
-        {
-            if (bool.TryParse(rawString, out bool boolValue))
-            {
-                parsedValue = boolValue;
-                return true;
-            }
-
-            if (rawString[0] == '*')
-            {
-                return TryReadPointerAddress(rawString.Substring(1), data, out parsedValue);
-            }
-
-            return TryParseNumber(rawString, out parsedValue);
-        }
-
-        // offset, number -> uint? or uint
-        private bool TryParseNumber(string rawString, out object parsedValue)
+        // remove 0x
+        private bool TryParseNumber(string rawString, out int parsedValue)
         {
             if (rawString.StartsWith(HexPrefix)) // 0x
             {
                 string hexPart = rawString.Substring(HexPrefix.Length);
-                if (uint.TryParse(hexPart, NumberStyles.HexNumber, null, out uint hexResult))
-                {
-                    parsedValue = hexResult;
-                    return true;
-                }
-            }
-            else if (uint.TryParse(rawString, out uint decResult))
-            {
-                parsedValue = decResult;
-                return true;
+                return int.TryParse(hexPart, NumberStyles.HexNumber, null, out parsedValue);
             }
 
-            parsedValue = null;
-            return false;
+            return int.TryParse(rawString, out parsedValue);
         }
 
-        // 00800000:[EF CD AB 08] -> get 00ABCDEF
-        private bool TryReadPointerAddress(string offsetStr, byte[] data, out object parsedValue)
+        // remove *
+        private bool TryReadPointerAddress(string offsetStr, byte[] data, out int parsedValue)
         {
-            parsedValue = null;
+            parsedValue = 0;
 
-            if (TryParseNumber(offsetStr, out object offsetValue))
+            if (TryParseNumber(offsetStr, out int ptrOffset))
             {
-                uint ptrOffset = (uint)offsetValue;
-                if (IOHelper.TryReadPointer(ptrOffset, data, out uint? resultOffset))
+                if (IOHelper.TryReadGbaPointer(ptrOffset, data, out uint? resultOffset))
                 {
-                    parsedValue = resultOffset; // contain null
-                    return true;
+                    // IOHelper の結果が null でない場合のみ値を確定させる
+                    if (resultOffset.HasValue)
+                    {
+                        parsedValue = resultOffset.Value;
+                        return true;
+                    }
                 }
             }
 
