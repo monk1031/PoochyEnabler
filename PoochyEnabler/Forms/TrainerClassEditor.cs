@@ -9,11 +9,11 @@ namespace PoochyEnabler.Forms
 {
     public partial class TrainerClassEditor : Form
     {
-        private byte[] _romData;
-        private IniFileReader _config;
-        private TblFileReader _charmap;
-        private ReservationManager _reservationManager;
-        private Action _saveAction;
+        private readonly byte[] _romData;
+        private readonly IniFileReader _config;
+        private readonly TblFileReader _charmap;
+        private readonly ReservationManager _reservationManager;
+        private readonly Action _saveAction;
 
         public TrainerClassEditor(
             byte[] romData,
