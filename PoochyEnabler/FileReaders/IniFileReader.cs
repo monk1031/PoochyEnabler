@@ -83,6 +83,7 @@ namespace PoochyEnabler.FileReaders
             // analyze lines
             foreach (string line in _configBlocks[selectedConfig])
             {
+                // check empty
                 if (!TryParseLine(line, out string key, out string rawString)) continue;
 
                 // check bool
@@ -95,9 +96,9 @@ namespace PoochyEnabler.FileReaders
                 // check pointer
                 if (rawString.StartsWith("*"))
                 {
-                    if (TryReadPointerAddress(rawString.Substring(1), data, out uint ptrValue))
+                    if (TryReadPointerAddress(rawString.Substring(1), data, out int ptrValue))
                     {
-                        _iniCacheInt[key] = (int)ptrValue;
+                        _iniCacheInt[key] = ptrValue;
                     }
                     continue;
                 }
@@ -140,18 +141,14 @@ namespace PoochyEnabler.FileReaders
         // remove *
         private bool TryReadPointerAddress(string offsetStr, byte[] data, out int parsedValue)
         {
-            parsedValue = 0;
+            parsedValue = -1;
 
             if (TryParseNumber(offsetStr, out int ptrOffset))
             {
-                if (IOHelper.TryReadGbaPointer(ptrOffset, data, out uint? resultOffset))
+                if (IOHelper.TryReadGbaPointer(ptrOffset, data, out int resultOffset))
                 {
-                    // IOHelper の結果が null でない場合のみ値を確定させる
-                    if (resultOffset.HasValue)
-                    {
-                        parsedValue = resultOffset.Value;
-                        return true;
-                    }
+                    parsedValue = resultOffset;
+                    return true;
                 }
             }
 

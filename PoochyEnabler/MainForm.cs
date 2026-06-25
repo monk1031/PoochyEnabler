@@ -15,8 +15,8 @@ namespace PoochyEnabler
         private byte[] _romData = Array.Empty<byte>();
         private bool _isRomLoaded = false;
         private string _romPath = string.Empty;
-        private string _iniPath = Path.Combine(Application.StartupPath, "cfg", "roms.ini");
-        private string _tblPath = Path.Combine(Application.StartupPath, "cfg", "charmap.tbl");
+        private string _iniFloder = Path.Combine(Application.StartupPath, "ini");
+        private string _tblPath = Path.Combine(Application.StartupPath, "charmap.tbl");
 
         private IniFileReader _config;
         private TblFileReader _charmap;
@@ -33,7 +33,7 @@ namespace PoochyEnabler
             InitializeUIStates();
             InitializeEventHandlers();
 
-            _config = new IniFileReader(_iniPath, cmbProfile);
+            _config = new IniFileReader(_iniFloder, cmbProfile);
             _charmap = new TblFileReader(_tblPath);
             _reservationManager = new ReservationManager();
         }
@@ -98,13 +98,14 @@ namespace PoochyEnabler
                     _config.LoadConfig(selectedConfig, _romData);
 
                     // txtStartAddress
-                    uint? rawOffset = _config.ReadOffset("FreeSpaceFinderOffset");
-                    txtStartOffset.Text = rawOffset is uint offsetValue
+                    txtStartOffset.Text = _config.TryReadValue("FreeSpaceFinderOffset", out int offsetValue)
                         ? offsetValue.ToString("X8")
                         : string.Empty;
 
                     // nudRequiredSize
-                    nudRequiredSize.Value = _config.ReadNumber("FreeSpaceByteAmount");
+                    nudRequiredSize.Value = _config.TryReadValue("FreeSpaceByteAmount", out int sizeValue)
+                        ? sizeValue
+                        : Math.Max(nudRequiredSize.Minimum, 0);
 
                     _isRomLoaded = true;
                     MainFormUIUpdate();
@@ -138,7 +139,7 @@ namespace PoochyEnabler
             MainFormUIUpdate();
 
             // reset _config
-            _config = new IniFileReader(_iniPath, cmbProfile);
+            _config = new IniFileReader(_iniFloder, cmbProfile);
         }
 
         private void EditorButton_Click(object sender, EventArgs e)

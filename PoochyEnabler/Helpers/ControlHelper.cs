@@ -94,7 +94,7 @@ namespace PoochyEnabler.Helpers
 
         private static bool ShouldRecurse(Control ctrl)
         {
-            return ctrl is Panel || ctrl is GroupBox || ctrl is TabControl || ctrl is TabPage;
+            return ctrl is Form || ctrl is Panel || ctrl is GroupBox || ctrl is TabControl || ctrl is TabPage;
         }
 
         // string offset -> uint offset

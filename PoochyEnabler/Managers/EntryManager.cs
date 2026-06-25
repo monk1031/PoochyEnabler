@@ -31,6 +31,8 @@ namespace PoochyEnabler.Managers
         }
 
         // type A : when need inicache
+
+        /*
         public void Load(string offsetKey, string countKey)
         {
             if (_config.TryReadValue<uint>(offsetKey, out var offsetValue) && offsetValue != null &&
@@ -40,6 +42,8 @@ namespace PoochyEnabler.Managers
                 Load(offsetValue.Value, countValue.Value);
             }
         }
+
+        */
 
         // type B : directly
         public void Load(uint offset, int count)
