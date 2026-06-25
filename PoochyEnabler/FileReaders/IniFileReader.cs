@@ -141,7 +141,7 @@ namespace PoochyEnabler.FileReaders
         // remove *
         private bool TryReadPointerAddress(string offsetStr, byte[] data, out int parsedValue)
         {
-            parsedValue = -1;
+            parsedValue = unchecked((int)uint.MaxValue);
 
             if (TryParseNumber(offsetStr, out int ptrOffset))
             {

@@ -97,21 +97,21 @@ namespace PoochyEnabler.Helpers
             return ctrl is Form || ctrl is Panel || ctrl is GroupBox || ctrl is TabControl || ctrl is TabPage;
         }
 
-        // string offset -> uint offset
-        public static bool TryParseoffset(string offsetStr, out uint offsetValue)
+        // string offset -> int offset
+        public static bool TryParseOffset(string offsetStr, out int offsetValue)
         {
-            return uint.TryParse(offsetStr, NumberStyles.HexNumber, null, out offsetValue);
+            return int.TryParse(offsetStr, NumberStyles.HexNumber, null, out offsetValue);
         }
 
         // for textbox, validating, formatting
         public static bool ValidateAndFormatInputTextBox(
             TextBox txt, 
-            out uint? offsetValue, // not exsit true, null
+            out int offsetValue,
             bool showMessage = true)
         {
             string offsetStr = txt.Text.Trim();
 
-            if (!TryParseoffset(offsetStr, out uint resultValue))
+            if (!TryParseOffset(offsetStr, out int resultValue))
             {
                 if (showMessage)
                 {
@@ -122,7 +122,7 @@ namespace PoochyEnabler.Helpers
                         MessageBoxIcon.Warning);
                 }
 
-                offsetValue = null;
+                offsetValue = unchecked((int)uint.MaxValue);
                 return false;
             }
 
