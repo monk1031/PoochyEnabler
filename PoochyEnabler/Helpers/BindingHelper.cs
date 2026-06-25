@@ -11,20 +11,55 @@ namespace PoochyEnabler.Helpers
         // prevent loop
         private static bool _isSyncing = false;
 
-        public static void StartAutoSync(Control container, object obj)
+        public static void StartAutoSync<T>(Control container, T data) where T : class
         {
-            // initialize
-            BindObjectToControls(container, obj);
-            // attach event
-            AttachEventsRecursive(container, container, obj);
+            BindObjectToControls(container, data);
+
+            // recursive
+            void AttachEventsRecursive(Control current)
+            {
+                foreach (Control ctrl in current.Controls)
+                {
+                    if (ControlHelper.ShouldRecurse(ctrl))
+                    {
+                        AttachEventsRecursive(ctrl);
+                    }
+
+                    switch (ctrl)
+                    {
+                        case NumericUpDown nud:
+                            nud.ValueChanged += (s, e) => SyncToObject(container, data);
+                            break;
+                        case TextBox txt:
+                            txt.TextChanged += (s, e) => SyncToObject(container, data);
+                            break;
+                        case ComboBox cmb:
+                            cmb.SelectedIndexChanged += (s, e) => SyncToObject(container, data);
+                            break;
+                        case CheckBox chk:
+                            chk.CheckedChanged += (s, e) => SyncToObject(container, data);
+                            break;
+                    }
+                }
+            }
+
+            AttachEventsRecursive(container);
         }
 
+        private static void SyncToObject<T>(Control container, T data) where T : class
+        {
+            if (_isSyncing) return; // guard
+            _isSyncing = true;
 
-
-
-
-
-
+            try
+            {
+                BindControlsToObject(container, data);
+            }
+            finally
+            {
+                _isSyncing = false;
+            }
+        }
 
         // structure -> UI, exclude string field
         public static void BindObjectToControls<T>(Control container, T data) where T : class
