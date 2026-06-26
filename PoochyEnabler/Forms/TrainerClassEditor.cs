@@ -133,13 +133,12 @@ namespace PoochyEnabler.Forms
 
         private void InitializeEventHandlers()
         {
-            /*
             btnSave.Click += btnSave_Click;
             this.FormClosing += TrainerClassEditor_FormClosing;
 
             cmbClassIdx.SelectedIndexChanged += cmbClassIdx_SelectedIndexChanged;
             txtClassName.TextChanged += txtClassName_TextChanged;
-            */
+
         }
 
         private void LoadDataToUI(int idx)
@@ -154,7 +153,7 @@ namespace PoochyEnabler.Forms
             txtClassName.Text = _nameManager.Entries[idx]._ClassName;
 
             // prize multi
-            var prizeEntry = _prizeMultiManager.Entries.FirstOrDefault(x => x._ClassIdx == idx);
+            var prizeEntry = _prizeMultiManager.Entries.FirstOrDefault(e => e._ClassIdx == idx);
             if (prizeEntry == null) // -> 0xFF
             {
                 prizeEntry = _prizeMultiManager.Entries.FirstOrDefault(e => e._ClassIdx == 0xFF);
@@ -184,6 +183,144 @@ namespace PoochyEnabler.Forms
 
             _isUpdatingUI = false;
             _stateManager.SetInitialValues();
+        }
+
+        private void cmbClassIdx_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            int newIndex = cmbClassIdx.SelectedIndex;
+            if (newIndex == _currentClassIdx) return;
+
+            if (btnSave.Enabled)
+            {
+                ControlHelper.HandleUnsavedChanges(
+                    saveAction: () =>
+                    {
+                        SaveCurrentData(_currentClassIdx);
+                        LoadDataToUI(newIndex);
+                    },
+                    discardAction: () =>
+                    {
+                        // restore
+                        cmbClassIdx.Items[_currentClassIdx] = 
+                            _nameManager.Entries[_currentClassIdx]._ClassName;
+                        LoadDataToUI(newIndex);
+                    },
+                    cancelAction: () =>
+                    {
+                        cmbClassIdx.SelectedIndex = _currentClassIdx;
+                    });
+            }
+            else
+            {
+                LoadDataToUI(newIndex);
+            }
+        }
+
+        private void txtClassName_TextChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            if (!_config.TryReadValue("ClassNameEntryLength", out int nameEntryLength)) return;
+
+            // calc current
+            int maxBytes = nameEntryLength - 1;
+            string currentText = txtClassName.Text;
+            byte[] currentBytes = _charmap.StringToBytes(currentText, false);
+
+            if (currentBytes.Length > maxBytes)
+            {
+                while (currentText.Length > 0)
+                {
+                    currentBytes = _charmap.StringToBytes(currentText, false);
+                    if (currentBytes.Length <= maxBytes) break;
+
+                    currentText = currentText.Substring(0, currentText.Length - 1);
+                }
+
+                int selectionStart = txtClassName.SelectionStart;
+                txtClassName.Text = currentText;
+                txtClassName.SelectionStart = Math.Min(selectionStart, currentText.Length);
+            }
+
+            string validName = _charmap.BytesToString(currentBytes, 0, currentBytes.Length);
+            cmbClassIdx.Items[_currentClassIdx] = validName;
+        }
+
+        private void SaveCurrentData(int idx)
+        {
+            // class name
+            _nameManager.Entries[idx]._ClassName = txtClassName.Text;
+            _nameManager.Save(idx);
+
+            // prize multi, prizeEntryIdx != _currentClassIdx
+            var prizeEntry = _prizeMultiManager.Entries.FirstOrDefault(e => e._ClassIdx == idx);
+            int prizeEntryIdx = -1;
+
+            if (prizeEntry != null)
+            {
+                prizeEntryIdx = _prizeMultiManager.Entries.IndexOf(prizeEntry);
+            }
+            else
+            {
+                prizeEntry = _prizeMultiManager.Entries.FirstOrDefault(e => e._ClassIdx == 0xFF);
+                prizeEntryIdx = _prizeMultiManager.Entries.IndexOf(prizeEntry);
+            }
+
+            prizeEntry._ClassPrizeMulti = (byte)nudClassPrizeMulti.Value;
+            _prizeMultiManager.Save(prizeEntryIdx);
+
+            // extra data
+            if (isEncounterMusicEnabled)
+            {
+                BindingHelper.BindControlsToObject(grpExtraData, _encounterMusicManager.Entries[idx]);
+                _encounterMusicManager.Save(idx);
+            }
+
+            if (isBattleMusicEnabled)
+            {
+                BindingHelper.BindControlsToObject(grpExtraData, _battleMusicManager.Entries[idx]);
+                _battleMusicManager.Save(idx);
+            }
+
+            if (isPokeBallEnabled)
+            {
+                BindingHelper.BindControlsToObject(grpExtraData, _pokeBallManager.Entries[idx]);
+                _pokeBallManager.Save(idx);
+            }
+
+            if (isBaseIvEnabled)
+            {
+                BindingHelper.BindControlsToObject(grpExtraData, _baseIvManager.Entries[idx]);
+                _baseIvManager.Save(idx);
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveCurrentData(_currentClassIdx);
+            _stateManager.SetInitialValues();
+        }
+
+        private void TrainerClassEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (btnSave.Enabled)
+            {
+                ControlHelper.HandleUnsavedChanges(
+                    () =>
+                    {
+                        SaveCurrentData(_currentClassIdx);
+                    },
+                    () =>
+                    {
+                        //
+                    },
+                    () =>
+                    {
+                        e.Cancel = true;
+                    }
+                );
+            }
         }
     }
 }

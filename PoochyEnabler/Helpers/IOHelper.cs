@@ -171,7 +171,7 @@ namespace PoochyEnabler.Helpers
                             if (!TryGetLength(attr.EntryLength, dynamicLengths, out int entryLength) || entryLength <= 0) continue;
                             string strVal = (string)field.GetValue(item) ?? string.Empty;
 
-                            if (TryGetLength(attr.AllowedLength, dynamicLengths, out int allowedLength) && allowedLength > 0)
+                            if (TryGetLength(attr?.AllowedLength, dynamicLengths, out int allowedLength) && allowedLength > 0)
                             {
                                 byte[] rawBytes = tblReader.StringToBytes(strVal, false);
                                 var finalBytes = new List<byte>(rawBytes);
@@ -224,7 +224,7 @@ namespace PoochyEnabler.Helpers
         private static bool TryGetLength(string key, Dictionary<string, int> dynamicLengths, out int length)
         {
             length = 0;
-            return dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
+            return key != null && dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
         }
 
         public static int GetStructureSize<T>(Dictionary<string, int> dynamicLengths = null)

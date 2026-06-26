@@ -87,23 +87,19 @@ namespace PoochyEnabler.Managers
                 _dynamicLengths);
         }
 
-        // write one entry
+        // write entries
         public void Save(
-            int index, 
-            T entry,
+            int index,
+            int count = 1,
             bool appendTerminator = true,
             byte paddingByte1 = Constants.FreeSpaceByte,
             byte paddingByte2 = Constants.PaddingByte)
         {
-            // update
-            Entries[index] = entry;
-
-            // write
             IOHelper.WriteStructures(
                 _romData,
                 Offset,
                 index,
-                new[] { entry },
+                Entries.Skip(index).Take(count),
                 _charmap,
                 _dynamicLengths,
                 appendTerminator,
