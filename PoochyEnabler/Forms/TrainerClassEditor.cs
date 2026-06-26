@@ -294,6 +294,8 @@ namespace PoochyEnabler.Forms
                 BindingHelper.BindControlsToObject(grpExtraData, _baseIvManager.Entries[idx]);
                 _baseIvManager.Save(idx);
             }
+
+            _saveAction.Invoke();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
