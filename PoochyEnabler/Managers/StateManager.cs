@@ -27,7 +27,7 @@ namespace PoochyEnabler.Managers
             public abstract void Initialize();
         }
 
-        public class DataState<T> : DataState // include array
+        public class DataState<T> : DataState // include array, only basic class
         {
             public T InitialData { get; set; }
             public T CurrentData { get; set; }
