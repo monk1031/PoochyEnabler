@@ -17,6 +17,7 @@ namespace PoochyEnabler.Managers
         public StateManager(Action<bool> stateChangedCallback)
         {
             _stateChangedCallback = stateChangedCallback;
+            _stateChangedCallback.Invoke(false);
         }
 
         public class BinaryState
@@ -179,7 +180,7 @@ namespace PoochyEnabler.Managers
         }
 
         // initialize all
-        public void UpdateInitialValues()
+        public void SetInitialValues()
         {
             foreach (var ctrl in _initialControlValues.Keys.ToList())
             {
