@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,7 +12,7 @@ namespace PoochyEnabler.Managers
     {
         private readonly Action<bool> _stateChangedCallback;
         private readonly Dictionary<Control, object> _initialControlValues = new Dictionary<Control, object>();
-        private readonly Dictionary<string, BinaryState> _binaryStates = new Dictionary<string, BinaryState>();
+        private readonly Dictionary<string, DataState> _dataStates = new Dictionary<string, DataState>();
         private readonly List<RadioButtonGroup> _radioGroups = new List<RadioButtonGroup>();
 
         public StateManager(Action<bool> stateChangedCallback)
@@ -20,35 +21,61 @@ namespace PoochyEnabler.Managers
             _stateChangedCallback.Invoke(false);
         }
 
-        public class BinaryState
+        public abstract class DataState
         {
-            public byte[] InitialBinary { get; set; }
-            public byte[] CurrentBinary { get; set; } 
+            public abstract bool HasChanges();
+            public abstract void Initialize();
+        }
 
-            public BinaryState(byte[] initialData)
+        public class DataState<T> : DataState // include array
+        {
+            public T InitialData { get; set; }
+            public T CurrentData { get; set; }
+
+            public DataState(T initialData)
             {
-                InitialBinary = initialData?.ToArray();
-                CurrentBinary = initialData?.ToArray();
+                InitialData = CreateClone(initialData);
+                CurrentData = initialData;
             }
 
-            public bool HasChanges()
+            public override bool HasChanges()
             {
                 // both null
-                if (InitialBinary == null && CurrentBinary == null) return false;
+                if (InitialData == null && CurrentData == null) return false;
 
                 // either null
-                if (InitialBinary == null || CurrentBinary == null) return true;
+                if (InitialData == null || CurrentData == null) return true;
 
-                // instant check
-                if (InitialBinary.Length != CurrentBinary.Length) return true;
+                // cmp array
+                if (InitialData is Array array1 && CurrentData is Array array2)
+                {
+                    // instant check
+                    if (array1.Length != array2.Length) return true;
 
-                // strict check
-                return !InitialBinary.SequenceEqual(CurrentBinary);
+                    // strict check
+                    return !StructuralComparisons.StructuralEqualityComparer.Equals(array1, array2);
+                }
+
+                // cmp normal
+                return !EqualityComparer<T>.Default.Equals(InitialData, CurrentData);
             }
 
-            public void Initialize()
+            public override void Initialize()
             {
-                InitialBinary = CurrentBinary?.ToArray();
+                InitialData = CreateClone(CurrentData);
+            }
+
+            private T CreateClone(T source)
+            {
+                if (source == null) return default;
+
+                if (source is ICloneable cloneable)
+                {
+                    return (T)cloneable.Clone();
+                }
+
+                // as it is
+                return source;
             }
         }
 
@@ -128,30 +155,40 @@ namespace PoochyEnabler.Managers
         }
 
         // resiter binary
-        public void AddBinaries(params (string Name, byte[] Data)[] items)
+        public void AddDatas<T>(params (string Name, T Data)[] items)
         {
             foreach (var (name, data) in items)
             {
-                if (_binaryStates.ContainsKey(name)) continue;
-                _binaryStates.Add(name, new BinaryState(data));
+                if (_dataStates.ContainsKey(name))
+                    continue;
+
+                _dataStates.Add(name, new DataState<T>(data));
             }
         }
 
-        public void UpdateBinary(string name, byte[] newData)
+        public void UpdateData<T>(string name, T newData)
         {
             // not exist
-            if (!_binaryStates.TryGetValue(name, out var state)) return;
+            if (!_dataStates.TryGetValue(name, out var state)) return;
 
-            state.CurrentBinary = newData?.ToArray();
-            EvaluateState();
+            if (state is DataState<T> dataState)
+            {
+                dataState.CurrentData = newData;
+                EvaluateState();
+            }
         }
 
         // to write to rom
-        public byte[] GetCurrentBinary(string name)
+        public T GetCurrentData<T>(string name)
         {
-            return _binaryStates.TryGetValue(name, out var state)
-                ? state.CurrentBinary?.ToArray()
-                : null;
+            if (!_dataStates.TryGetValue(name, out var state)) return default;
+
+            if (state is DataState<T> dataState)
+            {
+                return dataState.CurrentData;
+            }
+
+            return default;
         }
 
         // ridio button group
@@ -187,7 +224,7 @@ namespace PoochyEnabler.Managers
                 _initialControlValues[ctrl] = GetControlValue(ctrl);
             }
 
-            foreach (var state in _binaryStates.Values)
+            foreach (var state in _dataStates.Values)
             {
                 state.Initialize();
             }
@@ -223,7 +260,7 @@ namespace PoochyEnabler.Managers
 
         private bool DetectBinaryChanges()
         {
-            return _binaryStates.Values.Any(state => state.HasChanges());
+            return _dataStates.Values.Any(state => state.HasChanges());
         }
 
         private bool DetectRadioChanges()
