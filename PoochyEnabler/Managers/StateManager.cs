@@ -145,6 +145,14 @@ namespace PoochyEnabler.Managers
             EvaluateState();
         }
 
+        // to write to rom
+        public byte[] GetCurrentBinary(string name)
+        {
+            return _binaryStates.TryGetValue(name, out var state)
+                ? state.CurrentBinary?.ToArray()
+                : null;
+        }
+
         // ridio button group
         public void AddRadioButtons(params RadioButton[][] groups)
         {
