@@ -22,6 +22,8 @@ namespace PoochyEnabler.Forms
         private EntryManager<ClassPokeBallEntry> _pokeBallManager;
         private EntryManager<ClassBaseIVEntry> _baseIvManager;
 
+        private int _currentClassIdx = 0;
+
         public TrainerClassEditor(
             byte[] romData,
             IniFileReader config,
@@ -41,6 +43,7 @@ namespace PoochyEnabler.Forms
             InitializeUIStates();
             InitializeEventHandlers();
 
+            LoadDataToUI(_currentClassIdx);
         }
 
         private void InitializeManagers()
@@ -91,7 +94,11 @@ namespace PoochyEnabler.Forms
 
         private void InitializeEventHandlers()
         {
+            btnSave.Click += btnSave_Click;
+            this.FormClosing += TrainerClassEditor_FormClosing;
 
+            cmbClassIdx.SelectedIndexChanged += cmbClassIdx_SelectedIndexChanged;
+            txtClassName.TextChanged += txtClassName_TextChanged;
         }
     }
 }
