@@ -69,7 +69,7 @@
     </Compile>
     <Compile Include="Managers\EntryManager.cs" />
     <Compile Include="Managers\ReservationManager.cs" />
-    <Compile Include="Managers\UIStateManager.cs" />
+    <Compile Include="Managers\StateManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\TrainerClassEditor.resx">

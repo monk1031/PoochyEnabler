@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
+using PoochyEnabler.Helpers;
+
 namespace PoochyEnabler.Managers
 {
-    public class UIStateManager
+    public class StateManager
     {
         private readonly Action<bool> _stateChangedCallback;
         private readonly Dictionary<Control, object> _initialControlValues = new Dictionary<Control, object>();
         private readonly Dictionary<string, BinaryState> _binaryStates = new Dictionary<string, BinaryState>();
         private readonly List<RadioButtonGroup> _radioGroups = new List<RadioButtonGroup>();
 
-        public UIStateManager(Action<bool> stateChangedCallback)
+        public StateManager(Action<bool> stateChangedCallback)
         {
             _stateChangedCallback = stateChangedCallback;
         }
@@ -89,7 +91,7 @@ namespace PoochyEnabler.Managers
 
             foreach (var container in containers)
             {
-                if (IsAllowedContainer(container))
+                if (ControlHelper.ShouldRecurse(container))
                 {
                     FindTargetControls(container, targetControls);
                 }
@@ -111,17 +113,11 @@ namespace PoochyEnabler.Managers
                 {
                     targetControls.Add(child);
                 }
-                else if (IsAllowedContainer(child))
+                else if (ControlHelper.ShouldRecurse(child))
                 {
                     FindTargetControls(child, targetControls);
                 }
             }
-        }
-
-        // container list
-        private bool IsAllowedContainer(Control ctrl)
-        {
-            return ctrl is Form || ctrl is Panel || ctrl is GroupBox || ctrl is TabControl || ctrl is TabPage;
         }
 
         // control list
