@@ -240,7 +240,7 @@ namespace PoochyEnabler.Managers
         private void EvaluateState()
         {
             bool hasChanges = DetectControlChanges()
-                           || DetectBinaryChanges()
+                           || DetectDataChanges()
                            || DetectRadioChanges();
 
             _stateChangedCallback.Invoke(hasChanges);
@@ -258,7 +258,7 @@ namespace PoochyEnabler.Managers
             return false;
         }
 
-        private bool DetectBinaryChanges()
+        private bool DetectDataChanges()
         {
             return _dataStates.Values.Any(state => state.HasChanges());
         }
