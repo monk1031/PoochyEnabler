@@ -31,6 +31,7 @@ namespace PoochyEnabler
             SetupComboBox(comboItems);
             SetupNumericUpDown(nudMin, nudMax);
             SetupFileInput(fileFilter);
+            grpInput.Enabled = true;
 
             // event handler
             btnBrowse.Click += BtnBrowse_Click;

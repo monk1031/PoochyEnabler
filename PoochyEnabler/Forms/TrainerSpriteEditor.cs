@@ -180,10 +180,32 @@ namespace PoochyEnabler.Forms
 
             try
             {
-                byte[] imageData = ImageHelper.DecompressLZ77(_romData, imageOffset);
-                _stateManager.UpdateBinary("ImageData", imageData);
-                byte[] paletteData = ImageHelper.DecompressPalette(_romData, paletteOffset, true);
-                _stateManager.UpdateBinary("PaletteData", paletteData);
+                byte[] imageData;
+                byte[] paletteData;
+
+                // check reservation
+                var imageRes = _reservationManager.GetReservation(txtImageOffset);
+                if (imageRes != null)
+                {
+                    imageData = ImageHelper.DecompressLZ77(_stateManager.GetCurrentBinary("ImageData"), 0);
+                }
+                else
+                {
+                    imageData = ImageHelper.DecompressLZ77(_romData, imageOffset);
+                    _stateManager.UpdateBinary("ImageData", imageData);
+                }
+
+                // check reservation
+                var PaletteRes = _reservationManager.GetReservation(txtPaletteOffset);
+                if (PaletteRes != null)
+                {
+                    paletteData = ImageHelper.DecompressPalette(_stateManager.GetCurrentBinary("PaletteData"), 0, true);
+                }
+                else
+                {
+                    paletteData = ImageHelper.DecompressPalette(_romData, paletteOffset, true);
+                    _stateManager.UpdateBinary("PaletteData", paletteData);
+                }
 
                 Bitmap sprite = ImageHelper.CreateBitmap(
                     imageData,
@@ -306,13 +328,18 @@ namespace PoochyEnabler.Forms
             }
 
             BindingHelper.BindControlsToObject(this, _imageManager.Entries[idx]);
-            BindingHelper.BindControlsToObject(this, _paletteManager.Entries[idx]);
-            BindingHelper.BindControlsToObject(this, _yPositionManager.Entries[idx]);
-            BindingHelper.BindControlsToObject(grpAnim, _animPointerManager.Entries[idx]);
             _imageManager.Save(idx);
+
+            BindingHelper.BindControlsToObject(this, _paletteManager.Entries[idx]);
             _paletteManager.Save(idx);
+
+            BindingHelper.BindControlsToObject(this, _yPositionManager.Entries[idx]);
             _yPositionManager.Save(idx);
-            _animPointerManager.Save(idx);
+
+            // BindingHelper.BindControlsToObject(grpAnim, _animPointerManager.Entries[idx]);
+            // _animPointerManager.Save(idx);
+
+            _saveAction.Invoke();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
