@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 using PoochyEnabler.Helpers;
@@ -23,11 +24,12 @@ namespace PoochyEnabler.Managers
 
         public abstract class DataState
         {
+            public abstract int Size { get; }
             public abstract bool HasChanges();
             public abstract void Initialize();
         }
 
-        public class DataState<T> : DataState // include array, only basic class
+        public class DataState<T> : DataState
         {
             public T InitialData { get; set; }
             public T CurrentData { get; set; }
@@ -38,25 +40,39 @@ namespace PoochyEnabler.Managers
                 CurrentData = initialData;
             }
 
+            public override int Size
+            {
+                get
+                {
+                    if (CurrentData == null) return 0;
+                    if (CurrentData is Array array) return array.Length;
+                    if (CurrentData is string str) return str.Length;
+                    return 0;
+                }
+            }
+
             public override bool HasChanges()
             {
-                // both null
+                // Both null
                 if (InitialData == null && CurrentData == null) return false;
 
-                // either null
+                // Either null
                 if (InitialData == null || CurrentData == null) return true;
 
-                // cmp array
+                // array comparison
                 if (InitialData is Array array1 && CurrentData is Array array2)
                 {
-                    // instant check
-                    if (array1.Length != array2.Length) return true;
-
-                    // strict check
+                    if (array1.Length != array2.Length) return true; // instant
                     return !StructuralComparisons.StructuralEqualityComparer.Equals(array1, array2);
                 }
 
-                // cmp normal
+                // custom class property comparison (excluding string)
+                if (typeof(T).IsClass && typeof(T) != typeof(string))
+                {
+                    return !CompareProperties(InitialData, CurrentData);
+                }
+
+                // normal comparison
                 return !EqualityComparer<T>.Default.Equals(InitialData, CurrentData);
             }
 
@@ -74,8 +90,35 @@ namespace PoochyEnabler.Managers
                     return (T)cloneable.Clone();
                 }
 
-                // as it is
                 return source;
+            }
+
+            private bool CompareProperties(T obj1, T obj2)
+            {
+                PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                foreach (PropertyInfo prop in properties)
+                {
+                    if (!prop.CanRead) continue;
+
+                    object val1 = prop.GetValue(obj1);
+                    object val2 = prop.GetValue(obj2);
+
+                    if (val1 == null && val2 == null) continue;
+                    if (val1 == null || val2 == null) return false;
+
+                    if (val1 is Array arr1 && val2 is Array arr2)
+                    {
+                        if (arr1.Length != arr2.Length) return false;
+                        if (!StructuralComparisons.StructuralEqualityComparer.Equals(arr1, arr2)) return false;
+                    }
+                    else if (!Equals(val1, val2))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
 

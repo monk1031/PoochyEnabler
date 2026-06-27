@@ -123,5 +123,92 @@ namespace PoochyEnabler.Forms
             _isUpdatingUI = false;
             _stateManager.SetInitialValues();
         }
+
+        private void nudSpriteIdx_ValueChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            int newIndex = (int)nudSpriteIdx.Value;
+            if (newIndex == _currentSpriteIdx) return;
+
+            if (btnSave.Enabled)
+            {
+                ControlHelper.HandleUnsavedChanges(
+                    saveAction: () =>
+                    {
+                        SaveCurrentData(_currentSpriteIdx);
+                        LoadDataToUI(newIndex);
+                    },
+                    discardAction: () =>
+                    {
+                        LoadDataToUI(newIndex);
+                    },
+                    cancelAction: () =>
+                    {
+                        nudSpriteIdx.Value = _currentSpriteIdx;
+                    });
+            }
+            else
+            {
+                LoadDataToUI(newIndex);
+            }
+        }
+
+        private void DisplayTrainerSprite()
+        {
+            bool isImageValid = ControlHelper.TryParseOffset(txtImageOffset.Text, out int imageOffset);
+            bool isPaletteValid = ControlHelper.TryParseOffset(txtPaletteOffset.Text, out int paletteOffset);
+
+            if (!isImageValid || !isPaletteValid)
+            {
+                picSprite.Image?.Dispose();
+                picSprite.Image = null;
+                return;
+            }
+
+            try
+            {
+                Color[] palette;
+                byte[] imageData;
+
+                // reserve check
+                var paletteRes = _reservationManager.GetReservation(txtSpritePalAddr);
+                if (paletteRes != null && paletteRes.Data != null)
+                {
+                    palette = ImageManager.DecompressPalette(paletteRes.Data, 0, true);
+                }
+                else
+                {
+                    palette = ImageManager.DecompressPalette(_romData, paletteOffset, true);
+                }
+
+                // reserve check
+                var imageRes = _reservationManager.GetReservation(txtSpriteImgAddr);
+                if (imageRes != null && imageRes.Data != null)
+                {
+                    imageData = ImageManager.DecompressLZ77(imageRes.Data, 0);
+                }
+                else
+                {
+                    imageData = ImageManager.DecompressLZ77(_romData, imageOffset);
+                }
+
+                Bitmap sprite = ImageManager.CreateSprite(
+                    imageData,
+                    palette,
+                    GbaConstants.SpriteSize,
+                    GbaConstants.SpriteSize,
+                    true);
+
+                picSprite.Image?.Dispose();
+                picSprite.Image = sprite;
+                picSprite.Refresh();
+            }
+            catch
+            {
+                picSprite.Image?.Dispose();
+                picSprite.Image = null;
+            }
+        }
     }
 }
