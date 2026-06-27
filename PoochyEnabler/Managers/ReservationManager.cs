@@ -25,14 +25,18 @@ namespace PoochyEnabler.Managers
             }
         }
 
-        public void SetReservation(TextBox textBox, int offset, byte[] data)
+        public void SetReservation(
+            TextBox textBox,
+            int offset,
+            string dataName)
         {
             ClearReservation(textBox, redraw: false);
 
             var info = new ReservationInfo(
                 offset,
-                data,
+                dataName,
                 textBox.BackColor);
+
             _reservations[textBox] = info;
 
             textBox.Text = offset.ToString("X8");

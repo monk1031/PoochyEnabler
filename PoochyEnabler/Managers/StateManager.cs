@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 using PoochyEnabler.Helpers;
@@ -13,7 +11,7 @@ namespace PoochyEnabler.Managers
     {
         private readonly Action<bool> _stateChangedCallback;
         private readonly Dictionary<Control, object> _initialControlValues = new Dictionary<Control, object>();
-        private readonly Dictionary<string, DataState> _dataStates = new Dictionary<string, DataState>();
+        private readonly Dictionary<string, BinaryState> _binaryStates = new Dictionary<string, BinaryState>();
         private readonly List<RadioButtonGroup> _radioGroups = new List<RadioButtonGroup>();
 
         public StateManager(Action<bool> stateChangedCallback)
@@ -22,103 +20,35 @@ namespace PoochyEnabler.Managers
             _stateChangedCallback.Invoke(false);
         }
 
-        public abstract class DataState
+        public class BinaryState
         {
-            public abstract int Size { get; }
-            public abstract bool HasChanges();
-            public abstract void Initialize();
-        }
+            public byte[] InitialBinary { get; set; }
+            public byte[] CurrentBinary { get; set; }
 
-        public class DataState<T> : DataState
-        {
-            public T InitialData { get; set; }
-            public T CurrentData { get; set; }
-
-            public DataState(T initialData)
+            public BinaryState(byte[] initialData)
             {
-                InitialData = CreateClone(initialData);
-                CurrentData = initialData;
+                InitialBinary = initialData?.ToArray();
+                CurrentBinary = initialData?.ToArray();
             }
 
-            public override int Size
+            public bool HasChanges()
             {
-                get
-                {
-                    if (CurrentData == null) return 0;
-                    if (CurrentData is Array array) return array.Length;
-                    if (CurrentData is string str) return str.Length;
-                    return 0;
-                }
+                // both null
+                if (InitialBinary == null && CurrentBinary == null) return false;
+
+                // either null
+                if (InitialBinary == null || CurrentBinary == null) return true;
+
+                // instant check
+                if (InitialBinary.Length != CurrentBinary.Length) return true;
+
+                // strict check
+                return !InitialBinary.SequenceEqual(CurrentBinary);
             }
 
-            public override bool HasChanges()
+            public void Initialize()
             {
-                // Both null
-                if (InitialData == null && CurrentData == null) return false;
-
-                // Either null
-                if (InitialData == null || CurrentData == null) return true;
-
-                // array comparison
-                if (InitialData is Array array1 && CurrentData is Array array2)
-                {
-                    if (array1.Length != array2.Length) return true; // instant
-                    return !StructuralComparisons.StructuralEqualityComparer.Equals(array1, array2);
-                }
-
-                // custom class property comparison (excluding string)
-                if (typeof(T).IsClass && typeof(T) != typeof(string))
-                {
-                    return !CompareProperties(InitialData, CurrentData);
-                }
-
-                // normal comparison
-                return !EqualityComparer<T>.Default.Equals(InitialData, CurrentData);
-            }
-
-            public override void Initialize()
-            {
-                InitialData = CreateClone(CurrentData);
-            }
-
-            private T CreateClone(T source)
-            {
-                if (source == null) return default;
-
-                if (source is ICloneable cloneable)
-                {
-                    return (T)cloneable.Clone();
-                }
-
-                return source;
-            }
-
-            private bool CompareProperties(T obj1, T obj2)
-            {
-                PropertyInfo[] properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-                foreach (PropertyInfo prop in properties)
-                {
-                    if (!prop.CanRead) continue;
-
-                    object val1 = prop.GetValue(obj1);
-                    object val2 = prop.GetValue(obj2);
-
-                    if (val1 == null && val2 == null) continue;
-                    if (val1 == null || val2 == null) return false;
-
-                    if (val1 is Array arr1 && val2 is Array arr2)
-                    {
-                        if (arr1.Length != arr2.Length) return false;
-                        if (!StructuralComparisons.StructuralEqualityComparer.Equals(arr1, arr2)) return false;
-                    }
-                    else if (!Equals(val1, val2))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                InitialBinary = CurrentBinary?.ToArray();
             }
         }
 
@@ -198,40 +128,30 @@ namespace PoochyEnabler.Managers
         }
 
         // resiter binary
-        public void AddDatas<T>(params (string Name, T Data)[] items)
+        public void AddBinaries(params (string Name, byte[] Data)[] items)
         {
             foreach (var (name, data) in items)
             {
-                if (_dataStates.ContainsKey(name))
-                    continue;
-
-                _dataStates.Add(name, new DataState<T>(data));
+                if (_binaryStates.ContainsKey(name)) continue;
+                _binaryStates.Add(name, new BinaryState(data));
             }
         }
 
-        public void UpdateData<T>(string name, T newData)
+        public void UpdateBinary(string name, byte[] newData)
         {
             // not exist
-            if (!_dataStates.TryGetValue(name, out var state)) return;
+            if (!_binaryStates.TryGetValue(name, out var state)) return;
 
-            if (state is DataState<T> dataState)
-            {
-                dataState.CurrentData = newData;
-                EvaluateState();
-            }
+            state.CurrentBinary = newData?.ToArray();
+            EvaluateState();
         }
 
         // to write to rom
-        public T GetCurrentData<T>(string name)
+        public byte[] GetCurrentBinary(string name)
         {
-            if (!_dataStates.TryGetValue(name, out var state)) return default;
-
-            if (state is DataState<T> dataState)
-            {
-                return dataState.CurrentData;
-            }
-
-            return default;
+            return _binaryStates.TryGetValue(name, out var state)
+                ? state.CurrentBinary?.ToArray()
+                : null;
         }
 
         // ridio button group
@@ -267,7 +187,7 @@ namespace PoochyEnabler.Managers
                 _initialControlValues[ctrl] = GetControlValue(ctrl);
             }
 
-            foreach (var state in _dataStates.Values)
+            foreach (var state in _binaryStates.Values)
             {
                 state.Initialize();
             }
@@ -283,7 +203,7 @@ namespace PoochyEnabler.Managers
         private void EvaluateState()
         {
             bool hasChanges = DetectControlChanges()
-                           || DetectDataChanges()
+                           || DetectBinaryChanges()
                            || DetectRadioChanges();
 
             _stateChangedCallback.Invoke(hasChanges);
@@ -301,9 +221,9 @@ namespace PoochyEnabler.Managers
             return false;
         }
 
-        private bool DetectDataChanges()
+        private bool DetectBinaryChanges()
         {
-            return _dataStates.Values.Any(state => state.HasChanges());
+            return _binaryStates.Values.Any(state => state.HasChanges());
         }
 
         private bool DetectRadioChanges()
