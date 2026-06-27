@@ -76,7 +76,8 @@ namespace PoochyEnabler.FileReaders
 
             // determine scope
             int calcLength = bytes.Length - offset;
-            int length = maxLength.HasValue
+            int length = 
+                maxLength.HasValue
                 ? Math.Min(calcLength, maxLength.Value)
                 : calcLength;
 

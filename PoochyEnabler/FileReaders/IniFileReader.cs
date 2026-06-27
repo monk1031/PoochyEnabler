@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -14,7 +13,7 @@ namespace PoochyEnabler.FileReaders
         private const string HexPrefix = "0x";
 
         // store all configs
-        private readonly Dictionary<string, List<string>> _configBlocks =  new Dictionary<string, List<string>>();
+        private readonly Dictionary<string, HashSet<string>> _configBlocks =  new Dictionary<string, HashSet<string>>();
         // analyzed lines
         private readonly Dictionary<string, int> _iniCacheInt =  new Dictionary<string, int>();
         private readonly Dictionary<string, bool> _iniCacheBool = new Dictionary<string, bool>();
@@ -61,7 +60,7 @@ namespace PoochyEnabler.FileReaders
                 string configName = Path.GetFileNameWithoutExtension(filePath);
 
                 // scan lines
-                List<string> blockLines = File.ReadLines(filePath, Encoding.UTF8).ToList();
+                HashSet<string> blockLines = new HashSet<string>(File.ReadLines(filePath, Encoding.UTF8));
 
                 // add to dict and cmb
                 _configBlocks[configName] = blockLines;
@@ -133,16 +132,15 @@ namespace PoochyEnabler.FileReaders
             {
                 string hexPart = rawString.Substring(HexPrefix.Length);
                 return int.TryParse(hexPart, NumberStyles.HexNumber, null, out parsedValue);
-                // return ControlHelper.TryParseOffset(hexPart, parsedValue);
             }
 
-            return int.TryParse(rawString, out parsedValue);
+            return int.TryParse(rawString, NumberStyles.HexNumber, null, out parsedValue);
         }
 
         // remove *
         private bool TryReadPointerAddress(string offsetStr, byte[] data, out int parsedValue)
         {
-            parsedValue = unchecked((int)uint.MaxValue);
+            parsedValue = unchecked((int)uint.MaxValue); // -1
 
             if (TryParseNumber(offsetStr, out int ptrOffset))
             {

@@ -10,6 +10,7 @@ namespace PoochyEnabler.Helpers
 {
     public static class IOHelper
     {
+        // because want to cast to int 
         public static uint ReadUShortLE(byte[] data, int offset)
         {
             return (uint)(data[offset]
@@ -78,13 +79,13 @@ namespace PoochyEnabler.Helpers
         // string -> variable length
         public static List<T> ReadStructures<T>(
             byte[] data,
-            int offset, // index 0
+            int baseOffset,
             int count, 
             TblFileReader tblReader,
             Dictionary<string, int> dynamicLengths = null) where T : new()
         {
             var list = new List<T>(count);
-            int currentOffset = offset;
+            int currentOffset = baseOffset;
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
             try
@@ -107,8 +108,8 @@ namespace PoochyEnabler.Helpers
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
                             if (TryGetLength(attr.EntryLength, dynamicLengths, out int length) && length > 0)
                             {
-                                string strVal = tblReader.BytesToString(data, currentOffset, length);
-                                field.SetValue(item, strVal);
+                                string str = tblReader.BytesToString(data, currentOffset, length);
+                                field.SetValue(item, str);
                                 currentOffset += length;
                             }
                         }
@@ -132,13 +133,13 @@ namespace PoochyEnabler.Helpers
             return list;
         }
 
-        // paddingByte1: Pad up to max characters
-        // paddingByte2: Pad up to data length
+        // paddingByte1: Pad up to allowed length
+        // paddingByte2: Pad up to entry length
         public static void WriteStructures<T>(
            byte[] data,
-           int baseOffset,        // index 0 of table
+           int baseOffset,
            int startIndex,        // target index
-           IEnumerable<T> items,  // structure to write
+           IEnumerable<T> items,  // structures to write
            TblFileReader tblReader,
            Dictionary<string, int> dynamicLengths = null,
            bool appendTerminator = true,
@@ -169,11 +170,11 @@ namespace PoochyEnabler.Helpers
                         {
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
                             if (!TryGetLength(attr.EntryLength, dynamicLengths, out int entryLength) || entryLength <= 0) continue;
-                            string strVal = (string)field.GetValue(item) ?? string.Empty;
+                            string str = (string)field.GetValue(item) ?? string.Empty;
 
                             if (TryGetLength(attr?.AllowedLength, dynamicLengths, out int allowedLength) && allowedLength > 0)
                             {
-                                byte[] rawBytes = tblReader.StringToBytes(strVal, false);
+                                byte[] rawBytes = tblReader.StringToBytes(str, false); // without 0xFF
                                 var finalBytes = new List<byte>(rawBytes);
 
                                 if (appendTerminator)
@@ -195,7 +196,7 @@ namespace PoochyEnabler.Helpers
                             }
                             else
                             {
-                                byte[] result = tblReader.StringToBytes(strVal, appendTerminator, entryLength, paddingByte2);
+                                byte[] result = tblReader.StringToBytes(str, appendTerminator, entryLength, paddingByte2);
                                 Array.Copy(result, 0, data, currentOffset, entryLength);
                             }
 
@@ -221,10 +222,15 @@ namespace PoochyEnabler.Helpers
             }
         }
 
-        private static bool TryGetLength(string key, Dictionary<string, int> dynamicLengths, out int length)
+        private static bool TryGetLength(
+            string key, 
+            Dictionary<string, int> dynamicLengths,
+            out int length)
         {
             length = 0;
-            return key != null && dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
+            return key != null && // case : allowed length = null
+                dynamicLengths != null && 
+                dynamicLengths.TryGetValue(key, out length);
         }
 
         public static int GetStructureSize<T>(Dictionary<string, int> dynamicLengths = null)
