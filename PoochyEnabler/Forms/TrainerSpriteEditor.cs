@@ -25,6 +25,12 @@ namespace PoochyEnabler.Forms
         private bool _isUpdatingUI = false;
         private int _currentSpriteIdx = 0;
 
+        private enum ImportType
+        {
+            Image,
+            Palette
+        }
+
         public TrainerSpriteEditor(
             byte[] romData,
             IniFileReader config,
@@ -79,19 +85,23 @@ namespace PoochyEnabler.Forms
             ControlHelper.AttachOffsetAutoFormat(txtImageOffset, txtPaletteOffset);
             ControlHelper.AttachExternalBorder(picSprite);
             ControlHelper.AttachNumericUpDownNavigators(nudSpriteIdx, btnSpriteIdxPrev, btnSpriteIdxNext);
+
+            // set tag
+            btnImportImage.Tag = ImportType.Image;
+            btnImportPalette.Tag = ImportType.Palette;
         }
 
         private void InitializeEventHandlers()
         {
-            //btnSave.Click += btnSave_Click;
-            //this.FormClosing += TrainerSpriteEditor_FormClosing;
+            btnSave.Click += btnSave_Click;
+            this.FormClosing += TrainerSpriteEditor_FormClosing;
 
             nudSpriteIdx.ValueChanged += nudSpriteIdx_ValueChanged;
-            //txtImageOffset.TextChanged += SpriteOffset_Changed;
-            //txtPaletteOffset.TextChanged += SpriteOffset_Changed;
-            //btnImportImage.Click += SpriteImport_Click;
-            //btnImportImage.Click += SpriteImport_Click;
-            //btnDump.Click += btnDump_Click;
+            txtImageOffset.TextChanged += SpriteOffset_TextChanged;
+            txtPaletteOffset.TextChanged += SpriteOffset_TextChanged;
+            btnImportImage.Click += SpriteImport_Click;
+            btnImportPalette.Click += SpriteImport_Click;
+            btnExport.Click += btnExport_Click;
         }
 
         private void LoadDataToUI(int idx)
@@ -138,7 +148,7 @@ namespace PoochyEnabler.Forms
                 ControlHelper.HandleUnsavedChanges(
                     saveAction: () =>
                     {
-                        // SaveCurrentData(_currentSpriteIdx);
+                        SaveCurrentData(_currentSpriteIdx);
                         LoadDataToUI(newIndex);
                     },
                     discardAction: () =>
@@ -190,6 +200,98 @@ namespace PoochyEnabler.Forms
             {
                 picSprite.Image?.Dispose();
                 picSprite.Image = null;
+            }
+        }
+
+        private void SpriteOffset_TextChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            DisplayTrainerSprite();
+        }
+
+        private void SpriteImport_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            if (picSprite.Image == null) return;
+
+            using (var sfd = new SaveFileDialog())
+            {
+                sfd.Filter = Constants.ImageExportFilter;
+                sfd.FileName = $"trainer_sprite_{(int)nudSpriteIdx.Value:D4}";
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    ImageHelper.ExportIndexedImage((Bitmap)picSprite.Image, sfd.FileName);
+                }
+            }
+        }
+
+        private void SaveCurrentData(int idx)
+        {
+            // check reservation
+            var imageRes = _reservationManager.GetReservation(txtImageOffset);
+            var paletteRes = _reservationManager.GetReservation(txtPaletteOffset);
+
+            if (imageRes != null)
+            {
+                var imageData = _stateManager.GetCurrentBinary(imageRes.StateKey);
+
+                if (imageData != null)
+                {
+                    IOHelper.WriteDataToRom(_romData, imageRes.Offset, imageData);
+                    _reservationManager.ClearReservation(txtImageOffset);
+                }
+            }
+
+            if (paletteRes != null)
+            {
+                var paletteData = _stateManager.GetCurrentBinary(paletteRes.StateKey);
+
+                if (paletteData != null)
+                {
+                    IOHelper.WriteDataToRom(_romData, paletteRes.Offset, paletteData);
+                    _reservationManager.ClearReservation(txtPaletteOffset);
+                }
+            }
+
+            BindingHelper.BindControlsToObject(this, _imageManager.Entries[idx]);
+            BindingHelper.BindControlsToObject(this, _paletteManager.Entries[idx]);
+            BindingHelper.BindControlsToObject(this, _yPositionManager.Entries[idx]);
+            BindingHelper.BindControlsToObject(grpAnim, _animPointerManager.Entries[idx]);
+            _imageManager.Save(idx);
+            _paletteManager.Save(idx);
+            _yPositionManager.Save(idx);
+            _animPointerManager.Save(idx);
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveCurrentData(_currentSpriteIdx);
+            _stateManager.SetInitialValues();
+        }
+
+        private void TrainerSpriteEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (btnSave.Enabled)
+            {
+                ControlHelper.HandleUnsavedChanges(
+                    saveAction: () =>
+                    {
+                        SaveCurrentData(_currentSpriteIdx);
+                    },
+                    discardAction: () =>
+                    {
+                        //
+                    },
+                    cancelAction: () =>
+                    {
+                        e.Cancel = true;
+                    }
+                );
             }
         }
     }

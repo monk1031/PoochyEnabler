@@ -217,6 +217,7 @@ namespace PoochyEnabler.Forms
             this.btnImportImage.Name = "btnImportImage";
             this.btnImportImage.Size = new System.Drawing.Size(96, 23);
             this.btnImportImage.TabIndex = 9;
+            this.btnImportImage.Tag = "";
             this.btnImportImage.Text = "Import Image";
             this.btnImportImage.UseVisualStyleBackColor = true;
             // 
@@ -226,6 +227,7 @@ namespace PoochyEnabler.Forms
             this.btnImportPalette.Name = "btnImportPalette";
             this.btnImportPalette.Size = new System.Drawing.Size(96, 23);
             this.btnImportPalette.TabIndex = 9;
+            this.btnImportPalette.Tag = "";
             this.btnImportPalette.Text = "Import Palette";
             this.btnImportPalette.UseVisualStyleBackColor = true;
             // 
