@@ -138,7 +138,6 @@ namespace PoochyEnabler.Forms
 
             cmbClassIdx.SelectedIndexChanged += cmbClassIdx_SelectedIndexChanged;
             txtClassName.TextChanged += txtClassName_TextChanged;
-
         }
 
         private void LoadDataToUI(int idx)
