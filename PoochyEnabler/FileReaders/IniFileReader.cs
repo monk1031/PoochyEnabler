@@ -134,7 +134,7 @@ namespace PoochyEnabler.FileReaders
                 return int.TryParse(hexPart, NumberStyles.HexNumber, null, out parsedValue);
             }
 
-            return int.TryParse(rawString, NumberStyles.HexNumber, null, out parsedValue);
+            return int.TryParse(rawString, out parsedValue);
         }
 
         // remove *

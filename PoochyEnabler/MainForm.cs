@@ -31,6 +31,7 @@ namespace PoochyEnabler
         public MainForm()
         {
             InitializeComponent();
+            InitializeControls();
             InitializeUIStates();
             InitializeEventHandlers();
 
@@ -38,6 +39,11 @@ namespace PoochyEnabler
             _charmap = new TblFileReader(_tblPath);
             _reservationManager = new ReservationManager();
             _stateManager = new StateManager();
+        }
+
+        private void InitializeControls()
+        {
+            ControlHelper.AttachOffsetAutoFormat((txtStartOffset, true), (txtResult, false));
         }
 
         private void InitializeUIStates()
@@ -128,13 +134,7 @@ namespace PoochyEnabler
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            // validate
-            if (!ControlHelper.ValidateAndFormatInputTextBox(txtStartOffset, out int startoffset))
-            {
-                txtStartOffset.Text = string.Empty;
-                return;
-            }
-
+            if (!int.TryParse(txtStartOffset.Text, out int startoffset)) return;
             int neededBytes = (int)nudRequiredSize.Value;
             int currentOffset = (int)(((uint)startoffset + sizeof(uint) - 1) & Constants.AlignMask);
             int foundOffset = -1;

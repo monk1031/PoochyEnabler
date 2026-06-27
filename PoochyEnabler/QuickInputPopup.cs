@@ -97,12 +97,7 @@ namespace PoochyEnabler
             // check offset
             if (txtTargetOffset.Enabled)
             {
-                if (!ControlHelper.ValidateAndFormatInputTextBox(txtTargetOffset, out int offset, true))
-                {
-                    txtTargetOffset.Text = string.Empty;
-                    return false;
-                }
-
+                if (!int.TryParse(txtTargetOffset.Text, out int offset)) return false;
                 Offset = offset;
             }
 
@@ -124,7 +119,8 @@ namespace PoochyEnabler
                 string path = txtSelectFile.Text.Trim();
                 if (string.IsNullOrEmpty(path))
                 {
-                    MessageBox.Show("Select a File.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        "Select a File.", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
 

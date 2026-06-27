@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 
 using PoochyEnabler.FileReaders;
@@ -82,7 +83,7 @@ namespace PoochyEnabler.Forms
                 nudSpriteIdx.Maximum = Math.Min(nudSpriteIdx.Maximum, spriteCount - 1);
             }
 
-            ControlHelper.AttachOffsetAutoFormat(txtImageOffset, txtPaletteOffset);
+            ControlHelper.AttachOffsetAutoFormat((txtImageOffset, false), (txtPaletteOffset, false));
             ControlHelper.AttachExternalBorder(picSprite);
             ControlHelper.AttachNumericUpDownNavigators(nudSpriteIdx, btnSpriteIdxPrev, btnSpriteIdxNext);
 
@@ -168,8 +169,10 @@ namespace PoochyEnabler.Forms
 
         private void DisplayTrainerSprite()
         {
-            bool isImageValid = ControlHelper.TryParseOffset(txtImageOffset.Text, out int imageOffset);
-            bool isPaletteValid = ControlHelper.TryParseOffset(txtPaletteOffset.Text, out int paletteOffset);
+            bool isImageValid = 
+                int.TryParse(txtImageOffset.Text, NumberStyles.HexNumber, null, out int imageOffset);
+            bool isPaletteValid = 
+                int.TryParse(txtPaletteOffset.Text, NumberStyles.HexNumber, null, out int paletteOffset);
 
             if (!isImageValid || !isPaletteValid)
             {

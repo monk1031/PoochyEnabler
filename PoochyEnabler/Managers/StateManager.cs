@@ -119,7 +119,10 @@ namespace PoochyEnabler.Managers
         // control list
         private bool IsTrackedControl(Control ctrl)
         {
-            return ctrl is NumericUpDown || ctrl is TextBox || ctrl is ComboBox || ctrl is CheckBox;
+            return ctrl is NumericUpDown || 
+                   ctrl is TextBox ||
+                   ctrl is ComboBox || 
+                   ctrl is CheckBox;
         }
 
         // resiter binary
