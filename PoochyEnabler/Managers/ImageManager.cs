@@ -19,7 +19,6 @@ namespace PoochyEnabler.Managers
         private const int LZ77MinSafeDistance = 2;
         private const int LZ77CompressedUnitSize = 2;
 
-        // LZ77 decompress
         public byte[] DecompressLZ77(byte[] romData, int baseOffset)
         {
             // read header
@@ -72,7 +71,6 @@ namespace PoochyEnabler.Managers
             return result;
         }
 
-        // LZ77 compress
         public byte[] CompressLZ77(byte[] imageData)
         {
             int length = imageData.Length;
@@ -137,7 +135,6 @@ namespace PoochyEnabler.Managers
             return result.ToArray();
         }
 
-        // find longest match
         private (int distance, int length) FindLongestMatch(byte[] data, int pos)
         {
             int maxDist = Math.Min(pos, LZ77MaxDistance);
@@ -174,7 +171,6 @@ namespace PoochyEnabler.Managers
             return (bestDistance, bestLength);
         }
 
-        // load palette
         public Color[] DecompressPalette(byte[] romData, int offset, bool isCompressed)
         {
             byte[] paletteData;
@@ -210,7 +206,6 @@ namespace PoochyEnabler.Managers
             return colors;
         }
 
-        // save palette
         public byte[] CompressPalette(Color[] colors, bool isCompressed)
         {
             var paletteData = new byte[Constants.PalColorCount * Constants.BytesPerColor];
@@ -233,6 +228,187 @@ namespace PoochyEnabler.Managers
             return isCompressed
                 ? CompressLZ77(paletteData)
                 : paletteData;
+        }
+
+        public Bitmap CreateBitmap(byte[] imageData, Color[] palette, int width, int height, bool showBackColor)
+        {
+            var bmp = new Bitmap(width, height, PixelFormat.Format4bppIndexed);
+
+            // set palette
+            ColorPalette bmpPalette = bmp.Palette;
+            int paletteCount = Math.Min(palette.Length, Constants.PalColorCount);
+            for (int i = 0; i < paletteCount; i++)
+            {
+                Color c = palette[i];
+                bmpPalette.Entries[i] = (i == 0 && !showBackColor)
+                    ? Color.FromArgb(0, c.R, c.G, c.B)
+                    : Color.FromArgb(255, c.R, c.G, c.B);
+            }
+
+            // fill unused colors
+            for (int i = paletteCount; i < Constants.PalColorCount; i++)
+            {
+                bmpPalette.Entries[i] = Color.Black;
+            }
+
+            bmp.Palette = bmpPalette;
+
+            // write pixel data
+            BitmapData bmpData = bmp.LockBits(
+                new Rectangle(0, 0, width, height),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format4bppIndexed);
+
+            var pixels = new byte[bmpData.Stride * height];
+            int dataIndex = 0;
+
+            // write tiles
+            for (int yTile = 0; yTile < height; yTile += Constants.TileSize)
+            {
+                for (int xTile = 0; xTile < width; xTile += Constants.TileSize)
+                {
+                    for (int yPixel = 0; yPixel < Constants.TileSize; yPixel++)
+                    {
+                        for (int xPixel = 0; xPixel < Constants.TileSize; xPixel += Constants.PixelsPerByte4Bpp)
+                        {
+                            if (dataIndex >= imageData.Length) break;
+
+                            byte temp = imageData[dataIndex++];
+                            int leftIndex = temp & Constants.NibbleMask;
+                            int rightIndex = (temp >> Constants.NibbleShift) & Constants.NibbleMask;
+
+                            int byteIndex = (yTile + yPixel) * bmpData.Stride + ((xTile + xPixel) / Constants.PixelsPerByte4Bpp);
+                            pixels[byteIndex] = (byte)((leftIndex << Constants.Bpp4) | rightIndex);
+                        }
+                    }
+                }
+            }
+
+            // unlock bitmap
+            Marshal.Copy(pixels, 0, bmpData.Scan0, pixels.Length);
+            bmp.UnlockBits(bmpData);
+
+            return bmp;
+        }
+
+        public bool ExtractImageAndPalette(
+            Bitmap bmp,
+            int expectedWidth,
+            int expectedHeight,
+            out byte[] imageData,
+            out Color[] palette)
+        {
+            imageData = null;
+            palette = null;
+
+            // check size
+            if (bmp.Width != expectedWidth || bmp.Height != expectedHeight)
+            {
+                MessageBox.Show(
+                    $"Image size must be {expectedWidth}x{expectedHeight}.",
+                    "",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // check format
+            if (bmp.PixelFormat != PixelFormat.Format4bppIndexed)
+            {
+                MessageBox.Show(
+                    "Use a 4bpp (16-color) indexed image.",
+                    "",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // read palette
+            ColorPalette pal = bmp.Palette;
+            var colors = new Color[Constants.PalColorCount];
+            for (int i = 0; i < Constants.PalColorCount; i++)
+            {
+                colors[i] = (i < pal.Entries.Length)
+                    ? Color.FromArgb(255, pal.Entries[i].R, pal.Entries[i].G, pal.Entries[i].B)
+                    : Color.FromArgb(255, 0, 0, 0);
+            }
+            palette = colors;
+
+            // read pixel data
+            BitmapData bmpData = bmp.LockBits(
+                new Rectangle(0, 0, bmp.Width, bmp.Height),
+                ImageLockMode.ReadOnly,
+                PixelFormat.Format4bppIndexed);
+
+            var pixels = new byte[bmpData.Stride * bmp.Height];
+            Marshal.Copy(bmpData.Scan0, pixels, 0, pixels.Length);
+            bmp.UnlockBits(bmpData);
+
+            var dataList = new List<byte>();
+
+            // read tiles
+            for (int yTile = 0; yTile < expectedHeight; yTile += Constants.TileSize)
+            {
+                for (int xTile = 0; xTile < expectedWidth; xTile += Constants.TileSize)
+                {
+                    for (int yPixel = 0; yPixel < Constants.TileSize; yPixel++)
+                    {
+                        for (int xPixel = 0; xPixel < Constants.TileSize; xPixel += Constants.PixelsPerByte4Bpp)
+                        {
+                            int byteIndex = (yTile + yPixel) * bmpData.Stride + ((xTile + xPixel) / Constants.PixelsPerByte4Bpp);
+                            byte pixelByte = pixels[byteIndex];
+
+                            int p1 = (pixelByte >> Constants.Bpp4) & Constants.NibbleMask;
+                            int p2 = pixelByte & Constants.NibbleMask;
+                            dataList.Add((byte)((p2 << Constants.NibbleShift) | p1));
+                        }
+                    }
+                }
+            }
+
+            imageData = dataList.ToArray();
+            return true;
+        }
+
+        public void ExportIndexedImage(Bitmap bmp, string filePath)
+        {
+            if (bmp == null) return;
+
+            using (var exportBmp = (Bitmap)bmp.Clone())
+            {
+                // remove transparency
+                ColorPalette pal = exportBmp.Palette;
+                for (int i = 0; i < pal.Entries.Length; i++)
+                {
+                    Color e = pal.Entries[i];
+                    pal.Entries[i] = Color.FromArgb(255, e.R, e.G, e.B);
+                }
+                exportBmp.Palette = pal;
+
+                // save image
+                var format = Path.GetExtension(filePath).ToLower() == ".bmp"
+                    ? ImageFormat.Bmp
+                    : ImageFormat.Png;
+
+                exportBmp.Save(filePath, format);
+            }
+        }
+
+        public Bitmap ScaleBitmap(Bitmap originalBmp, int scaleFactor = Constants.DefaultScale)
+        {
+            int newWidth = originalBmp.Width * scaleFactor;
+            int newHeight = originalBmp.Height * scaleFactor;
+            var scaledBmp = new Bitmap(newWidth, newHeight);
+
+            // draw scaled image
+            using (Graphics g = Graphics.FromImage(scaledBmp))
+            {
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = PixelOffsetMode.Half;
+                g.DrawImage(originalBmp, new Rectangle(0, 0, newWidth, newHeight));
+            }
+
+            return scaledBmp;
         }
     }
 }

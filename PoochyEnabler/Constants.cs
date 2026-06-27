@@ -30,6 +30,7 @@
         public const int Bpp4 = 4;
         public const int PixelsPerByte4Bpp = BitsPerByte / Bpp4;
         public const int SpriteSize = 64;
+        public const int DefaultScale = 2;
 
         public const string RomFileFilter = "ROM Files|*.gba";
         public const string RomFileTitle = "Select ROM";
