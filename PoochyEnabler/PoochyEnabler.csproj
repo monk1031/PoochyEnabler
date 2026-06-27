@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="Helpers\BindingHelper.cs" />
     <Compile Include="Helpers\ControlHelper.cs" />
+    <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="Helpers\IOHelper.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -74,7 +75,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Managers\EntryManager.cs" />
-    <Compile Include="Managers\ImageManager.cs" />
     <Compile Include="Managers\ReservationManager.cs" />
     <Compile Include="Managers\StateManager.cs" />
     <Compile Include="Program.cs" />

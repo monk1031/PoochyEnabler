@@ -46,7 +46,7 @@ namespace PoochyEnabler.Forms
             this.txtAnimPointer = new System.Windows.Forms.TextBox();
             this.lblAnimDataOffset = new System.Windows.Forms.Label();
             this.lblAnimPointer = new System.Windows.Forms.Label();
-            this.btnDump = new System.Windows.Forms.Button();
+            this.btnExport = new System.Windows.Forms.Button();
             this.btnImportImage = new System.Windows.Forms.Button();
             this.btnImportPalette = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picSprite)).BeginInit();
@@ -202,14 +202,14 @@ namespace PoochyEnabler.Forms
             this.lblAnimPointer.TabIndex = 7;
             this.lblAnimPointer.Text = "Pointer :";
             // 
-            // btnDump
+            // btnExport
             // 
-            this.btnDump.Location = new System.Drawing.Point(20, 180);
-            this.btnDump.Name = "btnDump";
-            this.btnDump.Size = new System.Drawing.Size(64, 23);
-            this.btnDump.TabIndex = 8;
-            this.btnDump.Text = "Dump";
-            this.btnDump.UseVisualStyleBackColor = true;
+            this.btnExport.Location = new System.Drawing.Point(20, 180);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(64, 23);
+            this.btnExport.TabIndex = 8;
+            this.btnExport.Text = "Export";
+            this.btnExport.UseVisualStyleBackColor = true;
             // 
             // btnImportImage
             // 
@@ -236,7 +236,7 @@ namespace PoochyEnabler.Forms
             this.ClientSize = new System.Drawing.Size(400, 233);
             this.Controls.Add(this.btnImportPalette);
             this.Controls.Add(this.btnImportImage);
-            this.Controls.Add(this.btnDump);
+            this.Controls.Add(this.btnExport);
             this.Controls.Add(this.grpAnim);
             this.Controls.Add(this.nudYPosition);
             this.Controls.Add(this.txtPaletteOffset);
@@ -281,7 +281,7 @@ namespace PoochyEnabler.Forms
         private System.Windows.Forms.TextBox txtAnimPointer;
         private System.Windows.Forms.Label lblAnimDataOffset;
         private System.Windows.Forms.Label lblAnimPointer;
-        private System.Windows.Forms.Button btnDump;
+        private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.Button btnImportImage;
         private System.Windows.Forms.Button btnImportPalette;
     }

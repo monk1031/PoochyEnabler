@@ -64,6 +64,9 @@ namespace PoochyEnabler.Forms
                 txtImageOffset,
                 txtPaletteOffset,
                 nudYPosition);
+            _stateManager.AddBinaries(
+                ("ImageData", null),
+                ("PaletteData", null));
         }
 
         private void InitializeControls()
@@ -80,17 +83,15 @@ namespace PoochyEnabler.Forms
 
         private void InitializeEventHandlers()
         {
-            /*
-            btnSave.Click += btnSave_Click;
-            this.FormClosing += TrainerSpriteEditor_FormClosing;
+            //btnSave.Click += btnSave_Click;
+            //this.FormClosing += TrainerSpriteEditor_FormClosing;
 
             nudSpriteIdx.ValueChanged += nudSpriteIdx_ValueChanged;
-            txtImageOffset.TextChanged += SpriteOffset_Changed;
-            txtPaletteOffset.TextChanged += SpriteOffset_Changed;
-            btnImportImage.Click += SpriteImport_Click;
-            btnImportImage.Click += SpriteImport_Click;
-            btnDump.Click += btnDump_Click;
-            */
+            //txtImageOffset.TextChanged += SpriteOffset_Changed;
+            //txtPaletteOffset.TextChanged += SpriteOffset_Changed;
+            //btnImportImage.Click += SpriteImport_Click;
+            //btnImportImage.Click += SpriteImport_Click;
+            //btnDump.Click += btnDump_Click;
         }
 
         private void LoadDataToUI(int idx)
@@ -167,39 +168,18 @@ namespace PoochyEnabler.Forms
                 return;
             }
 
-            /*
             try
             {
-                Color[] palette;
-                byte[] imageData;
+                byte[] imageData = ImageHelper.DecompressLZ77(_romData, imageOffset);
+                _stateManager.UpdateBinary("ImageData", imageData);
+                byte[] paletteData = ImageHelper.DecompressPalette(_romData, paletteOffset, true);
+                _stateManager.UpdateBinary("PaletteData", paletteData);
 
-                // reserve check
-                var paletteRes = _reservationManager.GetReservation(txtSpritePalAddr);
-                if (paletteRes != null && paletteRes.Data != null)
-                {
-                    palette = ImageManager.DecompressPalette(paletteRes.Data, 0, true);
-                }
-                else
-                {
-                    palette = ImageManager.DecompressPalette(_romData, paletteOffset, true);
-                }
-
-                // reserve check
-                var imageRes = _reservationManager.GetReservation(txtSpriteImgAddr);
-                if (imageRes != null && imageRes.Data != null)
-                {
-                    imageData = ImageManager.DecompressLZ77(imageRes.Data, 0);
-                }
-                else
-                {
-                    imageData = ImageManager.DecompressLZ77(_romData, imageOffset);
-                }
-
-                Bitmap sprite = ImageManager.CreateSprite(
+                Bitmap sprite = ImageHelper.CreateBitmap(
                     imageData,
-                    palette,
-                    GbaConstants.SpriteSize,
-                    GbaConstants.SpriteSize,
+                    paletteData,
+                    Constants.SpriteSize,
+                    Constants.SpriteSize,
                     true);
 
                 picSprite.Image?.Dispose();
@@ -211,7 +191,6 @@ namespace PoochyEnabler.Forms
                 picSprite.Image?.Dispose();
                 picSprite.Image = null;
             }
-            */
         }
     }
 }

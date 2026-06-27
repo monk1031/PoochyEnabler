@@ -7,9 +7,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace PoochyEnabler.Managers
+namespace PoochyEnabler.Helpers
 {
-    public class ImageManager
+    public static class ImageHelper
     {
         private const int LZ77HeaderSize = 0x4;
         private const int LZ77HeaderIdentifier = 0x10;
@@ -19,7 +19,7 @@ namespace PoochyEnabler.Managers
         private const int LZ77MinSafeDistance = 2;
         private const int LZ77CompressedUnitSize = 2;
 
-        public byte[] DecompressLZ77(byte[] romData, int baseOffset)
+        public static byte[] DecompressLZ77(byte[] romData, int baseOffset)
         {
             // read header
             int header = BitConverter.ToInt32(romData, baseOffset);
@@ -71,7 +71,7 @@ namespace PoochyEnabler.Managers
             return result;
         }
 
-        public byte[] CompressLZ77(byte[] imageData)
+        public static byte[] CompressLZ77(byte[] imageData)
         {
             int length = imageData.Length;
             var result = new List<byte>(length / Constants.PixelsPerByte4Bpp);
@@ -135,7 +135,7 @@ namespace PoochyEnabler.Managers
             return result.ToArray();
         }
 
-        private (int distance, int length) FindLongestMatch(byte[] data, int pos)
+        private static (int distance, int length) FindLongestMatch(byte[] data, int pos)
         {
             int maxDist = Math.Min(pos, LZ77MaxDistance);
             int maxLen = Math.Min(data.Length - pos, LZ77MaxLength);
@@ -171,78 +171,46 @@ namespace PoochyEnabler.Managers
             return (bestDistance, bestLength);
         }
 
-        public Color[] DecompressPalette(byte[] romData, int offset, bool isCompressed)
+        public static byte[] DecompressPalette(byte[] romData, int offset, bool isCompressed)
         {
-            byte[] paletteData;
-
-            // get palette data
             if (isCompressed)
             {
-                paletteData = DecompressLZ77(romData, offset);
-            }
-            else
-            {
-                paletteData = new byte[Constants.PalColorCount * Constants.BytesPerColor];
-                Array.Copy(romData, offset, paletteData, 0, paletteData.Length);
+                return DecompressLZ77(romData, offset);
             }
 
-            var colors = new Color[Constants.PalColorCount];
+            var paletteData = new byte[Constants.PalColorCount * Constants.BytesPerColor];
+            Array.Copy(romData, offset, paletteData, 0, paletteData.Length);
+            return paletteData;
+        }
 
-            // convert GBA colors
-            for (int i = 0; i < Constants.PalColorCount; i++)
+        public static byte[] CompressPalette(byte[] rawPaletteData, bool isCompressed)
+        {
+            return isCompressed ? CompressLZ77(rawPaletteData) : rawPaletteData;
+        }
+
+        public static Bitmap CreateBitmap(byte[] imageData, byte[] rawPalette, int width, int height, bool showBackColor)
+        {
+            var bmp = new Bitmap(width, height, PixelFormat.Format4bppIndexed);
+
+            // set palette from raw bytes
+            ColorPalette bmpPalette = bmp.Palette;
+            int paletteCount = Math.Min(rawPalette.Length / Constants.BytesPerColor, Constants.PalColorCount);
+
+            for (int i = 0; i < paletteCount; i++)
             {
                 int byteIndex = i * Constants.BytesPerColor;
-                if (byteIndex + 1 >= paletteData.Length) break;
+                if (byteIndex + 1 >= rawPalette.Length) break;
 
-                int temp = (paletteData[byteIndex + 1] << Constants.BitsPerByte) | paletteData[byteIndex];
+                // convert GBA color bytes to ARGB
+                int temp = (rawPalette[byteIndex + 1] << Constants.BitsPerByte) | rawPalette[byteIndex];
 
                 int r = ((temp & Constants.RedMask) >> Constants.RedShift) * Constants.ColorChannelMulti;
                 int g = ((temp & Constants.GreenMask) >> Constants.GreenShift) * Constants.ColorChannelMulti;
                 int b = ((temp & Constants.BlueMask) >> Constants.BlueShift) * Constants.ColorChannelMulti;
 
-                colors[i] = Color.FromArgb(255, r, g, b);
-            }
-
-            return colors;
-        }
-
-        public byte[] CompressPalette(Color[] colors, bool isCompressed)
-        {
-            var paletteData = new byte[Constants.PalColorCount * Constants.BytesPerColor];
-            int count = Math.Min(Constants.PalColorCount, colors.Length);
-
-            // convert to GBA colors
-            for (int i = 0; i < count; i++)
-            {
-                Color c = colors[i];
-                int r = c.R / Constants.ColorChannelMulti;
-                int g = c.G / Constants.ColorChannelMulti;
-                int b = c.B / Constants.ColorChannelMulti;
-
-                ushort gbaColor = (ushort)((b << Constants.BlueShift) | (g << Constants.GreenShift) | (r << Constants.RedShift));
-                paletteData[i * Constants.BytesPerColor] = (byte)(gbaColor & Constants.ByteMask);
-                paletteData[i * Constants.BytesPerColor + 1] = (byte)((gbaColor >> Constants.BitsPerByte) & Constants.ByteMask);
-            }
-
-            // compress if needed
-            return isCompressed
-                ? CompressLZ77(paletteData)
-                : paletteData;
-        }
-
-        public Bitmap CreateBitmap(byte[] imageData, Color[] palette, int width, int height, bool showBackColor)
-        {
-            var bmp = new Bitmap(width, height, PixelFormat.Format4bppIndexed);
-
-            // set palette
-            ColorPalette bmpPalette = bmp.Palette;
-            int paletteCount = Math.Min(palette.Length, Constants.PalColorCount);
-            for (int i = 0; i < paletteCount; i++)
-            {
-                Color c = palette[i];
                 bmpPalette.Entries[i] = (i == 0 && !showBackColor)
-                    ? Color.FromArgb(0, c.R, c.G, c.B)
-                    : Color.FromArgb(255, c.R, c.G, c.B);
+                    ? Color.FromArgb(0, r, g, b)
+                    : Color.FromArgb(255, r, g, b);
             }
 
             // fill unused colors
@@ -291,15 +259,15 @@ namespace PoochyEnabler.Managers
             return bmp;
         }
 
-        public bool ExtractImageAndPalette(
+        public static bool ExtractImageAndPalette(
             Bitmap bmp,
             int expectedWidth,
             int expectedHeight,
             out byte[] imageData,
-            out Color[] palette)
+            out byte[] rawPalette)
         {
             imageData = null;
-            palette = null;
+            rawPalette = null;
 
             // check size
             if (bmp.Width != expectedWidth || bmp.Height != expectedHeight)
@@ -323,16 +291,24 @@ namespace PoochyEnabler.Managers
                 return false;
             }
 
-            // read palette
+            // read palette and convert directly to GBA bytes
             ColorPalette pal = bmp.Palette;
-            var colors = new Color[Constants.PalColorCount];
+            rawPalette = new byte[Constants.PalColorCount * Constants.BytesPerColor];
+
             for (int i = 0; i < Constants.PalColorCount; i++)
             {
-                colors[i] = (i < pal.Entries.Length)
-                    ? Color.FromArgb(255, pal.Entries[i].R, pal.Entries[i].G, pal.Entries[i].B)
+                Color c = (i < pal.Entries.Length)
+                    ? pal.Entries[i]
                     : Color.FromArgb(255, 0, 0, 0);
+
+                int r = c.R / Constants.ColorChannelMulti;
+                int g = c.G / Constants.ColorChannelMulti;
+                int b = c.B / Constants.ColorChannelMulti;
+
+                ushort gbaColor = (ushort)((b << Constants.BlueShift) | (g << Constants.GreenShift) | (r << Constants.RedShift));
+                rawPalette[i * Constants.BytesPerColor] = (byte)(gbaColor & Constants.ByteMask);
+                rawPalette[i * Constants.BytesPerColor + 1] = (byte)((gbaColor >> Constants.BitsPerByte) & Constants.ByteMask);
             }
-            palette = colors;
 
             // read pixel data
             BitmapData bmpData = bmp.LockBits(
@@ -370,7 +346,7 @@ namespace PoochyEnabler.Managers
             return true;
         }
 
-        public void ExportIndexedImage(Bitmap bmp, string filePath)
+        public static void ExportIndexedImage(Bitmap bmp, string filePath)
         {
             if (bmp == null) return;
 
@@ -394,7 +370,7 @@ namespace PoochyEnabler.Managers
             }
         }
 
-        public Bitmap ScaleBitmap(Bitmap originalBmp, int scaleFactor = Constants.DefaultScale)
+        public static Bitmap ScaleBitmap(Bitmap originalBmp, int scaleFactor = Constants.DefaultScale)
         {
             int newWidth = originalBmp.Width * scaleFactor;
             int newHeight = originalBmp.Height * scaleFactor;
