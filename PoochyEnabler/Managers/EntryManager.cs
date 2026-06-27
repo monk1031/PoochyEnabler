@@ -143,4 +143,34 @@ namespace PoochyEnabler.Managers
     {
         public byte ClassBaseIv;
     }
+
+    public class TrainerImageEntry
+    {
+        public uint pImageOffset;
+        public ushort _DecompressedSize;
+        public byte _SpriteIndex;
+        public byte _Padding1;
+    }
+
+    public class TrainerPaletteEntry
+    {
+        public uint pPaletteOffset;
+        public byte _SpriteIndex;
+        public byte _Padding1;
+        public byte _Padding2;
+        public byte _Padding3;
+    }
+
+    public class TrainerYOffsetEntry
+    {
+        public byte _TileCount;
+        public byte YPosition;
+        public byte _Padding1;
+        public byte _Padding2;
+    }
+
+    public class TrainerAnimPointerEntry
+    {
+        public uint pAnimPointer;
+    }
 }
