@@ -9,16 +9,11 @@ namespace PoochyEnabler.Managers
 {
     public class StateManager
     {
-        private readonly Action<bool> _stateChangedCallback;
+        public event Action<bool> StateChanged;
+
         private readonly Dictionary<Control, object> _initialControlValues = new Dictionary<Control, object>();
         private readonly Dictionary<string, BinaryState> _binaryStates = new Dictionary<string, BinaryState>();
         private readonly List<RadioButtonGroup> _radioGroups = new List<RadioButtonGroup>();
-
-        public StateManager(Action<bool> stateChangedCallback)
-        {
-            _stateChangedCallback = stateChangedCallback;
-            _stateChangedCallback.Invoke(false);
-        }
 
         public class BinaryState
         {
@@ -28,7 +23,7 @@ namespace PoochyEnabler.Managers
             public BinaryState(byte[] initialData)
             {
                 InitialBinary = initialData?.ToArray();
-                CurrentBinary = initialData?.ToArray();
+                CurrentBinary = initialData;
             }
 
             public bool HasChanges()
@@ -142,7 +137,7 @@ namespace PoochyEnabler.Managers
             // not exist
             if (!_binaryStates.TryGetValue(name, out var state)) return;
 
-            state.CurrentBinary = newData?.ToArray();
+            state.CurrentBinary = newData;
             EvaluateState();
         }
 
@@ -150,8 +145,16 @@ namespace PoochyEnabler.Managers
         public byte[] GetCurrentBinary(string name)
         {
             return _binaryStates.TryGetValue(name, out var state)
-                ? state.CurrentBinary?.ToArray()
+                ? state.CurrentBinary
                 : null;
+        }
+
+        // to search for free space
+        public int GetBinaryLength(string name)
+        {
+            return _binaryStates.TryGetValue(name, out var state) && state.CurrentBinary != null
+                ? state.CurrentBinary.Length
+                : 0;
         }
 
         // ridio button group
@@ -206,7 +209,7 @@ namespace PoochyEnabler.Managers
                            || DetectBinaryChanges()
                            || DetectRadioChanges();
 
-            _stateChangedCallback.Invoke(hasChanges);
+            StateChanged.Invoke(hasChanges);
         }
 
         private bool DetectControlChanges()

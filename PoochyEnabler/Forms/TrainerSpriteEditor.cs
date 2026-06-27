@@ -14,9 +14,8 @@ namespace PoochyEnabler.Forms
         private readonly IniFileReader _config = null;
         private readonly TblFileReader _charmap = null;
         private readonly ReservationManager _reservationManager = null;
+        private readonly StateManager _stateManager = null;
         private readonly Action _saveAction = null;
-
-        private StateManager _stateManager = null;
 
         private EntryManager<TrainerImageEntry> _imageManager = null;
         private EntryManager<TrainerPaletteEntry> _paletteManager = null;
@@ -31,6 +30,7 @@ namespace PoochyEnabler.Forms
             IniFileReader config,
             TblFileReader charmap,
             ReservationManager reservationManager,
+            StateManager stateManager,
             Action saveAction)
         {
             InitializeComponent();
@@ -38,6 +38,7 @@ namespace PoochyEnabler.Forms
             _config = config;
             _charmap = charmap;
             _reservationManager = reservationManager;
+            _stateManager = stateManager;
             _saveAction = saveAction;
 
             InitializeManagers();
@@ -58,7 +59,7 @@ namespace PoochyEnabler.Forms
             _animPointerManager = new EntryManager<TrainerAnimPointerEntry>(_romData, _config, _charmap);
             _animPointerManager.Load("TrainerAnimPointerTableOffset", "TrainerSpriteCount");
 
-            _stateManager = new StateManager(hasChanges => btnSave.Enabled = hasChanges);
+            _stateManager.StateChanged += hasChanges => btnSave.Enabled = hasChanges;
             _stateManager.AddControls(
                 txtImageOffset,
                 txtPaletteOffset,

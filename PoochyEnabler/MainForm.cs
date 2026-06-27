@@ -22,6 +22,7 @@ namespace PoochyEnabler
         private TblFileReader _charmap;
         private Form _editorForm;
         private ReservationManager _reservationManager;
+        private StateManager _stateManager;
 
         private const string ButtonPrefix = "btn";
         private const string EditorSuffix = "Editor";
@@ -36,6 +37,7 @@ namespace PoochyEnabler
             _config = new IniFileReader(_iniFolder, cmbProfile);
             _charmap = new TblFileReader(_tblPath);
             _reservationManager = new ReservationManager();
+            _stateManager = new StateManager();
         }
 
         private void InitializeUIStates()
@@ -150,8 +152,10 @@ namespace PoochyEnabler
 
                 foreach (var res in reservedInfos)
                 {
-                    int resStart = (int)res.Offset;
-                    int resEnd = resStart + (res.Data?.Length ?? 0);
+                    int resStart = res.Offset;
+                    int dataLength = _stateManager?.GetBinaryLength(res.StateKey) ?? 0;
+                    int resEnd = resStart + dataLength;
+
                     int curStart = currentOffset;
                     int curEnd = currentOffset + neededBytes;
 
@@ -224,11 +228,12 @@ namespace PoochyEnabler
             if (formType != null)
             {
                 if (Activator.CreateInstance(
-                    formType, 
-                    _romData, 
-                    _config, 
-                    _charmap, 
+                    formType,
+                    _romData,
+                    _config,
+                    _charmap,
                     _reservationManager,
+                    _stateManager,
                     (Action)WriteRomToFile) is Form newForm)
                 {
                     _editorForm = newForm;
@@ -254,6 +259,7 @@ namespace PoochyEnabler
             }
 
             _reservationManager.ClearAllReservations();
+            _stateManager = new StateManager();
             MainFormUIUpdate();
         }
 
