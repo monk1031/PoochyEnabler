@@ -39,14 +39,16 @@ namespace PoochyEnabler
             this.lblSelectFile = new System.Windows.Forms.Label();
             this.txtSelectFile = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
-            this.bynApply = new System.Windows.Forms.Button();
+            this.btnApply = new System.Windows.Forms.Button();
+            this.grpInput = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudEntryCount)).BeginInit();
+            this.grpInput.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTargetOffset
             // 
             this.lblTargetOffset.AutoSize = true;
-            this.lblTargetOffset.Location = new System.Drawing.Point(20, 20);
+            this.lblTargetOffset.Location = new System.Drawing.Point(20, 28);
             this.lblTargetOffset.Name = "lblTargetOffset";
             this.lblTargetOffset.Size = new System.Drawing.Size(80, 12);
             this.lblTargetOffset.TabIndex = 0;
@@ -54,7 +56,7 @@ namespace PoochyEnabler
             // 
             // txtTargetOffset
             // 
-            this.txtTargetOffset.Location = new System.Drawing.Point(112, 16);
+            this.txtTargetOffset.Location = new System.Drawing.Point(112, 24);
             this.txtTargetOffset.Name = "txtTargetOffset";
             this.txtTargetOffset.Size = new System.Drawing.Size(80, 19);
             this.txtTargetOffset.TabIndex = 1;
@@ -62,7 +64,7 @@ namespace PoochyEnabler
             // lblDataType
             // 
             this.lblDataType.AutoSize = true;
-            this.lblDataType.Location = new System.Drawing.Point(20, 44);
+            this.lblDataType.Location = new System.Drawing.Point(20, 52);
             this.lblDataType.Name = "lblDataType";
             this.lblDataType.Size = new System.Drawing.Size(64, 12);
             this.lblDataType.TabIndex = 0;
@@ -72,7 +74,7 @@ namespace PoochyEnabler
             // 
             this.cmbDataType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbDataType.FormattingEnabled = true;
-            this.cmbDataType.Location = new System.Drawing.Point(112, 40);
+            this.cmbDataType.Location = new System.Drawing.Point(112, 48);
             this.cmbDataType.Name = "cmbDataType";
             this.cmbDataType.Size = new System.Drawing.Size(144, 20);
             this.cmbDataType.TabIndex = 2;
@@ -80,7 +82,7 @@ namespace PoochyEnabler
             // lblEntryCount
             // 
             this.lblEntryCount.AutoSize = true;
-            this.lblEntryCount.Location = new System.Drawing.Point(20, 68);
+            this.lblEntryCount.Location = new System.Drawing.Point(20, 76);
             this.lblEntryCount.Name = "lblEntryCount";
             this.lblEntryCount.Size = new System.Drawing.Size(72, 12);
             this.lblEntryCount.TabIndex = 0;
@@ -88,7 +90,7 @@ namespace PoochyEnabler
             // 
             // nudEntryCount
             // 
-            this.nudEntryCount.Location = new System.Drawing.Point(112, 64);
+            this.nudEntryCount.Location = new System.Drawing.Point(112, 72);
             this.nudEntryCount.Maximum = new decimal(new int[] {
             255,
             0,
@@ -101,7 +103,7 @@ namespace PoochyEnabler
             // lblSelectFile
             // 
             this.lblSelectFile.AutoSize = true;
-            this.lblSelectFile.Location = new System.Drawing.Point(20, 92);
+            this.lblSelectFile.Location = new System.Drawing.Point(20, 100);
             this.lblSelectFile.Name = "lblSelectFile";
             this.lblSelectFile.Size = new System.Drawing.Size(66, 12);
             this.lblSelectFile.TabIndex = 4;
@@ -109,7 +111,7 @@ namespace PoochyEnabler
             // 
             // txtSelectFile
             // 
-            this.txtSelectFile.Location = new System.Drawing.Point(112, 88);
+            this.txtSelectFile.Location = new System.Drawing.Point(112, 96);
             this.txtSelectFile.Name = "txtSelectFile";
             this.txtSelectFile.ReadOnly = true;
             this.txtSelectFile.Size = new System.Drawing.Size(144, 19);
@@ -117,44 +119,55 @@ namespace PoochyEnabler
             // 
             // btnBrowse
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(262, 86);
+            this.btnBrowse.Location = new System.Drawing.Point(262, 94);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(80, 23);
             this.btnBrowse.TabIndex = 6;
             this.btnBrowse.Text = "Browse";
             this.btnBrowse.UseVisualStyleBackColor = true;
             // 
-            // bynApply
+            // btnApply
             // 
-            this.bynApply.Location = new System.Drawing.Point(20, 112);
-            this.bynApply.Name = "bynApply";
-            this.bynApply.Size = new System.Drawing.Size(322, 31);
-            this.bynApply.TabIndex = 7;
-            this.bynApply.Text = "Apply";
-            this.bynApply.UseVisualStyleBackColor = true;
+            this.btnApply.Location = new System.Drawing.Point(20, 162);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(364, 31);
+            this.btnApply.TabIndex = 7;
+            this.btnApply.Text = "Apply";
+            this.btnApply.UseVisualStyleBackColor = true;
+            // 
+            // grpInput
+            // 
+            this.grpInput.Controls.Add(this.lblTargetOffset);
+            this.grpInput.Controls.Add(this.lblDataType);
+            this.grpInput.Controls.Add(this.btnBrowse);
+            this.grpInput.Controls.Add(this.lblEntryCount);
+            this.grpInput.Controls.Add(this.txtSelectFile);
+            this.grpInput.Controls.Add(this.txtTargetOffset);
+            this.grpInput.Controls.Add(this.lblSelectFile);
+            this.grpInput.Controls.Add(this.cmbDataType);
+            this.grpInput.Controls.Add(this.nudEntryCount);
+            this.grpInput.Location = new System.Drawing.Point(20, 16);
+            this.grpInput.Name = "grpInput";
+            this.grpInput.Size = new System.Drawing.Size(364, 136);
+            this.grpInput.TabIndex = 8;
+            this.grpInput.TabStop = false;
+            this.grpInput.Text = "Input";
             // 
             // QuickInputPopup
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 159);
-            this.Controls.Add(this.bynApply);
-            this.Controls.Add(this.btnBrowse);
-            this.Controls.Add(this.txtSelectFile);
-            this.Controls.Add(this.lblSelectFile);
-            this.Controls.Add(this.nudEntryCount);
-            this.Controls.Add(this.cmbDataType);
-            this.Controls.Add(this.txtTargetOffset);
-            this.Controls.Add(this.lblEntryCount);
-            this.Controls.Add(this.lblDataType);
-            this.Controls.Add(this.lblTargetOffset);
+            this.ClientSize = new System.Drawing.Size(406, 211);
+            this.Controls.Add(this.grpInput);
+            this.Controls.Add(this.btnApply);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "QuickInputPopup";
             this.Text = "QuickInputPopup";
             ((System.ComponentModel.ISupportInitialize)(this.nudEntryCount)).EndInit();
+            this.grpInput.ResumeLayout(false);
+            this.grpInput.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -169,6 +182,7 @@ namespace PoochyEnabler
         private System.Windows.Forms.Label lblSelectFile;
         private System.Windows.Forms.TextBox txtSelectFile;
         private System.Windows.Forms.Button btnBrowse;
-        private System.Windows.Forms.Button bynApply;
+        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.GroupBox grpInput;
     }
 }

@@ -211,7 +211,54 @@ namespace PoochyEnabler.Forms
 
         private void SpriteImport_Click(object sender, EventArgs e)
         {
+            using (var popup = new QuickInputPopup(
+                defaultOffset: 0,
+                fileFilter: Constants.ImageImportFilter))
+            {
+                if (popup.ShowDialog() == DialogResult.OK)
+                {
+                    int offset = popup.Offset;
+                    string filePath = popup.FilePath;
 
+                    using (Bitmap bmp = new Bitmap(filePath))
+                    {
+                        if (!ImageHelper.ExtractImageAndPalette(
+                            bmp,
+                            Constants.SpriteSize,
+                            Constants.SpriteSize,
+                            out byte[] imageData,
+                            out byte[] paletteData)) return;
+
+                        TextBox targetTextBox;
+                        var type = (ImportType)((Button)sender).Tag;
+
+                        if (type == ImportType.Image)
+                        {
+                            _stateManager.UpdateBinary("ImageData", ImageHelper.CompressLZ77(imageData));
+                            targetTextBox = txtImageOffset;
+
+                            // reservation
+                            _reservationManager.SetReservation(
+                                targetTextBox,
+                                offset,
+                                "ImageData");
+                        }
+                        else
+                        {
+                            _stateManager.UpdateBinary("PaletteData", ImageHelper.CompressPalette(paletteData, true));
+                            targetTextBox = txtPaletteOffset;
+
+                            // reservation
+                            _reservationManager.SetReservation(
+                                targetTextBox,
+                                offset,
+                                "PaletteData");
+                        }
+                    }
+
+                    DisplayTrainerSprite();
+                }
+            }
         }
 
         private void btnExport_Click(object sender, EventArgs e)
