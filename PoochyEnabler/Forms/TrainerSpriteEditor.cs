@@ -136,7 +136,7 @@ namespace PoochyEnabler.Forms
                 ControlHelper.HandleUnsavedChanges(
                     saveAction: () =>
                     {
-                        SaveCurrentData(_currentSpriteIdx);
+                        // SaveCurrentData(_currentSpriteIdx);
                         LoadDataToUI(newIndex);
                     },
                     discardAction: () =>
@@ -166,6 +166,7 @@ namespace PoochyEnabler.Forms
                 return;
             }
 
+            /*
             try
             {
                 Color[] palette;
@@ -209,6 +210,7 @@ namespace PoochyEnabler.Forms
                 picSprite.Image?.Dispose();
                 picSprite.Image = null;
             }
+            */
         }
     }
 }

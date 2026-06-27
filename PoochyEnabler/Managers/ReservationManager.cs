@@ -13,30 +13,29 @@ namespace PoochyEnabler.Managers
 
         public sealed class ReservationInfo
         {
-            public int Offset { get; }
-            public string DataName { get; }
+            public uint Offset { get; }
+            public byte[] Data { get; }
             public Color BackColor { get; }
 
-            public ReservationInfo(int offset, string dataName, Color backColor)
+            public ReservationInfo(
+                uint offset,
+                byte[] data,
+                Color backColor)
             {
                 Offset = offset;
-                DataName = dataName;
+                Data = (byte[])data.Clone();
                 BackColor = backColor;
             }
         }
 
-        public void SetReservation(
-            TextBox textBox,
-            int offset,
-            string dataName)
+        public void SetReservation(TextBox textBox, uint offset, byte[] data)
         {
             ClearReservation(textBox, redraw: false);
 
             var info = new ReservationInfo(
                 offset,
-                dataName,
+                data,
                 textBox.BackColor);
-
             _reservations[textBox] = info;
 
             textBox.Text = offset.ToString("X8");
