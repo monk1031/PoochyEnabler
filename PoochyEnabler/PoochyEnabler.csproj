@@ -79,6 +79,12 @@
     <Compile Include="Managers\StateManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickInputPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QuickInputPopup.Designer.cs">
+      <DependentUpon>QuickInputPopup.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Forms\TrainerClassEditor.resx">
       <DependentUpon>TrainerClassEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -97,6 +103,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="QuickInputPopup.resx">
+      <DependentUpon>QuickInputPopup.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="ini\cfru_dpe.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
