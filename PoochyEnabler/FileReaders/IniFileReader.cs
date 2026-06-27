@@ -119,7 +119,7 @@ namespace PoochyEnabler.FileReaders
             if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";")) return false;
 
             string[] parts = line.Split('=');
-            if (parts.Length < 2) return false; // fail
+            if (parts.Length != 2) return false; // fail
 
             key = parts[0].Trim();
             rawString = parts[1].Trim();
@@ -133,6 +133,7 @@ namespace PoochyEnabler.FileReaders
             {
                 string hexPart = rawString.Substring(HexPrefix.Length);
                 return int.TryParse(hexPart, NumberStyles.HexNumber, null, out parsedValue);
+                // return ControlHelper.TryParseOffset(hexPart, parsedValue);
             }
 
             return int.TryParse(rawString, out parsedValue);

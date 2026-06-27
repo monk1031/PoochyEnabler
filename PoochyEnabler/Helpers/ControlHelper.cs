@@ -13,7 +13,7 @@ namespace PoochyEnabler.Helpers
         // var excludeNames = new[] { "btnTest1", "btnTest2" };
         // var excludeTypes = new[] { typeof(TextBox), typeof(ComboBox) };
         public static void SetControlsEnabled(
-            this Control container,
+            Control container,
             bool enabled,
             IEnumerable<string> excludeNames = null,
             IEnumerable<Type> excludeTypes = null)
@@ -27,7 +27,14 @@ namespace PoochyEnabler.Helpers
                 ? new HashSet<Type>(excludeTypes)
                 : null;
 
-            ExecuteRecursive(container, nameSet, typeSet, ctrl => ctrl.Enabled = enabled);
+            ExecuteRecursive(
+                container, 
+                nameSet, 
+                typeSet, 
+                ctrl => 
+                {
+                    ctrl.Enabled = enabled;
+                });
         }
 
         // recursive control initialization
@@ -45,47 +52,50 @@ namespace PoochyEnabler.Helpers
                 ? new HashSet<Type>(excludeTypes)
                 : null;
 
-            ExecuteRecursive(container, nameSet, typeSet, InitializeControl);
-        }
-
-        public static void InitializeControl(this Control ctrl)
-        {
-            switch (ctrl)
-            {
-                case TextBox textBox:
-                    textBox.Text = string.Empty;
-                    break;
-                case NumericUpDown nud:
-                    nud.Value = Math.Max(nud.Minimum, 0);
-                    break;
-                case ComboBox comboBox:
-                    comboBox.SelectedIndex = -1;
-                    break;
-                case CheckBox checkBox:
-                    checkBox.Checked = false;
-                    break;
-                case RadioButton radioButton:
-                    radioButton.Checked = false;
-                    break;
-            }
+            ExecuteRecursive(
+                container, 
+                nameSet, 
+                typeSet,
+                ctrl => 
+                {
+                    switch (ctrl)
+                    {
+                        case TextBox textBox:
+                            textBox.Text = string.Empty;
+                            break;
+                        case NumericUpDown nud:
+                            nud.Value = Math.Max(nud.Minimum, 0);
+                            break;
+                        case ComboBox comboBox:
+                            comboBox.SelectedIndex = -1;
+                            break;
+                        case CheckBox checkBox:
+                            checkBox.Checked = false;
+                            break;
+                        case RadioButton radioButton:
+                            radioButton.Checked = false;
+                            break;
+                    }
+                });
         }
 
         private static void ExecuteRecursive(
-                    Control ctrl,
+                    Control target,
                     HashSet<string> nameSet,
                     HashSet<Type> typeSet,
                     Action<Control> action)
         {
-            if (ctrl == null) return;
+            if (target == null) return;
 
-            if ((nameSet?.Contains(ctrl.Name) != true) && (typeSet?.Contains(ctrl.GetType()) != true))
+            if ((nameSet?.Contains(target.Name) != true) && 
+                (typeSet?.Contains(target.GetType()) != true)) // null -> false
             {
-                action(ctrl);
+                action(target);
             }
 
-            if (ShouldRecurse(ctrl))
+            if (ShouldRecurse(target))
             {
-                foreach (Control child in ctrl.Controls)
+                foreach (Control child in target.Controls)
                 {
                     ExecuteRecursive(child, nameSet, typeSet, action);
                 }
@@ -94,62 +104,46 @@ namespace PoochyEnabler.Helpers
 
         public static bool ShouldRecurse(Control ctrl)
         {
-            return ctrl is Form || ctrl is Panel || ctrl is GroupBox || ctrl is TabControl || ctrl is TabPage;
+            return ctrl is Form || 
+                   ctrl is Panel || 
+                   ctrl is GroupBox || 
+                   ctrl is TabControl || 
+                   ctrl is TabPage;
         }
 
-        // string offset -> int offset
-        public static bool TryParseOffset(string offsetStr, out int offsetValue)
+        // textbox formatting, show message on/off
+        public static void AttachOffsetAutoFormat(params (TextBox Textbox, bool ShowMessage)[] textboxes)
         {
-            return int.TryParse(offsetStr, NumberStyles.HexNumber, null, out offsetValue);
-        }
-
-        // for textbox, validating, formatting
-        public static bool ValidateAndFormatInputTextBox(
-            TextBox txt, 
-            out int offsetValue,
-            bool showMessage = true)
-        {
-            string offsetStr = txt.Text.Trim();
-
-            if (!TryParseOffset(offsetStr, out int resultValue))
+            foreach (var (textbox, showMessage) in textboxes)
             {
-                if (showMessage)
+                textbox.Leave += (sender, e) =>
                 {
-                    MessageBox.Show(
-                        "Enter a hexadecimal offset.",
-                        "",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-                }
+                    // guard
+                    if (!(sender is TextBox txt)) return;
+                    if (string.IsNullOrWhiteSpace(txt.Text)) return;
 
-                offsetValue = unchecked((int)uint.MaxValue);
-                return false;
+                    if (!int.TryParse(txt.Text.Trim(), NumberStyles.HexNumber, null, out int resultValue))
+                    {
+                        if (showMessage)
+                        {
+                            MessageBox.Show(
+                                "Enter a hexadecimal offset.",
+                                "",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                        }
+
+                        txt.Text = string.Empty; // clear
+                        return;
+                    }
+
+                    txt.Text = resultValue.ToString("X8");
+                    return;
+                };
             }
-
-            offsetValue = resultValue;
-            txt.Text = resultValue.ToString("X8");
-            return true;
         }
 
-        // for textbox, only formatting
-        public static void AttachOffsetAutoFormat(params TextBox[] textboxes)
-        {
-            foreach (TextBox textbox in textboxes)
-            {
-                textbox.Leave -= OffsetTextBox_Leave;
-                textbox.Leave += OffsetTextBox_Leave;
-            }
-        }
-
-        private static void OffsetTextBox_Leave(object sender, EventArgs e)
-        {
-            if (!(sender is TextBox txt)) return;
-            if (string.IsNullOrWhiteSpace(txt.Text)) return;
-
-            ValidateAndFormatInputTextBox(txt, out _, showMessage: false);
-        }
-
-        // outer border
+        // draw border
         public static void AttachExternalBorder(params Control[] targets)
         {
             foreach (Control target in targets)
@@ -178,29 +172,27 @@ namespace PoochyEnabler.Helpers
             Button btnPrev,
             Button btnNext)
         {
-            if (btnPrev != null)
+            btnPrev.Click += (sender, e) =>
             {
-                btnPrev.Click += (sender, e) =>
+                if (nud.Value > nud.Minimum)
                 {
-                    if (nud.Value > nud.Minimum)
-                    {
-                        nud.Value--;
-                    }
-                };
-            }
+                    nud.Value--;
+                }
+            };
 
-            if (btnNext != null)
+            btnNext.Click += (sender, e) =>
             {
-                btnNext.Click += (sender, e) =>
+                if (nud.Value < nud.Maximum)
                 {
-                    if (nud.Value < nud.Maximum)
-                    {
-                        nud.Value++;
-                    }
-                };
-            }
+                    nud.Value++;
+                }
+            };
 
-            nud.ValueChanged += (sender, e) => UpdateNumericUpDownNavigators(nud, btnPrev, btnNext);
+            nud.ValueChanged += (sender, e) =>
+            {
+                UpdateNumericUpDownNavigators(nud, btnPrev, btnNext);
+            };
+
             UpdateNumericUpDownNavigators(nud, btnPrev, btnNext);
         }
 
@@ -210,34 +202,31 @@ namespace PoochyEnabler.Helpers
             Button btnPrev,
             Button btnNext)
         {
-            if (btnPrev != null)
+            bool canGoPrev = nud.Value > nud.Minimum;
+            if (!canGoPrev && btnPrev.Focused)
             {
-                bool canGoPrev = nud.Value > nud.Minimum;
-                if (!canGoPrev && btnPrev.Focused)
-                {
-                    nud.Focus();
-                }
-                btnPrev.Enabled = canGoPrev;
+                nud.Focus();
             }
+            btnPrev.Enabled = canGoPrev;
 
-            if (btnNext != null)
+            bool canGoNext = nud.Value < nud.Maximum;
+            if (!canGoNext && btnNext.Focused)
             {
-                bool canGoNext = nud.Value < nud.Maximum;
-                if (!canGoNext && btnNext.Focused)
-                {
-                    nud.Focus();
-                }
-                btnNext.Enabled = canGoNext;
+                nud.Focus();
             }
+            btnNext.Enabled = canGoNext;
         }
 
         // radioButton linkage
         public static void AttachEnterEvent(RadioButton rb, Control ctrl)
         {
-            ctrl.Enter += (sender, e) => rb.Checked = true;
+            ctrl.Enter += (sender, e) =>
+            {
+                rb.Checked = true;
+            };
         }
 
-        // cmb setup
+        // cmb setup, instant
         public static void SetupComboBoxItems(
             ComboBox comboBox,
             int defaultIndex,
@@ -262,7 +251,8 @@ namespace PoochyEnabler.Helpers
             var entries = new List<KeyValuePair<int, string>>();
             foreach (string line in File.ReadLines(filePath))
             {
-                if (!string.IsNullOrWhiteSpace(line) && TryParseLine(line, out var entry))
+                if (!string.IsNullOrWhiteSpace(line) && 
+                    TryParseLine(line, out var entry))
                 {
                     entries.Add(entry);
                 }
@@ -272,6 +262,7 @@ namespace PoochyEnabler.Helpers
             comboBox.ValueMember = nameof(KeyValuePair<int, string>.Key);
             comboBox.DataSource = entries;
 
+            // [XX]ABCD
             bool TryParseLine(string line, out KeyValuePair<int, string> entry)
             {
                 int closeBracket = line.IndexOf(']');
@@ -285,6 +276,7 @@ namespace PoochyEnabler.Helpers
                     }
                 }
 
+                // fail
                 entry = default(KeyValuePair<int, string>);
                 return false;
             }
