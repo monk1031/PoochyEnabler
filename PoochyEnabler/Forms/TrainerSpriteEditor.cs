@@ -25,10 +25,10 @@ namespace PoochyEnabler.Forms
         private bool _isUpdatingUI = false;
         private int _currentSpriteIdx = 0;
 
-        private enum ImportType
+        private static class StateKeys
         {
-            Image,
-            Palette
+            public static readonly string ImageData = nameof(ImageData);
+            public static readonly string PaletteData = nameof(PaletteData);
         }
 
         public TrainerSpriteEditor(
@@ -71,8 +71,8 @@ namespace PoochyEnabler.Forms
                 txtPaletteOffset,
                 nudYPosition);
             _stateManager.AddBinaries(
-                ("ImageData", null),
-                ("PaletteData", null));
+                (StateKeys.ImageData, null),
+                (StateKeys.PaletteData, null));
         }
 
         private void InitializeControls()
@@ -87,8 +87,8 @@ namespace PoochyEnabler.Forms
             ControlHelper.AttachNumericUpDownNavigators(nudSpriteIdx, btnSpriteIdxPrev, btnSpriteIdxNext);
 
             // set tag
-            btnImportImage.Tag = ImportType.Image;
-            btnImportPalette.Tag = ImportType.Palette;
+            btnImportImage.Tag = StateKeys.ImageData;
+            btnImportPalette.Tag = StateKeys.PaletteData;
         }
 
         private void InitializeEventHandlers()
@@ -187,24 +187,24 @@ namespace PoochyEnabler.Forms
                 var imageRes = _reservationManager.GetReservation(txtImageOffset);
                 if (imageRes != null)
                 {
-                    imageData = ImageHelper.DecompressLZ77(_stateManager.GetCurrentBinary("ImageData"), 0);
+                    imageData = ImageHelper.DecompressLZ77(_stateManager.GetCurrentBinary(StateKeys.ImageData), 0);
                 }
                 else
                 {
                     imageData = ImageHelper.DecompressLZ77(_romData, imageOffset);
-                    _stateManager.UpdateBinary("ImageData", imageData);
+                    _stateManager.UpdateBinary(StateKeys.ImageData, imageData);
                 }
 
                 // check reservation
                 var PaletteRes = _reservationManager.GetReservation(txtPaletteOffset);
                 if (PaletteRes != null)
                 {
-                    paletteData = ImageHelper.DecompressPalette(_stateManager.GetCurrentBinary("PaletteData"), 0, true);
+                    paletteData = ImageHelper.DecompressPalette(_stateManager.GetCurrentBinary(StateKeys.PaletteData), 0, true);
                 }
                 else
                 {
                     paletteData = ImageHelper.DecompressPalette(_romData, paletteOffset, true);
-                    _stateManager.UpdateBinary("PaletteData", paletteData);
+                    _stateManager.UpdateBinary(StateKeys.PaletteData, paletteData);
                 }
 
                 Bitmap sprite = ImageHelper.CreateBitmap(
@@ -233,6 +233,8 @@ namespace PoochyEnabler.Forms
 
         private void SpriteImport_Click(object sender, EventArgs e)
         {
+            if (!(sender is Button btn) || !(btn.Tag is string stateKey)) return;
+
             using (var popup = new QuickInputPopup(
                 defaultOffset: 0,
                 fileFilter: Constants.ImageImportFilter))
@@ -244,6 +246,8 @@ namespace PoochyEnabler.Forms
 
                     using (Bitmap bmp = new Bitmap(filePath))
                     {
+                        TextBox targetTextBox;
+
                         if (!ImageHelper.ExtractImageAndPalette(
                             bmp,
                             Constants.SpriteSize,
@@ -251,31 +255,18 @@ namespace PoochyEnabler.Forms
                             out byte[] imageData,
                             out byte[] paletteData)) return;
 
-                        TextBox targetTextBox;
-                        var type = (ImportType)((Button)sender).Tag;
-
-                        if (type == ImportType.Image)
+                        if (stateKey == StateKeys.ImageData)
                         {
-                            _stateManager.UpdateBinary("ImageData", ImageHelper.CompressLZ77(imageData));
+                            _stateManager.UpdateBinary(stateKey, ImageHelper.CompressLZ77(imageData));
                             targetTextBox = txtImageOffset;
-
-                            // reservation
-                            _reservationManager.SetReservation(
-                                targetTextBox,
-                                offset,
-                                "ImageData");
                         }
                         else
                         {
-                            _stateManager.UpdateBinary("PaletteData", ImageHelper.CompressPalette(paletteData, true));
+                            _stateManager.UpdateBinary(stateKey, ImageHelper.CompressPalette(paletteData, true));
                             targetTextBox = txtPaletteOffset;
-
-                            // reservation
-                            _reservationManager.SetReservation(
-                                targetTextBox,
-                                offset,
-                                "PaletteData");
                         }
+
+                        _reservationManager.SetReservation(targetTextBox, offset, stateKey);
                     }
 
                     DisplayTrainerSprite();
