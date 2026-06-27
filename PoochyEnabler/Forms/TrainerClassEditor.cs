@@ -70,25 +70,25 @@ namespace PoochyEnabler.Forms
             if (isEncounterMusicEnabled)
             {
                 _encounterMusicManager = new EntryManager<ClassEncounterMusicEntry>(_romData, _config, _charmap);
-                _encounterMusicManager.Load("ClassEncounterMusicTableAddress", "ClassNameCount");
+                _encounterMusicManager.Load("ClassEncounterMusicTableOffset", "ClassNameCount");
             }
 
             if (isBattleMusicEnabled)
             {
                 _battleMusicManager = new EntryManager<ClassBattleMusicEntry>(_romData, _config, _charmap);
-                _battleMusicManager.Load("ClassBattleMusicTableAddress", "ClassNameCount");
+                _battleMusicManager.Load("ClassBattleMusicTableOffset", "ClassNameCount");
             }
 
             if (isPokeBallEnabled)
             {
                 _pokeBallManager = new EntryManager<ClassPokeBallEntry>(_romData, _config, _charmap);
-                _pokeBallManager.Load("ClassPokeBallTableAddress", "ClassNameCount");
+                _pokeBallManager.Load("ClassPokeBallTableOffset", "ClassNameCount");
             }
 
             if (isBaseIvEnabled)
             {
                 _baseIvManager = new EntryManager<ClassBaseIVEntry>(_romData, _config, _charmap);
-                _baseIvManager.Load("ClassBaseIVTableAddress", "ClassNameCount");
+                _baseIvManager.Load("ClassBaseIVTableOffset", "ClassNameCount");
             }
 
             _stateManager = new StateManager(hasChanges => btnSave.Enabled = hasChanges);

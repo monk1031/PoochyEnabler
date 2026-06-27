@@ -95,7 +95,7 @@ namespace PoochyEnabler
                     string selectedConfig = cmbProfile.SelectedItem?.ToString() ?? string.Empty;
                     _config.LoadConfig(selectedConfig, _romData);
 
-                    // txtStartAddress
+                    // txtStartOffset
                     txtStartOffset.Text = _config.TryReadValue("FreeSpaceFinderOffset", out int offsetValue)
                         ? offsetValue.ToString("X8")
                         : string.Empty;
