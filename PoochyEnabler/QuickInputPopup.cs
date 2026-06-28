@@ -73,6 +73,7 @@ namespace PoochyEnabler
         {
             if (string.IsNullOrEmpty(filter)) return;
 
+            lblSelectFile.Enabled = true;
             txtSelectFile.Enabled = true;
             btnBrowse.Enabled = true;
         }
