@@ -111,6 +111,11 @@ namespace PoochyEnabler.Helpers
                    ctrl is TabPage;
         }
 
+        public static bool TryParseOffset(string offsetStr, out int offsetValue)
+        {
+            return int.TryParse(offsetStr, NumberStyles.HexNumber, null, out offsetValue);
+        }
+
         // textbox formatting, show message on/off
         public static void AttachOffsetAutoFormat(params (TextBox Textbox, bool ShowMessage)[] textboxes)
         {

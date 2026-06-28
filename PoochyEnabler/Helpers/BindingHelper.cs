@@ -12,58 +12,72 @@ namespace PoochyEnabler.Helpers
         // structure -> UI
         public static void BindObjectToControls<T>(Control container, T data)
         {
-            foreach (var field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var field in typeof(T).GetFields())
             {
+                // skip
                 if (field.Name.StartsWith("_")) continue;
 
                 object value = field.GetValue(data);
                 char prefix = field.Name[0];
                 string baseName = field.Name.Substring(1);
 
-                if (prefix == 'p') // pointer (subtract base address)
+                if (prefix == 'p') // ptr (subtract base aadr)
                 {
                     uint ptrValue = (uint)value;
                     int offset = 
-                        ptrValue == 0 
-                        ? unchecked((int)uint.MaxValue)
+                        ptrValue == 0u
+                        ? Constants.InvalidOffset
                         : (int)(ptrValue - Constants.BaseAddr);
-                    SetControlValueByName(container, baseName, offset);
+                    SetControlValueByName(container, baseName, offset); // int
                 }
                 else if (prefix == 's') // signed
                 {
-                    int signedValue = field.FieldType == typeof(byte) ? (sbyte)(byte)value :
-                                      field.FieldType == typeof(ushort) ? (short)(ushort)value :
-                                      (int)(uint)value;
-                    SetControlValueByName(container, baseName, signedValue);
+                    if (field.FieldType == typeof(byte))
+                    {
+                        value = (sbyte)(byte)value;
+                    }
+                    else if (field.FieldType == typeof(ushort))
+                    {
+                        value = (short)(ushort)value;
+                    }
+                    else
+                    {
+                        value = (int)(uint)value;
+                    }
+
+                    SetControlValueByName(container, baseName, value); // object(sbyte, short, int)
                 }
                 else if (prefix == 'n') // nibble
                 {
                     var attr = field.GetCustomAttribute<NibbleControlNamesAttribute>();
-                    byte byteVal = (byte)value;
+                    byte byteVal = (byte)value; // only byte
+
                     SetControlValueByName(
                         container, 
                         attr.HighNibbleName, 
-                        (byteVal >> Constants.NibbleShift) & Constants.NibbleMask);
+                        (byteVal >> Constants.NibbleShift) & Constants.NibbleMask); // byte
                     SetControlValueByName(
                         container, 
-                        attr.LowNibbleName, 
-                        byteVal & Constants.NibbleMask);
+                        attr.LowNibbleName,
+                        byteVal & Constants.NibbleMask); // byte
                 }
                 else if (prefix == 'b') // bit
                 {
                     var attr = field.GetCustomAttribute<BitControlNamesAttribute>();
-                    uint uintValue = Convert.ToUInt32(value);
+                    byte byteVal = (byte)value; // only byte
+
                     for (int i = 0; i < attr.BitNames.Length; i++)
                     {
                         if (!string.IsNullOrEmpty(attr.BitNames[i]))
                         {
-                            SetControlValueByName(container, attr.BitNames[i], ((uintValue >> i) & 1) == 1);
+                            bool isSet = ((byteVal >> i) & 1) == 1; 
+                            SetControlValueByName(container, attr.BitNames[i], isSet); // bool
                         }
                     }
                 }
-                else
+                else // normal
                 {
-                    SetControlValueByName(container, field.Name, value);
+                    SetControlValueByName(container, field.Name, value); // object(byte, ushort, uint)
                 }
             }
         }
@@ -71,73 +85,77 @@ namespace PoochyEnabler.Helpers
         // UI -> structure
         public static void BindControlsToObject<T>(Control container, T data)
         {
-            foreach (var field in typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var field in typeof(T).GetFields())
             {
+                // skip
                 if (field.Name.StartsWith("_")) continue;
 
                 char prefix = field.Name[0];
                 string baseName = field.Name.Substring(1);
 
-                if (prefix == 'p') // pointer (add base address)
+                if (prefix == 'p') // ptr (add base addr)
                 {
                     int offset = (int)GetControlValueByName(container, baseName);
-                    field.SetValue(data, 
-                        offset == unchecked((int)uint.MaxValue)
-                        ? 0u 
-                        : (uint)(offset + Constants.BaseAddr));
+                    bool isInvalid = 
+                        offset == Constants.InvalidOffset;
+
+                    uint value = isInvalid
+                        ? 0u
+                        : (uint)(offset + Constants.BaseAddr);
+
+                    field.SetValue(data, value);
                 }
                 else if (prefix == 's') // signed
                 {
+                    // null?
                     int intVal = Convert.ToInt32(GetControlValueByName(container, baseName));
-
                     if (field.FieldType == typeof(byte))
                     {
-                        field.SetValue(data, (byte)(sbyte)intVal);
+                        field.SetValue(data, unchecked((byte)(sbyte)intVal));
                     }
                     else if (field.FieldType == typeof(ushort))
                     {
-                        field.SetValue(data, (ushort)(short)intVal);
+                        field.SetValue(data, unchecked((ushort)(short)intVal));
                     }
                     else
                     {
-                        field.SetValue(data, (uint)intVal);
+                        field.SetValue(data, unchecked((uint)intVal));
                     }
                 }
                 else if (prefix == 'n') // nibble
                 {
                     var attr = field.GetCustomAttribute<NibbleControlNamesAttribute>();
 
-                    int high = Convert.ToInt32(GetControlValueByName(container, attr.HighNibbleName));
+                    // control name = attribute name
+                    int high = Convert.ToInt32(GetControlValueByName(container, attr.HighNibbleName)); 
                     int low = Convert.ToInt32(GetControlValueByName(container, attr.LowNibbleName));
 
+                    // byte
                     field.SetValue(data, (byte)(((high & Constants.NibbleMask) << Constants.NibbleShift) | (low & Constants.NibbleMask)));
                 }
                 else if (prefix == 'b') // bit
                 {
                     var attr = field.GetCustomAttribute<BitControlNamesAttribute>();
-                    ulong currentVal = Convert.ToUInt64(field.GetValue(data)); // preserve undefined bits
+                    byte currentVal = Convert.ToByte(field.GetValue(data));
 
                     for (int i = 0; i < attr.BitNames.Length; i++)
                     {
                         if (string.IsNullOrEmpty(attr.BitNames[i])) continue;
 
                         bool bitVal = (bool)GetControlValueByName(container, attr.BitNames[i]);
-                        if (bitVal) currentVal |= (1UL << i);
-                        else currentVal &= ~(1UL << i);
+                        byte mask = (byte)(1 << i);
+
+                        if (bitVal)
+                        {
+                            currentVal |= mask;
+                        }
+                        else
+                        {
+                            currentVal &= (byte)~mask;
+                        }
                     }
 
-                    if (field.FieldType == typeof(byte))
-                    {
-                        field.SetValue(data, (byte)currentVal);
-                    }
-                    else if (field.FieldType == typeof(ushort))
-                    {
-                        field.SetValue(data, (ushort)currentVal);
-                    }
-                    else
-                    {
-                        field.SetValue(data, (uint)currentVal);
-                    }
+                    field.SetValue(data, currentVal);
                 }
                 else
                 {
@@ -156,17 +174,43 @@ namespace PoochyEnabler.Helpers
                 case NumericUpDown nud:
                     nud.Value = Convert.ToDecimal(value);
                     break;
-                case TextBox txt:
-                    txt.Text = value is int intVal
-                        ? (intVal == unchecked((int)uint.MaxValue) 
+                case TextBox txt: // due to C#7.3
+                    if (value is int i)
+                    {
+                        txt.Text =
+                            i == Constants.InvalidOffset 
                             ? "null" 
-                            : intVal.ToString("X8"))
-                        : value.ToString();
+                            : i.ToString("X8");
+                    }
+                    else if (value is uint ui)
+                    {
+                        txt.Text = ui.ToString("X8");
+                    }
+                    else if (value is short s)
+                    {
+                        txt.Text = ((ushort)s).ToString("X4");
+                    }
+                    else if (value is ushort us)
+                    {
+                        txt.Text = us.ToString("X4");
+                    }
+                    else if (value is byte b)
+                    {
+                        txt.Text = b.ToString("X2");
+                    }
+                    else if (value is sbyte sb)
+                    {
+                        txt.Text = ((byte)sb).ToString("X2");
+                    }
+                    else // other
+                    {
+                        txt.Text = value?.ToString() ?? string.Empty;
+                    }
                     break;
                 case ComboBox cmb:
                     if (!string.IsNullOrEmpty(cmb.ValueMember))
                     {
-                        cmb.SelectedValue = value;
+                        cmb.SelectedValue = value; // be careful
                     }
                     else
                     {
@@ -186,18 +230,27 @@ namespace PoochyEnabler.Helpers
             switch (ctrl)
             {
                 case NumericUpDown nud:
-                    return nud.Value;
+                    return (int)nud.Value; // cast to int
                 case TextBox txt:
-                    string str = txt.Text.Trim();
-                    return (str == "null" || string.IsNullOrEmpty(str))
-                        ? unchecked((int)uint.MaxValue)
-                        : int.Parse(str, NumberStyles.HexNumber);
+                    string text = txt.Text.Trim();
+
+                    if (string.IsNullOrEmpty(text) || text == "null")
+                    {
+                        return Constants.InvalidOffset;
+                    }
+
+                    if (ControlHelper.TryParseOffset(text, out int offset))
+                    {
+                        return offset;
+                    }
+
+                    return null;
                 case ComboBox cmb:
                     return !string.IsNullOrEmpty(cmb.ValueMember)
                         ? cmb.SelectedValue
                         : cmb.SelectedIndex;
                 case CheckBox chk:
-                    return chk.Checked;
+                    return chk.Checked; // bool
                 default:
                     return null;
             }
