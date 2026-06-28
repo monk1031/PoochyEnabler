@@ -10,38 +10,40 @@ namespace PoochyEnabler.Helpers
 {
     public static class IOHelper
     {
-        // because want to cast to int 
-        public static uint ReadUShortLE(byte[] data, int offset)
+        public static ushort ReadUShortLE(byte[] data, int offset)
         {
-            return (uint)(data[offset]
-                 | (data[offset + 1] << Constants.BitsPerByte));
+            return (ushort)(data[offset]
+                         | (data[offset + 1] << Constants.BitsPerByte));
         }
 
         public static uint ReadUIntLE(byte[] data, int offset)
         {
             return (uint)data[offset]
-                 | ((uint)data[offset + 1] << Constants.BitsPerByte)
-                 | ((uint)data[offset + 2] << (Constants.BitsPerByte * 2))
-                 | ((uint)data[offset + 3] << (Constants.BitsPerByte * 3));
+                | ((uint)data[offset + 1] << (Constants.BitsPerByte * 1))
+                | ((uint)data[offset + 2] << (Constants.BitsPerByte * 2))
+                | ((uint)data[offset + 3] << (Constants.BitsPerByte * 3));
         }
 
-        // uint -> address (consider bese address)
-        // int -> offset
-        public static bool TryReadGbaPointer(int ptrOffset, byte[] data, out int resultOffset)
+        // addr -> uint (consider bese addr)
+        // offset -> int
+        public static bool TryReadPtr(
+            int ptrOffset, 
+            byte[] data, 
+            out int resultOffset)
         {
-            uint rawAddr = ReadUIntLE(data, ptrOffset);
+            uint rawAddr = ReadUIntLE(data, ptrOffset); // uint
 
             // check null pointer
             if (rawAddr == 0)
             {
-                resultOffset = -1;
+                resultOffset = Constants.InvalidOffset;
                 return true;
             }
 
             // valid?
             if (rawAddr < Constants.BaseAddr)
             {
-                resultOffset = -1;
+                resultOffset = Constants.InvalidOffset;
                 return false;
             }
 
@@ -50,28 +52,26 @@ namespace PoochyEnabler.Helpers
         }
 
         // align for variable length
-        public static void WriteDataToRom(
-            byte[] romData,
+        public static void WriteBytesToRom(
+            byte[] data,
             int offset,
             byte[] bytes,
             bool align = true,
             byte alignPaddingByte = Constants.PaddingByte)
         {
-            Array.Copy(bytes, 0, romData, offset, bytes.Length);
+            Array.Copy(bytes, 0, data, offset, bytes.Length);
 
-            if (align)
+            if (!align) return;
+            int endOffset = offset + bytes.Length;
+            int remainder = endOffset % Constants.UIntSize;
+
+            if (remainder != 0)
             {
-                int endOffset = offset + bytes.Length;
-                int remainder = endOffset % sizeof(uint);
-
-                if (remainder != 0)
+                int paddingCount = Constants.UIntSize - remainder;
+                for (int i = 0; i < paddingCount; i++)
                 {
-                    int paddingCount = sizeof(uint) - remainder;
-                    for (int i = 0; i < paddingCount; i++)
-                    {
-                        int padOffset = endOffset + i;
-                        romData[padOffset] = alignPaddingByte;
-                    }
+                    int padOffset = endOffset + i;
+                    data[padOffset] = alignPaddingByte;
                 }
             }
         }
@@ -79,21 +79,22 @@ namespace PoochyEnabler.Helpers
         // string -> variable length
         public static List<T> ReadStructures<T>(
             byte[] data,
-            int baseOffset,
+            int offset,
             int count, 
             TblFileReader tblReader,
-            Dictionary<string, int> dynamicLengths = null) where T : new()
+            Dictionary<string, int> dynamicLengths = null)
+            where T : new()
         {
             var list = new List<T>(count);
-            int currentOffset = baseOffset;
+            int position = offset;
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
             try
             {
-                IntPtr basePtr = handle.AddrOfPinnedObject();
+                IntPtr dataPtr = handle.AddrOfPinnedObject();
 
                 FieldInfo[] fields = typeof(T)
-                    .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                    .GetFields()
                     .OrderBy(f => f.MetadataToken)
                     .ToArray();
 
@@ -108,17 +109,17 @@ namespace PoochyEnabler.Helpers
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
                             if (TryGetLength(attr.EntryLength, dynamicLengths, out int length) && length > 0)
                             {
-                                string str = tblReader.BytesToString(data, currentOffset, length);
+                                string str = tblReader.BytesToString(data, position, length);
                                 field.SetValue(item, str);
-                                currentOffset += length;
+                                position += length;
                             }
                         }
                         else if (field.FieldType.IsValueType)
                         {
                             int typeSize = Marshal.SizeOf(field.FieldType);
-                            object val = Marshal.PtrToStructure(basePtr + currentOffset, field.FieldType);
+                            object val = Marshal.PtrToStructure(IntPtr.Add(dataPtr, position), field.FieldType);
                             field.SetValue(item, val);
-                            currentOffset += typeSize;
+                            position += typeSize;
                         }
                     }
 
@@ -146,7 +147,7 @@ namespace PoochyEnabler.Helpers
            byte paddingByte1 = Constants.FreeSpaceByte,
            byte paddingByte2 = Constants.PaddingByte)
         {
-            // calc structure size
+            // calc structure size, include string
             int recordSize = GetStructureSize<T>(dynamicLengths);
             // calc target offset
             int currentOffset = baseOffset + startIndex * recordSize;
@@ -155,10 +156,10 @@ namespace PoochyEnabler.Helpers
 
             try
             {
-                IntPtr basePtr = handle.AddrOfPinnedObject();
+                IntPtr dataPtr = handle.AddrOfPinnedObject();
 
                 FieldInfo[] fields = typeof(T)
-                    .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                    .GetFields()
                     .OrderBy(f => f.MetadataToken)
                     .ToArray();
 
@@ -179,14 +180,16 @@ namespace PoochyEnabler.Helpers
 
                                 if (appendTerminator)
                                 {
-                                    finalBytes.Add(Constants.FreeSpaceByte);
+                                    finalBytes.Add(Constants.StrTerminatorByte);
 
+                                    // padding1
                                     while (finalBytes.Count < allowedLength)
                                     {
                                         finalBytes.Add(paddingByte1);
                                     }
                                 }
 
+                                // padding2
                                 while (finalBytes.Count < entryLength)
                                 {
                                     finalBytes.Add(paddingByte2);
@@ -206,9 +209,10 @@ namespace PoochyEnabler.Helpers
                         {
                             int typeSize = Marshal.SizeOf(field.FieldType);
                             object value = field.GetValue(item);
+
                             if (value != null)
                             {
-                                Marshal.StructureToPtr(value, basePtr + currentOffset, false);
+                                Marshal.StructureToPtr(value, IntPtr.Add(dataPtr, currentOffset), false);
                             }
 
                             currentOffset += typeSize;
@@ -237,7 +241,7 @@ namespace PoochyEnabler.Helpers
         {
             int size = 0;
             FieldInfo[] fields = typeof(T)
-                .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                .GetFields()
                 .OrderBy(f => f.MetadataToken)
                 .ToArray();
 

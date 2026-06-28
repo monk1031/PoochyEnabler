@@ -7,8 +7,7 @@ namespace PoochyEnabler.FileReaders
 {
     public class TblFileReader
     {
-        private const byte NewlineByte = 0xFE;
-        private const byte TerminatorByte = 0xFF;
+
 
         // to search for
         private readonly ByteTrieNode _byteTrieRoot = new ByteTrieNode();
