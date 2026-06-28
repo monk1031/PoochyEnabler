@@ -15,9 +15,9 @@ namespace PoochyEnabler.Helpers
         public static void SetControlsEnabled(
                     Control container,
                     bool enabled,
+                    bool includeSelf = true,
                     IEnumerable<string> excludeNames = null,
-                    IEnumerable<Type> excludeTypes = null,
-                    bool includeSelf = true)
+                    IEnumerable<Type> excludeTypes = null)
         {
             var nameSet =
                 excludeNames != null
@@ -43,9 +43,9 @@ namespace PoochyEnabler.Helpers
         // recursive control initialization
         public static void ResetControls(
                         this Control container,
+                        bool includeSelf = true,
                         IEnumerable<string> excludeNames = null,
-                        IEnumerable<Type> excludeTypes = null,
-                        bool includeSelf = true) 
+                        IEnumerable<Type> excludeTypes = null) 
         {
             var nameSet =
                 excludeNames != null

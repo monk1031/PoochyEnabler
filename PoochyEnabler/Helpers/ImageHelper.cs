@@ -127,7 +127,7 @@ namespace PoochyEnabler.Helpers
             }
 
             // align to 4 bytes
-            while (result.Count % sizeof(uint) != 0)
+            while (result.Count % Constants.UIntSize != 0)
             {
                 result.Add(0);
             }

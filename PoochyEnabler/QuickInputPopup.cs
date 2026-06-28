@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows.Forms;
 using PoochyEnabler.Helpers;
 
@@ -16,13 +15,16 @@ namespace PoochyEnabler
 
         public QuickInputPopup(
             int? defaultOffset = null,
+            string[] comboItems = null,
             decimal? nudMin = null,
             decimal? nudMax = null,
-            string[] comboItems = null,
             string fileFilter = null)
         {
             InitializeComponent();
             _fileFilter = fileFilter;
+
+            // temporary all disabled
+            ControlHelper.SetControlsEnabled(grpInput, false, false);
 
             SetupOffsetInput(defaultOffset);
             SetupComboBox(comboItems);
@@ -38,54 +40,41 @@ namespace PoochyEnabler
 
         private void SetupOffsetInput(int? offset)
         {
-            if (offset.HasValue)
-            {
-                txtTargetOffset.Text = offset.Value.ToString("X8");
-            }
-            else
-            {
-                lblTargetOffset.Enabled = false;
-                txtTargetOffset.Enabled = false;
-            }
+            if (!offset.HasValue) return;
+
+            lblTargetOffset.Enabled = true;
+            txtTargetOffset.Enabled = true;
+            txtTargetOffset.Text = offset.Value.ToString("X8");
         }
 
         private void SetupComboBox(string[] items)
         {
-            if (items != null && items.Length > 0)
-            {
-                cmbDataType.Items.Clear();
-                cmbDataType.Items.AddRange(items);
-                cmbDataType.SelectedIndex = 0;
-            }
-            else
-            {
-                lblDataType.Enabled = false;
-                cmbDataType.Enabled = false;
-            }
+            if (items == null || items.Length == 0) return;
+
+            lblDataType.Enabled = true;
+            cmbDataType.Enabled = true;
+            cmbDataType.Items.Clear();
+            cmbDataType.Items.AddRange(items);
+            cmbDataType.SelectedIndex = 0;
         }
 
         private void SetupNumericUpDown(decimal? min, decimal? max)
         {
-            if (min.HasValue && max.HasValue)
-            {
-                nudEntryCount.Minimum = min.Value;
-                nudEntryCount.Maximum = max.Value;
-                nudEntryCount.Value = min.Value;
-            }
-            else
-            {
-                lblEntryCount.Enabled = false;
-                nudEntryCount.Enabled = false;
-            }
+            if (!min.HasValue || !max.HasValue) return;
+
+            lblEntryCount.Enabled = true;
+            nudEntryCount.Enabled = true;
+            nudEntryCount.Minimum = min.Value;
+            nudEntryCount.Maximum = max.Value;
+            nudEntryCount.Value = min.Value;
         }
 
         private void SetupFileInput(string filter)
         {
-            if (string.IsNullOrEmpty(filter))
-            {
-                txtSelectFile.Enabled = true;
-                btnBrowse.Enabled = true;
-            }
+            if (string.IsNullOrEmpty(filter)) return;
+
+            txtSelectFile.Enabled = true;
+            btnBrowse.Enabled = true;
         }
 
         private void BtnBrowse_Click(object sender, EventArgs e)
@@ -111,11 +100,11 @@ namespace PoochyEnabler
             // check offset
             if (txtTargetOffset.Enabled)
             {
-                if (!int.TryParse(
-                    txtTargetOffset.Text, 
-                    NumberStyles.HexNumber,
-                    null,
-                    out int offset)) return false;
+                if (!ControlHelper.TryParseOffset(txtTargetOffset.Text, out int offset))
+                {
+                    return false;
+                }
+
                 Offset = offset;
             }
 

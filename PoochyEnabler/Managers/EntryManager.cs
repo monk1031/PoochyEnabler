@@ -36,7 +36,7 @@ namespace PoochyEnabler.Managers
             if (autoBuildLengths)
             {
                 _dynamicLengths = new Dictionary<string, int>();
-                var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance)
+                var fields = typeof(T).GetFields()
                                       .OrderBy(f => f.MetadataToken)
                                       .ToArray();
 

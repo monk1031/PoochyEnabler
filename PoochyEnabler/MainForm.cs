@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -136,13 +135,9 @@ namespace PoochyEnabler
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(
-                txtStartOffset.Text,
-                NumberStyles.HexNumber,
-                null, 
-                out int startOffset)) return;
+            if (!ControlHelper.TryParseOffset(txtStartOffset.Text, out int startOffset)) return;
             int neededBytes = (int)nudRequiredSize.Value;
-            int currentOffset = (int)(((uint)startOffset + sizeof(uint) - 1) & Constants.AlignMask);
+            int currentOffset = (int)(((uint)startOffset + Constants.UIntSize - 1) & Constants.AlignMask);
             int foundOffset = -1;
 
             // sorting
@@ -174,7 +169,7 @@ namespace PoochyEnabler
                     if (curStart < resEnd && curEnd > resStart)
                     {
                         isFreeSpace = false;
-                        currentOffset = (int)(((uint)resEnd + sizeof(uint) - 1) & Constants.AlignMask);
+                        currentOffset = (int)(((uint)resEnd + Constants.UIntSize - 1) & Constants.AlignMask);
                         break;
                     }
                 }
@@ -187,7 +182,7 @@ namespace PoochyEnabler
                         if (_romData[currentOffset + i] != Constants.FreeSpaceByte)
                         {
                             isFreeSpace = false;
-                            currentOffset = (int)(((uint)(currentOffset + i + sizeof(uint))) & Constants.AlignMask);
+                            currentOffset = (int)(((uint)(currentOffset + i + Constants.UIntSize)) & Constants.AlignMask);
                             break;
                         }
                     }

@@ -14,6 +14,7 @@
         public const int UShortSize = 2;
         public const int UIntSize = 4;
         public const uint BaseAddr = 0x8000000U;
+        public const uint AlignMask = 0xFFFFFFFCU;
         public const int InvalidOffset = -1;
 
         public const byte PaddingByte = 0x0;

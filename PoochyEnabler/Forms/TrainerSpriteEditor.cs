@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Globalization;
 using System.Windows.Forms;
 
 using PoochyEnabler.FileReaders;
@@ -119,7 +118,7 @@ namespace PoochyEnabler.Forms
 
             // txtAnimDataOffset
             int ptrOffset = (int)(_animPointerManager.Entries[idx].pAnimPointer - Constants.BaseAddr);
-            if (IOHelper.TryReadGbaPointer(ptrOffset, _romData, out int dataOffset))
+            if (IOHelper.TryReadPtr(ptrOffset, _romData, out int dataOffset))
             {
                 if (dataOffset == -1)
                 {
@@ -169,10 +168,10 @@ namespace PoochyEnabler.Forms
 
         private void DisplayTrainerSprite()
         {
-            bool isImageValid = 
-                int.TryParse(txtImageOffset.Text, NumberStyles.HexNumber, null, out int imageOffset);
-            bool isPaletteValid = 
-                int.TryParse(txtPaletteOffset.Text, NumberStyles.HexNumber, null, out int paletteOffset);
+            bool isImageValid =
+                ControlHelper.TryParseOffset(txtImageOffset.Text, out int imageOffset);
+            bool isPaletteValid =
+                ControlHelper.TryParseOffset(txtPaletteOffset.Text, out int paletteOffset);
 
             if (!isImageValid || !isPaletteValid)
             {
@@ -305,7 +304,7 @@ namespace PoochyEnabler.Forms
 
                 if (imageData != null)
                 {
-                    IOHelper.WriteDataToRom(_romData, imageRes.Offset, imageData);
+                    IOHelper.WriteBytesToRom(_romData, imageRes.Offset, imageData);
                     _reservationManager.ClearReservation(txtImageOffset);
                 }
             }
@@ -316,7 +315,7 @@ namespace PoochyEnabler.Forms
 
                 if (paletteData != null)
                 {
-                    IOHelper.WriteDataToRom(_romData, paletteRes.Offset, paletteData);
+                    IOHelper.WriteBytesToRom(_romData, paletteRes.Offset, paletteData);
                     _reservationManager.ClearReservation(txtPaletteOffset);
                 }
             }
