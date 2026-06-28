@@ -414,6 +414,7 @@ namespace PoochyEnabler
             this.Controls.Add(this.lblProfile);
             this.Controls.Add(this.grpEditors);
             this.Controls.Add(this.btnLoadData);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "MainForm";

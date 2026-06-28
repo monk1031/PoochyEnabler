@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 using PoochyEnabler.Helpers;
 
@@ -36,6 +37,8 @@ namespace PoochyEnabler
             // event handler
             btnBrowse.Click += BtnBrowse_Click;
             btnApply.Click += BtnApply_Click;
+
+            ControlHelper.AttachOffsetAutoFormat((txtTargetOffset, true));
         }
 
         private void SetupOffsetInput(int? offset)
@@ -97,7 +100,11 @@ namespace PoochyEnabler
             // check offset
             if (txtTargetOffset.Enabled)
             {
-                if (!int.TryParse(txtTargetOffset.Text, out int offset)) return false;
+                if (!int.TryParse(
+                    txtTargetOffset.Text, 
+                    NumberStyles.HexNumber,
+                    null,
+                    out int offset)) return false;
                 Offset = offset;
             }
 

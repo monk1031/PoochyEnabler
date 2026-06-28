@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -43,7 +44,7 @@ namespace PoochyEnabler
 
         private void InitializeControls()
         {
-            ControlHelper.AttachOffsetAutoFormat((txtStartOffset, true), (txtResult, false));
+            ControlHelper.AttachOffsetAutoFormat((txtStartOffset, true));
         }
 
         private void InitializeUIStates()
@@ -134,9 +135,13 @@ namespace PoochyEnabler
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(txtStartOffset.Text, out int startoffset)) return;
+            if (!int.TryParse(
+                txtStartOffset.Text,
+                NumberStyles.HexNumber,
+                null, 
+                out int startOffset)) return;
             int neededBytes = (int)nudRequiredSize.Value;
-            int currentOffset = (int)(((uint)startoffset + sizeof(uint) - 1) & Constants.AlignMask);
+            int currentOffset = (int)(((uint)startOffset + sizeof(uint) - 1) & Constants.AlignMask);
             int foundOffset = -1;
 
             // sorting
