@@ -60,6 +60,7 @@ namespace PoochyEnabler
             // When ROM is not loaded AND editor is not open
             bool canLoadConfig = !_isRomLoaded && !isEditorOpen;
             btnLoadData.Enabled = canLoadConfig;
+            lblProfile.Enabled = canLoadConfig;
             cmbProfile.Enabled = canLoadConfig;
 
             // When ROM is loaded AND editor is not open
