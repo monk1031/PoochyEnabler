@@ -13,10 +13,11 @@ namespace PoochyEnabler.Helpers
         // var excludeNames = new[] { "btnTest1", "btnTest2" };
         // var excludeTypes = new[] { typeof(TextBox), typeof(ComboBox) };
         public static void SetControlsEnabled(
-            Control container,
-            bool enabled,
-            IEnumerable<string> excludeNames = null,
-            IEnumerable<Type> excludeTypes = null)
+                    Control container,
+                    bool enabled,
+                    IEnumerable<string> excludeNames = null,
+                    IEnumerable<Type> excludeTypes = null,
+                    bool includeSelf = true)
         {
             var nameSet =
                 excludeNames != null
@@ -28,20 +29,23 @@ namespace PoochyEnabler.Helpers
                 : null;
 
             ExecuteRecursive(
-                container, 
-                nameSet, 
-                typeSet, 
-                ctrl => 
+                container,
+                nameSet,
+                typeSet,
+                ctrl =>
                 {
                     ctrl.Enabled = enabled;
-                });
+                },
+                includeSelf,
+                true);
         }
 
         // recursive control initialization
         public static void ResetControls(
-                this Control container,
-                IEnumerable<string> excludeNames = null,
-                IEnumerable<Type> excludeTypes = null)
+                        this Control container,
+                        IEnumerable<string> excludeNames = null,
+                        IEnumerable<Type> excludeTypes = null,
+                        bool includeSelf = true) 
         {
             var nameSet =
                 excludeNames != null
@@ -53,10 +57,10 @@ namespace PoochyEnabler.Helpers
                 : null;
 
             ExecuteRecursive(
-                container, 
-                nameSet, 
+                container,
+                nameSet,
                 typeSet,
-                ctrl => 
+                ctrl =>
                 {
                     switch (ctrl)
                     {
@@ -76,19 +80,25 @@ namespace PoochyEnabler.Helpers
                             radioButton.Checked = false;
                             break;
                     }
-                });
+                },
+                includeSelf,
+                true);
         }
 
         private static void ExecuteRecursive(
-                    Control target,
-                    HashSet<string> nameSet,
-                    HashSet<Type> typeSet,
-                    Action<Control> action)
+                            Control target,
+                            HashSet<string> nameSet,
+                            HashSet<Type> typeSet,
+                            Action<Control> action,
+                            bool includeSelf,
+                            bool isRootControl) // me = root?
         {
             if (target == null) return;
+            bool shouldExecute = !isRootControl || includeSelf;
 
-            if ((nameSet?.Contains(target.Name) != true) && 
-                (typeSet?.Contains(target.GetType()) != true)) // null -> false
+            if (shouldExecute &&
+                (nameSet?.Contains(target.Name) != true) &&
+                (typeSet?.Contains(target.GetType()) != true))
             {
                 action(target);
             }
@@ -97,7 +107,13 @@ namespace PoochyEnabler.Helpers
             {
                 foreach (Control child in target.Controls)
                 {
-                    ExecuteRecursive(child, nameSet, typeSet, action);
+                    ExecuteRecursive(
+                        child, 
+                        nameSet, 
+                        typeSet, 
+                        action, 
+                        includeSelf, 
+                        false);
                 }
             }
         }
@@ -111,6 +127,7 @@ namespace PoochyEnabler.Helpers
                    ctrl is TabPage;
         }
 
+        // string -> offset (instant)
         public static bool TryParseOffset(string offsetStr, out int offsetValue)
         {
             return int.TryParse(offsetStr, NumberStyles.HexNumber, null, out offsetValue);
@@ -129,7 +146,7 @@ namespace PoochyEnabler.Helpers
                     // IsNullOrWhiteSpace, "null"
                     if (string.IsNullOrWhiteSpace(txt.Text) || txt.Text.Trim().Equals("null")) return;
 
-                    if (!int.TryParse(txt.Text.Trim(), NumberStyles.HexNumber, null, out int resultValue))
+                    if (!TryParseOffset(txt.Text.Trim(), out int resultValue))
                     {
                         if (showMessage)
                         {
@@ -276,7 +293,7 @@ namespace PoochyEnabler.Helpers
                 if (line.StartsWith("[") && closeBracket > 1)
                 {
                     string hex = line.Substring(1, closeBracket - 1);
-                    if (int.TryParse(hex, NumberStyles.HexNumber, null, out int index))
+                    if (TryParseOffset(hex, out int index))
                     {
                         entry = new KeyValuePair<int, string>(index, line.Trim());
                         return true;
