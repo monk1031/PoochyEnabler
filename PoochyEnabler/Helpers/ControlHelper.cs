@@ -120,7 +120,9 @@ namespace PoochyEnabler.Helpers
                 {
                     // guard
                     if (!(sender is TextBox txt)) return;
-                    if (string.IsNullOrWhiteSpace(txt.Text)) return;
+
+                    // IsNullOrWhiteSpace, "null"
+                    if (string.IsNullOrWhiteSpace(txt.Text) || txt.Text.Trim().Equals("null")) return;
 
                     if (!int.TryParse(txt.Text.Trim(), NumberStyles.HexNumber, null, out int resultValue))
                     {
