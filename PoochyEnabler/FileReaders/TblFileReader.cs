@@ -7,8 +7,6 @@ namespace PoochyEnabler.FileReaders
 {
     public class TblFileReader
     {
-
-
         // to search for
         private readonly ByteTrieNode _byteTrieRoot = new ByteTrieNode();
         private readonly StringTrieNode _stringTrieRoot = new StringTrieNode();
@@ -87,13 +85,13 @@ namespace PoochyEnabler.FileReaders
                 byte currentByte = bytes[currentIdx];
 
                 // terminator
-                if (currentByte == TerminatorByte)
+                if (currentByte == Constants.StrTerminatorByte)
                 {
                     break;
                 }
 
                 // newline
-                if (currentByte == NewlineByte)
+                if (currentByte == Constants.StrNewlineByte)
                 {
                     result.Append(Environment.NewLine);
                     i++;
@@ -153,7 +151,7 @@ namespace PoochyEnabler.FileReaders
                 // newline
                 if (text[i] == '\r' && text[i + 1] == '\n')
                 {
-                    result.Add(NewlineByte);
+                    result.Add(Constants.StrNewlineByte);
                     i += 2;
                     continue;
                 }
@@ -195,7 +193,7 @@ namespace PoochyEnabler.FileReaders
             // terminator?
             if (appendTerminator)
             {
-                result.Add(TerminatorByte);
+                result.Add(Constants.StrTerminatorByte);
             }
 
             // padding?

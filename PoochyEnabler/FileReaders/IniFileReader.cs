@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -95,11 +94,14 @@ namespace PoochyEnabler.FileReaders
                 // check pointer
                 if (rawString.StartsWith("*"))
                 {
-                    if (TryReadPointerAddress(rawString.Substring(1), data, out int ptrValue))
+                    if (TryParseNumber(rawString.Substring(1), out int ptrOffset))
                     {
-                        _iniCacheInt[key] = ptrValue;
+                        if (IOHelper.TryReadPtr(ptrOffset, data, out int resultOffset))
+                        {
+                            _iniCacheInt[key] = resultOffset;
+                            continue;
+                        }
                     }
-                    continue;
                 }
 
                 // number (hex, dec)
@@ -131,27 +133,10 @@ namespace PoochyEnabler.FileReaders
             if (rawString.StartsWith(HexPrefix)) // 0x
             {
                 string hexPart = rawString.Substring(HexPrefix.Length);
-                return int.TryParse(hexPart, NumberStyles.HexNumber, null, out parsedValue);
+                return ControlHelper.TryParseOffset(hexPart, out parsedValue);
             }
 
-            return int.TryParse(rawString, out parsedValue);
-        }
-
-        // remove *
-        private bool TryReadPointerAddress(string offsetStr, byte[] data, out int parsedValue)
-        {
-            parsedValue = unchecked((int)uint.MaxValue); // -1
-
-            if (TryParseNumber(offsetStr, out int ptrOffset))
-            {
-                if (IOHelper.TryReadGbaPointer(ptrOffset, data, out int resultOffset))
-                {
-                    parsedValue = resultOffset;
-                    return true;
-                }
-            }
-
-            return false;
+            return int.TryParse(rawString, out parsedValue); // decimal
         }
     }
 }
