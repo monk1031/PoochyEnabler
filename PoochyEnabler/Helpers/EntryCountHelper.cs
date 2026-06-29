@@ -89,7 +89,7 @@ namespace PoochyEnabler.Helpers
         }
 
         // to create serach mask
-        public static CompiledPattern ParsePattern(string patternStr)
+        private static CompiledPattern ParsePattern(string patternStr)
         {
             var compiledPattern = new CompiledPattern();
             string[] parts = patternStr.Split(' ');
