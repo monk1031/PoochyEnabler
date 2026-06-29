@@ -2,17 +2,44 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PoochyEnabler.Managers
+namespace PoochyEnabler.Helpers
 {
-    public class EntryCountManager
+    public static class EntryCountHelper
     {
+        public static int Count(
+            byte[] data,
+            int baseoffset,
+            string patternStr,
+            int? maxEntries = null,
+            bool allowNullPointer = false)
+        {
+            int cursor = baseoffset;
+            int count = 0;
+            var pattern = ParsePattern(patternStr);
 
+            while (cursor <= data.Length - pattern.Length)
+            {
+                if (maxEntries.HasValue && count >= maxEntries.Value) break;
+                if (!MatchTokens(data, cursor, pattern, allowNullPointer)) break;
 
+                cursor += pattern.Length;
+                count++;
+            }
 
+            return count;
+        }
 
+        private static bool MatchTokens(
+            byte[] data,
+            int cursor,
+            CompiledPattern pattern,
+            bool allowNullPointer)
+        {
 
+        }
 
-        public CompiledPattern ParsePattern(string patternStr)
+        // to create serach mask
+        public static CompiledPattern ParsePattern(string patternStr)
         {
             var compiledPattern = new CompiledPattern();
             string[] parts = patternStr.Split(' ');
@@ -28,10 +55,10 @@ namespace PoochyEnabler.Managers
                 // check value
                 token.Value =
                     type == TokenType.Constant
-                        ? Convert.ToByte(parts[i], Constants.HexBase)
-                        : (byte)0;
+                    ? Convert.ToByte(parts[i], Constants.HexBase)
+                    : (byte)0;
 
-                // check be,le
+                // check be/le
                 if (parts[i].Contains("<"))
                 {
                     int start = parts[i].IndexOf('<');
@@ -103,7 +130,7 @@ namespace PoochyEnabler.Managers
         public class CompiledPattern
         {
             public List<PatternToken> Tokens { get; set; }
-            public int Length 
+            public int Length
             {
                 get => Tokens.Sum(token => token.Length);
             }
@@ -121,38 +148,39 @@ namespace PoochyEnabler.Managers
             public bool IsLittleEndian { get; set; }
             public uint Min { get; set; }
             public uint Max { get; set; }
-            public int Length
-            {
-                get
-                {
-                    switch (Type)
-                    {
-                        case TokenType.Constant:
-                        case TokenType.Wildcard:
-                        case TokenType.Byte:
-                            return 1;
-                        case TokenType.UInt16:
-                            return 2;
-                        case TokenType.UInt32:
-                        case TokenType.Pointer:
-                            return 4;
-                        default:
-                            return 0;
-                    }
-                }
-            }
-
+            public int Length => Type.GetLength();
         }
+    }
 
-        public enum TokenType
+    public enum TokenType
+    {
+        Constant,   // e.g. 0C
+        Wildcard,   // ??
+        Pointer,    // ptr
+        Byte,       // e.g. b[0x00-0x03]
+        UInt16,
+        UInt32,     // e.g. u<LE>[0x00000000-0x10000000]
+        None
+    }
+
+    public static class TokenTypeExtensions
+    {
+        public static int GetLength(this TokenType type)
         {
-            Constant,   // e.g. 0C
-            Wildcard,   // ??
-            Pointer,    // ptr
-            Byte,       // e.g. b[0x00-0x03]
-            UInt16,
-            UInt32,     // e.g. u<LE>[0x00000000-0x10000000]
-            None
+            switch (type)
+            {
+                case TokenType.Constant:
+                case TokenType.Wildcard:
+                case TokenType.Byte:
+                    return 1;
+                case TokenType.UInt16:
+                    return 2;
+                case TokenType.UInt32:
+                case TokenType.Pointer:
+                    return 4;
+                default:
+                    return 0;
+            }
         }
     }
 }
