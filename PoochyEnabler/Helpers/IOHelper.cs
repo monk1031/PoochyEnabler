@@ -10,18 +10,36 @@ namespace PoochyEnabler.Helpers
 {
     public static class IOHelper
     {
-        public static ushort ReadUShortLE(byte[] data, int offset)
+        public static ushort ReadUShort(byte[] data, int offset, bool isLittleEndian = false)
         {
-            return (ushort)(data[offset]
-                         | (data[offset + 1] << Constants.BitsPerByte));
+            if (isLittleEndian)
+            {
+                return (ushort)(data[offset]
+                              | (data[offset + 1] << Constants.BitsPerByte));
+            }
+            else
+            {
+                return (ushort)((data[offset] << Constants.BitsPerByte)
+                              | data[offset + 1]);
+            }
         }
 
-        public static uint ReadUIntLE(byte[] data, int offset)
+        public static uint ReadUInt(byte[] data, int offset, bool isLittleEndian = false)
         {
-            return (uint)data[offset]
-                | ((uint)data[offset + 1] << (Constants.BitsPerByte * 1))
-                | ((uint)data[offset + 2] << (Constants.BitsPerByte * 2))
-                | ((uint)data[offset + 3] << (Constants.BitsPerByte * 3));
+            if (isLittleEndian)
+            {
+                return (uint)data[offset]
+                     | ((uint)data[offset + 1] << (Constants.BitsPerByte * 1))
+                     | ((uint)data[offset + 2] << (Constants.BitsPerByte * 2))
+                     | ((uint)data[offset + 3] << (Constants.BitsPerByte * 3));
+            }
+            else
+            {
+                return ((uint)data[offset] << (Constants.BitsPerByte * 3))
+                     | ((uint)data[offset + 1] << (Constants.BitsPerByte * 2))
+                     | ((uint)data[offset + 2] << (Constants.BitsPerByte * 1))
+                     | (uint)data[offset + 3];
+            }
         }
 
         // addr -> uint (consider bese addr)
@@ -31,7 +49,7 @@ namespace PoochyEnabler.Helpers
             byte[] data, 
             out int resultOffset)
         {
-            uint rawAddr = ReadUIntLE(data, ptrOffset); // uint
+            uint rawAddr = ReadUInt(data, ptrOffset, true); // uint
 
             // check null pointer
             if (rawAddr == 0)

@@ -35,7 +35,57 @@ namespace PoochyEnabler.Helpers
             CompiledPattern pattern,
             bool allowNullPointer)
         {
+            int currentOffset = cursor;
 
+            foreach (var token in pattern.Tokens)
+            {
+                switch (token.Type)
+                {
+                    case TokenType.Constant:
+                        if (data[currentOffset] != token.Value) return false;
+                        break;
+
+                    case TokenType.Wildcard:
+                        break;
+
+                    case TokenType.Byte:
+                        byte bVal = data[currentOffset];
+                        if (bVal < token.Min || bVal > token.Max) return false;
+                        break;
+
+                    case TokenType.UInt16:
+                        ushort usVal = token.IsLittleEndian
+                            ? IOHelper.ReadUShort(data, currentOffset, true)
+                            : IOHelper.ReadUShort(data, currentOffset);
+                        if (usVal < token.Min || usVal > token.Max) return false;
+                        break;
+
+                    case TokenType.UInt32:
+                        uint uiVal = token.IsLittleEndian
+                            ? IOHelper.ReadUInt(data, currentOffset, true)
+                            : IOHelper.ReadUInt(data, currentOffset);
+                        if (uiVal < token.Min || uiVal > token.Max) return false;
+                        break;
+
+                    case TokenType.Pointer:
+                        uint ptrVal = IOHelper.ReadUInt(data, currentOffset, true);
+
+                        if (ptrVal == 0) // null pointer
+                        {
+                            if (!allowNullPointer) return false;
+                        }
+                        else
+                        {
+                            byte topByte = (byte)(ptrVal >> (Constants.BitsPerByte * 3));
+                            if (topByte != 0x08 && topByte != 0x09) return false;
+                        }
+                        break;
+                }
+
+                currentOffset += token.Length;
+            }
+
+            return true;
         }
 
         // to create serach mask
@@ -123,7 +173,8 @@ namespace PoochyEnabler.Helpers
                         return TokenType.UInt32;
                 }
 
-                return TokenType.None;
+                throw new FormatException(
+                    $"Unknown token : {part}");
             }
         }
 
@@ -160,7 +211,6 @@ namespace PoochyEnabler.Helpers
         Byte,       // e.g. b[0x00-0x03]
         UInt16,
         UInt32,     // e.g. u<LE>[0x00000000-0x10000000]
-        None
     }
 
     public static class TokenTypeExtensions
