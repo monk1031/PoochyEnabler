@@ -238,7 +238,7 @@ namespace PoochyEnabler
                 {
                     _editorForm = newForm;
                     _editorForm.FormClosed += EditorForm_FormClosed;
-                    _editorForm.Show();
+                    _editorForm.Show(this);
                     MainFormUIUpdate();
                 }
             }
