@@ -74,6 +74,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Managers\CountManager.cs" />
     <Compile Include="Managers\EntryManager.cs" />
     <Compile Include="Managers\ReservationManager.cs" />
     <Compile Include="Managers\StateManager.cs" />
