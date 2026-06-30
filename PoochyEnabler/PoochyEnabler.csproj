@@ -52,6 +52,12 @@
     <Compile Include="Constants.cs" />
     <Compile Include="FileReaders\IniFileReader.cs" />
     <Compile Include="FileReaders\TblFileReader.cs" />
+    <Compile Include="Forms\OverworldEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\OverworldEditor.Designer.cs">
+      <DependentUpon>OverworldEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\TrainerClassEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,6 +92,9 @@
     <Compile Include="QuickInputPopup.Designer.cs">
       <DependentUpon>QuickInputPopup.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\OverworldEditor.resx">
+      <DependentUpon>OverworldEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\TrainerClassEditor.resx">
       <DependentUpon>TrainerClassEditor.cs</DependentUpon>
     </EmbeddedResource>

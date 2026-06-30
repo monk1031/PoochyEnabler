@@ -1,0 +1,781 @@
+﻿
+namespace PoochyEnabler.Forms
+{
+    partial class OverworldEditor
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OverworldEditor));
+            this.btnSave = new System.Windows.Forms.Button();
+            this.lblTableIdx = new System.Windows.Forms.Label();
+            this.nudTableIdx = new System.Windows.Forms.NumericUpDown();
+            this.lblEntryIdx = new System.Windows.Forms.Label();
+            this.nudEntryIdx = new System.Windows.Forms.NumericUpDown();
+            this.lstEntry = new System.Windows.Forms.ListBox();
+            this.grpEntryData = new System.Windows.Forms.GroupBox();
+            this.btnImportData = new System.Windows.Forms.Button();
+            this.btnExportData = new System.Windows.Forms.Button();
+            this.lblPaletteIdx1 = new System.Windows.Forms.Label();
+            this.cmbPaletteIdx1 = new System.Windows.Forms.ComboBox();
+            this.cmbPaletteIdx2 = new System.Windows.Forms.ComboBox();
+            this.lblUnkValue1 = new System.Windows.Forms.Label();
+            this.nudUnkValue1 = new System.Windows.Forms.NumericUpDown();
+            this.lblFrameSize = new System.Windows.Forms.Label();
+            this.cmbFrameSize = new System.Windows.Forms.ComboBox();
+            this.lblUnkValue2 = new System.Windows.Forms.Label();
+            this.nudUnkValue2 = new System.Windows.Forms.NumericUpDown();
+            this.lblPaletteSlot = new System.Windows.Forms.Label();
+            this.nudPaletteSlot = new System.Windows.Forms.NumericUpDown();
+            this.lblUnkFlags = new System.Windows.Forms.Label();
+            this.chkUnkFlag1 = new System.Windows.Forms.CheckBox();
+            this.chkUnkFlag2 = new System.Windows.Forms.CheckBox();
+            this.chkUnkFlag3 = new System.Windows.Forms.CheckBox();
+            this.lblFootprint = new System.Windows.Forms.Label();
+            this.cmbFootPrint = new System.Windows.Forms.ComboBox();
+            this.lblUnkPtr1 = new System.Windows.Forms.Label();
+            this.txtUnkPtr1 = new System.Windows.Forms.TextBox();
+            this.lblSizeDrawPtr = new System.Windows.Forms.Label();
+            this.txtSizeDrawPtr = new System.Windows.Forms.TextBox();
+            this.lblShiftRedrawPtr = new System.Windows.Forms.Label();
+            this.txtShiftRedrawPtr = new System.Windows.Forms.TextBox();
+            this.lblSpriteTablePtr = new System.Windows.Forms.Label();
+            this.lblUnkPtr2 = new System.Windows.Forms.Label();
+            this.txtSpriteTablePtr = new System.Windows.Forms.TextBox();
+            this.txtUnkPtr2 = new System.Windows.Forms.TextBox();
+            this.lblTextColor = new System.Windows.Forms.Label();
+            this.cmbTextColor = new System.Windows.Forms.ComboBox();
+            this.grpPreview = new System.Windows.Forms.GroupBox();
+            this.picPreview = new System.Windows.Forms.PictureBox();
+            this.btnPreviewPrev = new System.Windows.Forms.Button();
+            this.btnPreviewNext = new System.Windows.Forms.Button();
+            this.nudPreviewIdx = new System.Windows.Forms.NumericUpDown();
+            this.txtFrameOffset = new System.Windows.Forms.TextBox();
+            this.btnImportFrameSprites = new System.Windows.Forms.Button();
+            this.btnExportFrameSprites = new System.Windows.Forms.Button();
+            this.btnCreateSpriteTable = new System.Windows.Forms.Button();
+            this.grpPaletteTable = new System.Windows.Forms.GroupBox();
+            this.cmbPaletteIdx3 = new System.Windows.Forms.ComboBox();
+            this.lblPaletteIdx2 = new System.Windows.Forms.Label();
+            this.lblPaletteOffset = new System.Windows.Forms.Label();
+            this.txtPaletteOffset = new System.Windows.Forms.TextBox();
+            this.lblPalettePreview = new System.Windows.Forms.Label();
+            this.picPalettePreview = new System.Windows.Forms.PictureBox();
+            this.btnCreatePalette = new System.Windows.Forms.Button();
+            this.txtEntryOffset = new System.Windows.Forms.TextBox();
+            this.lblEntryOffset = new System.Windows.Forms.Label();
+            this.btnCreateEntry = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTableIdx)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEntryIdx)).BeginInit();
+            this.grpEntryData.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudUnkValue1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudUnkValue2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPaletteSlot)).BeginInit();
+            this.grpPreview.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPreviewIdx)).BeginInit();
+            this.grpPaletteTable.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPalettePreview)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(20, 16);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(96, 23);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            // 
+            // lblTableIdx
+            // 
+            this.lblTableIdx.AutoSize = true;
+            this.lblTableIdx.Location = new System.Drawing.Point(20, 50);
+            this.lblTableIdx.Name = "lblTableIdx";
+            this.lblTableIdx.Size = new System.Drawing.Size(70, 12);
+            this.lblTableIdx.TabIndex = 1;
+            this.lblTableIdx.Text = "Table Index :";
+            // 
+            // nudTableIdx
+            // 
+            this.nudTableIdx.Location = new System.Drawing.Point(156, 46);
+            this.nudTableIdx.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudTableIdx.Name = "nudTableIdx";
+            this.nudTableIdx.Size = new System.Drawing.Size(56, 19);
+            this.nudTableIdx.TabIndex = 2;
+            // 
+            // lblEntryIdx
+            // 
+            this.lblEntryIdx.AutoSize = true;
+            this.lblEntryIdx.Location = new System.Drawing.Point(20, 74);
+            this.lblEntryIdx.Name = "lblEntryIdx";
+            this.lblEntryIdx.Size = new System.Drawing.Size(111, 12);
+            this.lblEntryIdx.TabIndex = 1;
+            this.lblEntryIdx.Text = "Entries -1 (unused) :";
+            // 
+            // nudEntryIdx
+            // 
+            this.nudEntryIdx.Location = new System.Drawing.Point(156, 70);
+            this.nudEntryIdx.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudEntryIdx.Name = "nudEntryIdx";
+            this.nudEntryIdx.Size = new System.Drawing.Size(56, 19);
+            this.nudEntryIdx.TabIndex = 2;
+            // 
+            // lstEntry
+            // 
+            this.lstEntry.FormattingEnabled = true;
+            this.lstEntry.ItemHeight = 12;
+            this.lstEntry.Location = new System.Drawing.Point(20, 100);
+            this.lstEntry.Name = "lstEntry";
+            this.lstEntry.ScrollAlwaysVisible = true;
+            this.lstEntry.Size = new System.Drawing.Size(192, 292);
+            this.lstEntry.TabIndex = 3;
+            // 
+            // grpEntryData
+            // 
+            this.grpEntryData.Controls.Add(this.btnCreateSpriteTable);
+            this.grpEntryData.Controls.Add(this.txtUnkPtr2);
+            this.grpEntryData.Controls.Add(this.txtShiftRedrawPtr);
+            this.grpEntryData.Controls.Add(this.txtSpriteTablePtr);
+            this.grpEntryData.Controls.Add(this.txtSizeDrawPtr);
+            this.grpEntryData.Controls.Add(this.txtUnkPtr1);
+            this.grpEntryData.Controls.Add(this.chkUnkFlag3);
+            this.grpEntryData.Controls.Add(this.chkUnkFlag2);
+            this.grpEntryData.Controls.Add(this.chkUnkFlag1);
+            this.grpEntryData.Controls.Add(this.nudPaletteSlot);
+            this.grpEntryData.Controls.Add(this.nudUnkValue2);
+            this.grpEntryData.Controls.Add(this.nudUnkValue1);
+            this.grpEntryData.Controls.Add(this.cmbPaletteIdx2);
+            this.grpEntryData.Controls.Add(this.cmbFrameSize);
+            this.grpEntryData.Controls.Add(this.cmbTextColor);
+            this.grpEntryData.Controls.Add(this.cmbFootPrint);
+            this.grpEntryData.Controls.Add(this.cmbPaletteIdx1);
+            this.grpEntryData.Controls.Add(this.lblUnkFlags);
+            this.grpEntryData.Controls.Add(this.lblPaletteSlot);
+            this.grpEntryData.Controls.Add(this.lblUnkPtr2);
+            this.grpEntryData.Controls.Add(this.lblShiftRedrawPtr);
+            this.grpEntryData.Controls.Add(this.lblSpriteTablePtr);
+            this.grpEntryData.Controls.Add(this.lblSizeDrawPtr);
+            this.grpEntryData.Controls.Add(this.lblUnkPtr1);
+            this.grpEntryData.Controls.Add(this.lblUnkValue2);
+            this.grpEntryData.Controls.Add(this.lblUnkValue1);
+            this.grpEntryData.Controls.Add(this.lblFrameSize);
+            this.grpEntryData.Controls.Add(this.lblTextColor);
+            this.grpEntryData.Controls.Add(this.lblFootprint);
+            this.grpEntryData.Controls.Add(this.lblPaletteIdx1);
+            this.grpEntryData.Controls.Add(this.btnExportData);
+            this.grpEntryData.Controls.Add(this.btnImportData);
+            this.grpEntryData.Location = new System.Drawing.Point(232, 40);
+            this.grpEntryData.Name = "grpEntryData";
+            this.grpEntryData.Size = new System.Drawing.Size(316, 493);
+            this.grpEntryData.TabIndex = 4;
+            this.grpEntryData.TabStop = false;
+            this.grpEntryData.Text = "Entry Data";
+            // 
+            // btnImportData
+            // 
+            this.btnImportData.Location = new System.Drawing.Point(20, 28);
+            this.btnImportData.Name = "btnImportData";
+            this.btnImportData.Size = new System.Drawing.Size(96, 23);
+            this.btnImportData.TabIndex = 0;
+            this.btnImportData.Text = "Import Data";
+            this.btnImportData.UseVisualStyleBackColor = true;
+            // 
+            // btnExportData
+            // 
+            this.btnExportData.Location = new System.Drawing.Point(124, 28);
+            this.btnExportData.Name = "btnExportData";
+            this.btnExportData.Size = new System.Drawing.Size(96, 23);
+            this.btnExportData.TabIndex = 0;
+            this.btnExportData.Text = "Export Data";
+            this.btnExportData.UseVisualStyleBackColor = true;
+            // 
+            // lblPaletteIdx1
+            // 
+            this.lblPaletteIdx1.AutoSize = true;
+            this.lblPaletteIdx1.Location = new System.Drawing.Point(20, 72);
+            this.lblPaletteIdx1.Name = "lblPaletteIdx1";
+            this.lblPaletteIdx1.Size = new System.Drawing.Size(62, 12);
+            this.lblPaletteIdx1.TabIndex = 1;
+            this.lblPaletteIdx1.Text = "Palette ID :";
+            // 
+            // cmbPaletteIdx1
+            // 
+            this.cmbPaletteIdx1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPaletteIdx1.FormattingEnabled = true;
+            this.cmbPaletteIdx1.Location = new System.Drawing.Point(140, 68);
+            this.cmbPaletteIdx1.Name = "cmbPaletteIdx1";
+            this.cmbPaletteIdx1.Size = new System.Drawing.Size(72, 20);
+            this.cmbPaletteIdx1.TabIndex = 2;
+            // 
+            // cmbPaletteIdx2
+            // 
+            this.cmbPaletteIdx2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPaletteIdx2.FormattingEnabled = true;
+            this.cmbPaletteIdx2.Location = new System.Drawing.Point(220, 68);
+            this.cmbPaletteIdx2.Name = "cmbPaletteIdx2";
+            this.cmbPaletteIdx2.Size = new System.Drawing.Size(72, 20);
+            this.cmbPaletteIdx2.TabIndex = 2;
+            // 
+            // lblUnkValue1
+            // 
+            this.lblUnkValue1.AutoSize = true;
+            this.lblUnkValue1.Location = new System.Drawing.Point(20, 98);
+            this.lblUnkValue1.Name = "lblUnkValue1";
+            this.lblUnkValue1.Size = new System.Drawing.Size(100, 12);
+            this.lblUnkValue1.TabIndex = 1;
+            this.lblUnkValue1.Text = "Unknown Value 1 :";
+            // 
+            // nudUnkValue1
+            // 
+            this.nudUnkValue1.Location = new System.Drawing.Point(140, 94);
+            this.nudUnkValue1.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudUnkValue1.Name = "nudUnkValue1";
+            this.nudUnkValue1.Size = new System.Drawing.Size(72, 19);
+            this.nudUnkValue1.TabIndex = 3;
+            // 
+            // lblFrameSize
+            // 
+            this.lblFrameSize.AutoSize = true;
+            this.lblFrameSize.Location = new System.Drawing.Point(20, 124);
+            this.lblFrameSize.Name = "lblFrameSize";
+            this.lblFrameSize.Size = new System.Drawing.Size(68, 12);
+            this.lblFrameSize.TabIndex = 1;
+            this.lblFrameSize.Text = "Frame Size :";
+            // 
+            // cmbFrameSize
+            // 
+            this.cmbFrameSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFrameSize.FormattingEnabled = true;
+            this.cmbFrameSize.Location = new System.Drawing.Point(140, 120);
+            this.cmbFrameSize.Name = "cmbFrameSize";
+            this.cmbFrameSize.Size = new System.Drawing.Size(152, 20);
+            this.cmbFrameSize.TabIndex = 2;
+            // 
+            // lblUnkValue2
+            // 
+            this.lblUnkValue2.AutoSize = true;
+            this.lblUnkValue2.Location = new System.Drawing.Point(20, 228);
+            this.lblUnkValue2.Name = "lblUnkValue2";
+            this.lblUnkValue2.Size = new System.Drawing.Size(100, 12);
+            this.lblUnkValue2.TabIndex = 1;
+            this.lblUnkValue2.Text = "Unknown Value 2 :";
+            // 
+            // nudUnkValue2
+            // 
+            this.nudUnkValue2.Location = new System.Drawing.Point(140, 224);
+            this.nudUnkValue2.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudUnkValue2.Name = "nudUnkValue2";
+            this.nudUnkValue2.Size = new System.Drawing.Size(72, 19);
+            this.nudUnkValue2.TabIndex = 3;
+            // 
+            // lblPaletteSlot
+            // 
+            this.lblPaletteSlot.AutoSize = true;
+            this.lblPaletteSlot.Location = new System.Drawing.Point(20, 150);
+            this.lblPaletteSlot.Name = "lblPaletteSlot";
+            this.lblPaletteSlot.Size = new System.Drawing.Size(71, 12);
+            this.lblPaletteSlot.TabIndex = 1;
+            this.lblPaletteSlot.Text = "Palette Slot :";
+            // 
+            // nudPaletteSlot
+            // 
+            this.nudPaletteSlot.Location = new System.Drawing.Point(140, 146);
+            this.nudPaletteSlot.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.nudPaletteSlot.Name = "nudPaletteSlot";
+            this.nudPaletteSlot.Size = new System.Drawing.Size(72, 19);
+            this.nudPaletteSlot.TabIndex = 3;
+            // 
+            // lblUnkFlags
+            // 
+            this.lblUnkFlags.AutoSize = true;
+            this.lblUnkFlags.Location = new System.Drawing.Point(20, 176);
+            this.lblUnkFlags.Name = "lblUnkFlags";
+            this.lblUnkFlags.Size = new System.Drawing.Size(89, 12);
+            this.lblUnkFlags.TabIndex = 1;
+            this.lblUnkFlags.Text = "Unknown Flags :";
+            // 
+            // chkUnkFlag1
+            // 
+            this.chkUnkFlag1.AutoSize = true;
+            this.chkUnkFlag1.Location = new System.Drawing.Point(140, 174);
+            this.chkUnkFlag1.Name = "chkUnkFlag1";
+            this.chkUnkFlag1.Size = new System.Drawing.Size(30, 16);
+            this.chkUnkFlag1.TabIndex = 4;
+            this.chkUnkFlag1.Text = "1";
+            this.chkUnkFlag1.UseVisualStyleBackColor = true;
+            // 
+            // chkUnkFlag2
+            // 
+            this.chkUnkFlag2.AutoSize = true;
+            this.chkUnkFlag2.Location = new System.Drawing.Point(178, 174);
+            this.chkUnkFlag2.Name = "chkUnkFlag2";
+            this.chkUnkFlag2.Size = new System.Drawing.Size(30, 16);
+            this.chkUnkFlag2.TabIndex = 4;
+            this.chkUnkFlag2.Text = "2";
+            this.chkUnkFlag2.UseVisualStyleBackColor = true;
+            // 
+            // chkUnkFlag3
+            // 
+            this.chkUnkFlag3.AutoSize = true;
+            this.chkUnkFlag3.Location = new System.Drawing.Point(216, 174);
+            this.chkUnkFlag3.Name = "chkUnkFlag3";
+            this.chkUnkFlag3.Size = new System.Drawing.Size(30, 16);
+            this.chkUnkFlag3.TabIndex = 4;
+            this.chkUnkFlag3.Text = "3";
+            this.chkUnkFlag3.UseVisualStyleBackColor = true;
+            // 
+            // lblFootprint
+            // 
+            this.lblFootprint.AutoSize = true;
+            this.lblFootprint.Location = new System.Drawing.Point(20, 202);
+            this.lblFootprint.Name = "lblFootprint";
+            this.lblFootprint.Size = new System.Drawing.Size(57, 12);
+            this.lblFootprint.TabIndex = 1;
+            this.lblFootprint.Text = "Footprint :";
+            // 
+            // cmbFootPrint
+            // 
+            this.cmbFootPrint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFootPrint.FormattingEnabled = true;
+            this.cmbFootPrint.Location = new System.Drawing.Point(140, 198);
+            this.cmbFootPrint.Name = "cmbFootPrint";
+            this.cmbFootPrint.Size = new System.Drawing.Size(88, 20);
+            this.cmbFootPrint.TabIndex = 2;
+            // 
+            // lblUnkPtr1
+            // 
+            this.lblUnkPtr1.AutoSize = true;
+            this.lblUnkPtr1.Location = new System.Drawing.Point(20, 254);
+            this.lblUnkPtr1.Name = "lblUnkPtr1";
+            this.lblUnkPtr1.Size = new System.Drawing.Size(107, 12);
+            this.lblUnkPtr1.TabIndex = 1;
+            this.lblUnkPtr1.Text = "Unknown Pointer 1 :";
+            // 
+            // txtUnkPtr1
+            // 
+            this.txtUnkPtr1.Location = new System.Drawing.Point(140, 250);
+            this.txtUnkPtr1.Name = "txtUnkPtr1";
+            this.txtUnkPtr1.Size = new System.Drawing.Size(88, 19);
+            this.txtUnkPtr1.TabIndex = 5;
+            // 
+            // lblSizeDrawPtr
+            // 
+            this.lblSizeDrawPtr.AutoSize = true;
+            this.lblSizeDrawPtr.Location = new System.Drawing.Point(20, 280);
+            this.lblSizeDrawPtr.Name = "lblSizeDrawPtr";
+            this.lblSizeDrawPtr.Size = new System.Drawing.Size(102, 12);
+            this.lblSizeDrawPtr.TabIndex = 1;
+            this.lblSizeDrawPtr.Text = "Size-draw Pointer :";
+            // 
+            // txtSizeDrawPtr
+            // 
+            this.txtSizeDrawPtr.Location = new System.Drawing.Point(140, 276);
+            this.txtSizeDrawPtr.Name = "txtSizeDrawPtr";
+            this.txtSizeDrawPtr.Size = new System.Drawing.Size(88, 19);
+            this.txtSizeDrawPtr.TabIndex = 5;
+            // 
+            // lblShiftRedrawPtr
+            // 
+            this.lblShiftRedrawPtr.AutoSize = true;
+            this.lblShiftRedrawPtr.Location = new System.Drawing.Point(20, 306);
+            this.lblShiftRedrawPtr.Name = "lblShiftRedrawPtr";
+            this.lblShiftRedrawPtr.Size = new System.Drawing.Size(115, 12);
+            this.lblShiftRedrawPtr.TabIndex = 1;
+            this.lblShiftRedrawPtr.Text = "Shift-redraw Pointer :";
+            // 
+            // txtShiftRedrawPtr
+            // 
+            this.txtShiftRedrawPtr.Location = new System.Drawing.Point(140, 302);
+            this.txtShiftRedrawPtr.Name = "txtShiftRedrawPtr";
+            this.txtShiftRedrawPtr.Size = new System.Drawing.Size(88, 19);
+            this.txtShiftRedrawPtr.TabIndex = 5;
+            // 
+            // lblSpriteTablePtr
+            // 
+            this.lblSpriteTablePtr.AutoSize = true;
+            this.lblSpriteTablePtr.Location = new System.Drawing.Point(20, 332);
+            this.lblSpriteTablePtr.Name = "lblSpriteTablePtr";
+            this.lblSpriteTablePtr.Size = new System.Drawing.Size(113, 12);
+            this.lblSpriteTablePtr.TabIndex = 1;
+            this.lblSpriteTablePtr.Text = "Sprite Table Pointer :";
+            // 
+            // lblUnkPtr2
+            // 
+            this.lblUnkPtr2.AutoSize = true;
+            this.lblUnkPtr2.Location = new System.Drawing.Point(20, 358);
+            this.lblUnkPtr2.Name = "lblUnkPtr2";
+            this.lblUnkPtr2.Size = new System.Drawing.Size(107, 12);
+            this.lblUnkPtr2.TabIndex = 1;
+            this.lblUnkPtr2.Text = "Unknown Pointer 2 :";
+            // 
+            // txtSpriteTablePtr
+            // 
+            this.txtSpriteTablePtr.Location = new System.Drawing.Point(140, 328);
+            this.txtSpriteTablePtr.Name = "txtSpriteTablePtr";
+            this.txtSpriteTablePtr.ReadOnly = true;
+            this.txtSpriteTablePtr.Size = new System.Drawing.Size(88, 19);
+            this.txtSpriteTablePtr.TabIndex = 5;
+            // 
+            // txtUnkPtr2
+            // 
+            this.txtUnkPtr2.Location = new System.Drawing.Point(140, 354);
+            this.txtUnkPtr2.Name = "txtUnkPtr2";
+            this.txtUnkPtr2.Size = new System.Drawing.Size(88, 19);
+            this.txtUnkPtr2.TabIndex = 5;
+            // 
+            // lblTextColor
+            // 
+            this.lblTextColor.AutoSize = true;
+            this.lblTextColor.Location = new System.Drawing.Point(20, 400);
+            this.lblTextColor.Name = "lblTextColor";
+            this.lblTextColor.Size = new System.Drawing.Size(65, 12);
+            this.lblTextColor.TabIndex = 1;
+            this.lblTextColor.Text = "Text Color :";
+            // 
+            // cmbTextColor
+            // 
+            this.cmbTextColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTextColor.FormattingEnabled = true;
+            this.cmbTextColor.Location = new System.Drawing.Point(140, 396);
+            this.cmbTextColor.Name = "cmbTextColor";
+            this.cmbTextColor.Size = new System.Drawing.Size(88, 20);
+            this.cmbTextColor.TabIndex = 2;
+            // 
+            // grpPreview
+            // 
+            this.grpPreview.Controls.Add(this.btnExportFrameSprites);
+            this.grpPreview.Controls.Add(this.btnImportFrameSprites);
+            this.grpPreview.Controls.Add(this.txtFrameOffset);
+            this.grpPreview.Controls.Add(this.nudPreviewIdx);
+            this.grpPreview.Controls.Add(this.btnPreviewNext);
+            this.grpPreview.Controls.Add(this.btnPreviewPrev);
+            this.grpPreview.Controls.Add(this.picPreview);
+            this.grpPreview.Location = new System.Drawing.Point(566, 40);
+            this.grpPreview.Name = "grpPreview";
+            this.grpPreview.Size = new System.Drawing.Size(296, 266);
+            this.grpPreview.TabIndex = 5;
+            this.grpPreview.TabStop = false;
+            this.grpPreview.Text = "Preview";
+            // 
+            // picPreview
+            // 
+            this.picPreview.Location = new System.Drawing.Point(20, 28);
+            this.picPreview.Name = "picPreview";
+            this.picPreview.Size = new System.Drawing.Size(256, 128);
+            this.picPreview.TabIndex = 0;
+            this.picPreview.TabStop = false;
+            // 
+            // btnPreviewPrev
+            // 
+            this.btnPreviewPrev.Location = new System.Drawing.Point(20, 164);
+            this.btnPreviewPrev.Name = "btnPreviewPrev";
+            this.btnPreviewPrev.Size = new System.Drawing.Size(30, 23);
+            this.btnPreviewPrev.TabIndex = 1;
+            this.btnPreviewPrev.Text = "<";
+            this.btnPreviewPrev.UseVisualStyleBackColor = true;
+            // 
+            // btnPreviewNext
+            // 
+            this.btnPreviewNext.Location = new System.Drawing.Point(118, 164);
+            this.btnPreviewNext.Name = "btnPreviewNext";
+            this.btnPreviewNext.Size = new System.Drawing.Size(30, 23);
+            this.btnPreviewNext.TabIndex = 1;
+            this.btnPreviewNext.Text = ">";
+            this.btnPreviewNext.UseVisualStyleBackColor = true;
+            // 
+            // nudPreviewIdx
+            // 
+            this.nudPreviewIdx.Location = new System.Drawing.Point(56, 166);
+            this.nudPreviewIdx.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudPreviewIdx.Name = "nudPreviewIdx";
+            this.nudPreviewIdx.Size = new System.Drawing.Size(56, 19);
+            this.nudPreviewIdx.TabIndex = 2;
+            // 
+            // txtFrameOffset
+            // 
+            this.txtFrameOffset.Location = new System.Drawing.Point(196, 166);
+            this.txtFrameOffset.Name = "txtFrameOffset";
+            this.txtFrameOffset.ReadOnly = true;
+            this.txtFrameOffset.Size = new System.Drawing.Size(80, 19);
+            this.txtFrameOffset.TabIndex = 3;
+            // 
+            // btnImportFrameSprites
+            // 
+            this.btnImportFrameSprites.Location = new System.Drawing.Point(20, 194);
+            this.btnImportFrameSprites.Name = "btnImportFrameSprites";
+            this.btnImportFrameSprites.Size = new System.Drawing.Size(256, 23);
+            this.btnImportFrameSprites.TabIndex = 4;
+            this.btnImportFrameSprites.Text = "Import Frame Sprites";
+            this.btnImportFrameSprites.UseVisualStyleBackColor = true;
+            // 
+            // btnExportFrameSprites
+            // 
+            this.btnExportFrameSprites.Location = new System.Drawing.Point(20, 222);
+            this.btnExportFrameSprites.Name = "btnExportFrameSprites";
+            this.btnExportFrameSprites.Size = new System.Drawing.Size(256, 23);
+            this.btnExportFrameSprites.TabIndex = 4;
+            this.btnExportFrameSprites.Text = "Export Frame Sprites";
+            this.btnExportFrameSprites.UseVisualStyleBackColor = true;
+            // 
+            // btnCreateSpriteTable
+            // 
+            this.btnCreateSpriteTable.Location = new System.Drawing.Point(236, 327);
+            this.btnCreateSpriteTable.Name = "btnCreateSpriteTable";
+            this.btnCreateSpriteTable.Size = new System.Drawing.Size(56, 23);
+            this.btnCreateSpriteTable.TabIndex = 6;
+            this.btnCreateSpriteTable.Text = "New";
+            this.btnCreateSpriteTable.UseVisualStyleBackColor = true;
+            // 
+            // grpPaletteTable
+            // 
+            this.grpPaletteTable.Controls.Add(this.btnCreatePalette);
+            this.grpPaletteTable.Controls.Add(this.picPalettePreview);
+            this.grpPaletteTable.Controls.Add(this.txtPaletteOffset);
+            this.grpPaletteTable.Controls.Add(this.cmbPaletteIdx3);
+            this.grpPaletteTable.Controls.Add(this.lblPalettePreview);
+            this.grpPaletteTable.Controls.Add(this.lblPaletteOffset);
+            this.grpPaletteTable.Controls.Add(this.lblPaletteIdx2);
+            this.grpPaletteTable.Location = new System.Drawing.Point(566, 318);
+            this.grpPaletteTable.Name = "grpPaletteTable";
+            this.grpPaletteTable.Size = new System.Drawing.Size(258, 120);
+            this.grpPaletteTable.TabIndex = 6;
+            this.grpPaletteTable.TabStop = false;
+            this.grpPaletteTable.Text = "Palette Table";
+            // 
+            // cmbPaletteIdx3
+            // 
+            this.cmbPaletteIdx3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPaletteIdx3.FormattingEnabled = true;
+            this.cmbPaletteIdx3.Location = new System.Drawing.Point(92, 28);
+            this.cmbPaletteIdx3.Name = "cmbPaletteIdx3";
+            this.cmbPaletteIdx3.Size = new System.Drawing.Size(80, 20);
+            this.cmbPaletteIdx3.TabIndex = 4;
+            // 
+            // lblPaletteIdx2
+            // 
+            this.lblPaletteIdx2.AutoSize = true;
+            this.lblPaletteIdx2.Location = new System.Drawing.Point(20, 32);
+            this.lblPaletteIdx2.Name = "lblPaletteIdx2";
+            this.lblPaletteIdx2.Size = new System.Drawing.Size(62, 12);
+            this.lblPaletteIdx2.TabIndex = 3;
+            this.lblPaletteIdx2.Text = "Palette ID :";
+            // 
+            // lblPaletteOffset
+            // 
+            this.lblPaletteOffset.AutoSize = true;
+            this.lblPaletteOffset.Location = new System.Drawing.Point(20, 58);
+            this.lblPaletteOffset.Name = "lblPaletteOffset";
+            this.lblPaletteOffset.Size = new System.Drawing.Size(43, 12);
+            this.lblPaletteOffset.TabIndex = 3;
+            this.lblPaletteOffset.Text = "Offset :";
+            // 
+            // txtPaletteOffset
+            // 
+            this.txtPaletteOffset.Location = new System.Drawing.Point(92, 54);
+            this.txtPaletteOffset.Name = "txtPaletteOffset";
+            this.txtPaletteOffset.ReadOnly = true;
+            this.txtPaletteOffset.Size = new System.Drawing.Size(80, 19);
+            this.txtPaletteOffset.TabIndex = 6;
+            // 
+            // lblPalettePreview
+            // 
+            this.lblPalettePreview.AutoSize = true;
+            this.lblPalettePreview.Location = new System.Drawing.Point(20, 84);
+            this.lblPalettePreview.Name = "lblPalettePreview";
+            this.lblPalettePreview.Size = new System.Drawing.Size(51, 12);
+            this.lblPalettePreview.TabIndex = 3;
+            this.lblPalettePreview.Text = "Preview :";
+            // 
+            // picPalettePreview
+            // 
+            this.picPalettePreview.Location = new System.Drawing.Point(92, 80);
+            this.picPalettePreview.Name = "picPalettePreview";
+            this.picPalettePreview.Size = new System.Drawing.Size(80, 20);
+            this.picPalettePreview.TabIndex = 7;
+            this.picPalettePreview.TabStop = false;
+            // 
+            // btnCreatePalette
+            // 
+            this.btnCreatePalette.Location = new System.Drawing.Point(180, 26);
+            this.btnCreatePalette.Name = "btnCreatePalette";
+            this.btnCreatePalette.Size = new System.Drawing.Size(56, 23);
+            this.btnCreatePalette.TabIndex = 8;
+            this.btnCreatePalette.Text = "New";
+            this.btnCreatePalette.UseVisualStyleBackColor = true;
+            // 
+            // txtEntryOffset
+            // 
+            this.txtEntryOffset.Location = new System.Drawing.Point(68, 400);
+            this.txtEntryOffset.Name = "txtEntryOffset";
+            this.txtEntryOffset.ReadOnly = true;
+            this.txtEntryOffset.Size = new System.Drawing.Size(80, 19);
+            this.txtEntryOffset.TabIndex = 8;
+            // 
+            // lblEntryOffset
+            // 
+            this.lblEntryOffset.AutoSize = true;
+            this.lblEntryOffset.Location = new System.Drawing.Point(20, 404);
+            this.lblEntryOffset.Name = "lblEntryOffset";
+            this.lblEntryOffset.Size = new System.Drawing.Size(43, 12);
+            this.lblEntryOffset.TabIndex = 7;
+            this.lblEntryOffset.Text = "Offset :";
+            // 
+            // btnCreateEntry
+            // 
+            this.btnCreateEntry.Location = new System.Drawing.Point(156, 398);
+            this.btnCreateEntry.Name = "btnCreateEntry";
+            this.btnCreateEntry.Size = new System.Drawing.Size(56, 23);
+            this.btnCreateEntry.TabIndex = 9;
+            this.btnCreateEntry.Text = "New";
+            this.btnCreateEntry.UseVisualStyleBackColor = true;
+            // 
+            // OverworldEditor
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1004, 631);
+            this.Controls.Add(this.btnCreateEntry);
+            this.Controls.Add(this.txtEntryOffset);
+            this.Controls.Add(this.lblEntryOffset);
+            this.Controls.Add(this.grpPaletteTable);
+            this.Controls.Add(this.grpPreview);
+            this.Controls.Add(this.grpEntryData);
+            this.Controls.Add(this.lstEntry);
+            this.Controls.Add(this.nudEntryIdx);
+            this.Controls.Add(this.nudTableIdx);
+            this.Controls.Add(this.lblEntryIdx);
+            this.Controls.Add(this.lblTableIdx);
+            this.Controls.Add(this.btnSave);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "OverworldEditor";
+            this.Text = "OverworldEditor";
+            ((System.ComponentModel.ISupportInitialize)(this.nudTableIdx)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEntryIdx)).EndInit();
+            this.grpEntryData.ResumeLayout(false);
+            this.grpEntryData.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudUnkValue1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudUnkValue2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPaletteSlot)).EndInit();
+            this.grpPreview.ResumeLayout(false);
+            this.grpPreview.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPreviewIdx)).EndInit();
+            this.grpPaletteTable.ResumeLayout(false);
+            this.grpPaletteTable.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPalettePreview)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Label lblTableIdx;
+        private System.Windows.Forms.NumericUpDown nudTableIdx;
+        private System.Windows.Forms.Label lblEntryIdx;
+        private System.Windows.Forms.NumericUpDown nudEntryIdx;
+        private System.Windows.Forms.ListBox lstEntry;
+        private System.Windows.Forms.GroupBox grpEntryData;
+        private System.Windows.Forms.NumericUpDown nudUnkValue1;
+        private System.Windows.Forms.ComboBox cmbPaletteIdx2;
+        private System.Windows.Forms.ComboBox cmbPaletteIdx1;
+        private System.Windows.Forms.Label lblUnkValue1;
+        private System.Windows.Forms.Label lblPaletteIdx1;
+        private System.Windows.Forms.Button btnExportData;
+        private System.Windows.Forms.Button btnImportData;
+        private System.Windows.Forms.ComboBox cmbFrameSize;
+        private System.Windows.Forms.Label lblFrameSize;
+        private System.Windows.Forms.NumericUpDown nudPaletteSlot;
+        private System.Windows.Forms.NumericUpDown nudUnkValue2;
+        private System.Windows.Forms.Label lblPaletteSlot;
+        private System.Windows.Forms.Label lblUnkValue2;
+        private System.Windows.Forms.CheckBox chkUnkFlag3;
+        private System.Windows.Forms.CheckBox chkUnkFlag2;
+        private System.Windows.Forms.CheckBox chkUnkFlag1;
+        private System.Windows.Forms.ComboBox cmbFootPrint;
+        private System.Windows.Forms.Label lblUnkFlags;
+        private System.Windows.Forms.Label lblFootprint;
+        private System.Windows.Forms.TextBox txtUnkPtr1;
+        private System.Windows.Forms.Label lblUnkPtr1;
+        private System.Windows.Forms.TextBox txtUnkPtr2;
+        private System.Windows.Forms.TextBox txtShiftRedrawPtr;
+        private System.Windows.Forms.TextBox txtSpriteTablePtr;
+        private System.Windows.Forms.TextBox txtSizeDrawPtr;
+        private System.Windows.Forms.Label lblUnkPtr2;
+        private System.Windows.Forms.Label lblShiftRedrawPtr;
+        private System.Windows.Forms.Label lblSpriteTablePtr;
+        private System.Windows.Forms.Label lblSizeDrawPtr;
+        private System.Windows.Forms.ComboBox cmbTextColor;
+        private System.Windows.Forms.Label lblTextColor;
+        private System.Windows.Forms.GroupBox grpPreview;
+        private System.Windows.Forms.PictureBox picPreview;
+        private System.Windows.Forms.Button btnExportFrameSprites;
+        private System.Windows.Forms.Button btnImportFrameSprites;
+        private System.Windows.Forms.TextBox txtFrameOffset;
+        private System.Windows.Forms.NumericUpDown nudPreviewIdx;
+        private System.Windows.Forms.Button btnPreviewNext;
+        private System.Windows.Forms.Button btnPreviewPrev;
+        private System.Windows.Forms.Button btnCreateSpriteTable;
+        private System.Windows.Forms.GroupBox grpPaletteTable;
+        private System.Windows.Forms.ComboBox cmbPaletteIdx3;
+        private System.Windows.Forms.Label lblPaletteIdx2;
+        private System.Windows.Forms.Button btnCreatePalette;
+        private System.Windows.Forms.PictureBox picPalettePreview;
+        private System.Windows.Forms.TextBox txtPaletteOffset;
+        private System.Windows.Forms.Label lblPalettePreview;
+        private System.Windows.Forms.Label lblPaletteOffset;
+        private System.Windows.Forms.TextBox txtEntryOffset;
+        private System.Windows.Forms.Label lblEntryOffset;
+        private System.Windows.Forms.Button btnCreateEntry;
+    }
+}
