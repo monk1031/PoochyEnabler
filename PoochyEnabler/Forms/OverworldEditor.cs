@@ -98,7 +98,17 @@ namespace PoochyEnabler.Forms
 
                 // valid entry?
                 pattern = "FF FF ?? 11 ?? 11 ?? ?? ?? 00 ?? 00 ?? ?? ?? 00 ptr ptr ptr ptr ptr";
+                foreach (var dataPtr in _dataPointers)
+                {
+                    if (!EntryCountHelper.Validate(_romData, dataPtr.Value, pattern, true))
+                    {
+                        _dataPointers.Remove(dataPtr.Key);
+                    }
+                }
 
+
+                    
+                
 
 
 

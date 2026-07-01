@@ -6,6 +6,16 @@ namespace PoochyEnabler.Helpers
 {
     public static class EntryCountHelper
     {
+        public static bool Validate(
+            byte[] data,
+            int offset,
+            string patternStr,
+            bool allowNullPointer = false)
+        {
+            var pattern = ParsePattern(patternStr);
+            return MatchTokens(data, offset, pattern, allowNullPointer);
+        }
+
         public static int Count(
             byte[] data,
             int baseoffset,
