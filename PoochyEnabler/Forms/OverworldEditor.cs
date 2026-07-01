@@ -28,7 +28,7 @@ namespace PoochyEnabler.Forms
 
         private bool _isUpdatingUI = false;
         private int _currentTableIdx = 0;
-        private int _currentOwIdx = 0;
+        private int _currentEntryIdx = 0;
         private bool _isMultipleTable = false;
         private List<Dictionary<int, int>> _dataPointers = null;
         private BindingList<PaletteComboItem> _paletteComboSource = null;
@@ -87,7 +87,8 @@ namespace PoochyEnabler.Forms
             InitializeControls();
             // InitializeEventHandlers();
 
-            LoadEntryToUI(_currentTableIdx);
+            LoadDataEntryListBox(_currentTableIdx);
+            LoadEntryToUI(_currentEntryIdx);
         }
 
         private void InitializeManagers()
@@ -152,8 +153,8 @@ namespace PoochyEnabler.Forms
                 foreach (var kvp in owTableIdx)
                 {
                     int targetOffset = kvp.Value;
-                    if (targetOffset == Constants.InvalidOffset ||
-                        !EntryCountHelper.Validate(_romData, targetOffset, patternStr, true)) // remove null entry
+                    if (targetOffset == Constants.InvalidOffset || // remove null entry
+                        !EntryCountHelper.Validate(_romData, targetOffset, patternStr, true))
                     {
                         keysToRemove.Add(kvp.Key);
                     }
@@ -270,17 +271,6 @@ namespace PoochyEnabler.Forms
             }
         }
 
-        private void LoadEntryToUI(int idx)
-        {
-            _isUpdatingUI = true;
-            _reservationManager.ClearAllReservations();
-
-            LoadDataEntryListBox(_currentTableIdx);
-
-            _isUpdatingUI = false;
-            _stateManager.SetInitialValues();
-        }
-
         private void LoadDataEntryListBox(int idx)
         {
             lstEntry.BeginUpdate();
@@ -298,8 +288,31 @@ namespace PoochyEnabler.Forms
                 lstEntry.SelectedIndex = 0;
             }
             _isUpdatingUI = false;
-
-            txtEntryOffset.Text = _dataPointers[idx].Count.ToString("X8");
         }
+
+        private void LoadEntryToUI(int idx)
+        {
+            _isUpdatingUI = true;
+            _reservationManager.ClearAllReservations();
+
+            _currentEntryIdx = idx;
+
+            _owManager = new EntryManager<OverworldDataEntry>(_romData, _config, _charmap);
+            _owManager.Load(_dataPointers[_currentTableIdx][idx], 1); // this entry
+
+            // txtEntryOffset
+            txtEntryOffset.Text = _owManager.Offset.ToString("X8");
+
+            // grpEntryData
+            BindingHelper.BindObjectToControls(grpEntryData, _owManager.Entries[0]);
+
+            _isUpdatingUI = false;
+            _stateManager.SetInitialValues();
+        }
+
+
     }
 }
+
+
+
