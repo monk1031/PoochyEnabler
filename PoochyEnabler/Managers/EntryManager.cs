@@ -113,7 +113,7 @@ namespace PoochyEnabler.Managers
 
 
 
-    public class OverworldEntry
+    public class OverworldDataEntry
     {
         public ushort _Padding1;
         public ushort _PaletteIdx1;
@@ -139,7 +139,7 @@ namespace PoochyEnabler.Managers
         public ushort _Padding1;
     }
 
-    public class OverworldFrameeEntry
+    public class OverworldFrameEntry
     {
         public uint pFrameOffset;
         public ushort _FrameSize;
