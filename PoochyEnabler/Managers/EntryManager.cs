@@ -110,6 +110,52 @@ namespace PoochyEnabler.Managers
 
     /* ---------------------------------------------------------------- */
 
+
+
+
+    public class OverworldEntry
+    {
+        public ushort _Padding1;
+        public ushort _PaletteIdx1;
+        public ushort _PaletteIdx2;
+        public ushort UnkValue;
+        public ushort _FrameSizeWidth;
+        public ushort _FrameSizeHeight;
+        public byte _PaletteSlotAndUnkFlags;
+        public byte Footprint;
+        public byte TextColor;
+        public byte _Padding2;
+        public uint pUnkPtr1;
+        public uint pSizeDrawPtr;
+        public uint pShiftRedrawPtr;
+        public uint pSpriteTablePtr;
+        public uint pUnkPtr2;
+    }
+
+    public class OverworldPaletteEntry
+    {
+        public uint pPaletteOffset;
+        public ushort _PaletteIdx;
+        public ushort _Padding1;
+    }
+
+    public class OverworldFrameeEntry
+    {
+        public uint pFrameOffset;
+        public ushort _FrameSize;
+        public ushort _Padding1;
+    }
+
+
+
+
+
+
+
+
+
+    /* ---------------------------------------------------------------- */
+
     public class ClassNameEntry
     {
         [DynamicString("ClassNameEntryLength")]
