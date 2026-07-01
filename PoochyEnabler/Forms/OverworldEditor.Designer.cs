@@ -51,7 +51,7 @@ namespace PoochyEnabler.Forms
             this.cmbPaletteIdx2 = new System.Windows.Forms.ComboBox();
             this.cmbFrameSize = new System.Windows.Forms.ComboBox();
             this.cmbTextColor = new System.Windows.Forms.ComboBox();
-            this.cmbFootPrint = new System.Windows.Forms.ComboBox();
+            this.cmbFootprint = new System.Windows.Forms.ComboBox();
             this.cmbPaletteIdx1 = new System.Windows.Forms.ComboBox();
             this.lblUnkFlags = new System.Windows.Forms.Label();
             this.lblPaletteSlot = new System.Windows.Forms.Label();
@@ -175,7 +175,7 @@ namespace PoochyEnabler.Forms
             this.grpEntryData.Controls.Add(this.cmbPaletteIdx2);
             this.grpEntryData.Controls.Add(this.cmbFrameSize);
             this.grpEntryData.Controls.Add(this.cmbTextColor);
-            this.grpEntryData.Controls.Add(this.cmbFootPrint);
+            this.grpEntryData.Controls.Add(this.cmbFootprint);
             this.grpEntryData.Controls.Add(this.cmbPaletteIdx1);
             this.grpEntryData.Controls.Add(this.lblUnkFlags);
             this.grpEntryData.Controls.Add(this.lblPaletteSlot);
@@ -324,14 +324,14 @@ namespace PoochyEnabler.Forms
             this.cmbTextColor.Size = new System.Drawing.Size(88, 20);
             this.cmbTextColor.TabIndex = 2;
             // 
-            // cmbFootPrint
+            // cmbFootprint
             // 
-            this.cmbFootPrint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFootPrint.FormattingEnabled = true;
-            this.cmbFootPrint.Location = new System.Drawing.Point(140, 202);
-            this.cmbFootPrint.Name = "cmbFootPrint";
-            this.cmbFootPrint.Size = new System.Drawing.Size(88, 20);
-            this.cmbFootPrint.TabIndex = 2;
+            this.cmbFootprint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFootprint.FormattingEnabled = true;
+            this.cmbFootprint.Location = new System.Drawing.Point(140, 202);
+            this.cmbFootprint.Name = "cmbFootprint";
+            this.cmbFootprint.Size = new System.Drawing.Size(88, 20);
+            this.cmbFootprint.TabIndex = 2;
             // 
             // cmbPaletteIdx1
             // 
@@ -713,7 +713,7 @@ namespace PoochyEnabler.Forms
         private System.Windows.Forms.CheckBox chkUnkFlag3;
         private System.Windows.Forms.CheckBox chkUnkFlag2;
         private System.Windows.Forms.CheckBox chkUnkFlag1;
-        private System.Windows.Forms.ComboBox cmbFootPrint;
+        private System.Windows.Forms.ComboBox cmbFootprint;
         private System.Windows.Forms.Label lblUnkFlags;
         private System.Windows.Forms.Label lblFootprint;
         private System.Windows.Forms.TextBox txtUnkPtr1;

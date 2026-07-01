@@ -272,7 +272,7 @@ namespace PoochyEnabler.Helpers
         // load cmb from text file
         public static void LoadComboBoxFromTextFile(ComboBox comboBox, string filePath)
         {
-            var entries = new List<KeyValuePair<int, string>>();
+            var entries = new List<KeyValuePair<byte, string>>();
             foreach (string line in File.ReadLines(filePath))
             {
                 if (!string.IsNullOrWhiteSpace(line) && 
@@ -287,7 +287,7 @@ namespace PoochyEnabler.Helpers
             comboBox.DataSource = entries;
 
             // [XX]ABCD
-            bool TryParseLine(string line, out KeyValuePair<int, string> entry)
+            bool TryParseLine(string line, out KeyValuePair<byte, string> entry)
             {
                 int closeBracket = line.IndexOf(']');
                 if (line.StartsWith("[") && closeBracket > 1)
@@ -295,13 +295,13 @@ namespace PoochyEnabler.Helpers
                     string hex = line.Substring(1, closeBracket - 1);
                     if (TryParseOffset(hex, out int index))
                     {
-                        entry = new KeyValuePair<int, string>(index, line.Trim());
+                        entry = new KeyValuePair<byte, string>((byte)index, line.Trim());
                         return true;
                     }
                 }
 
                 // fail
-                entry = default(KeyValuePair<int, string>);
+                entry = default(KeyValuePair<byte, string>);
                 return false;
             }
         }

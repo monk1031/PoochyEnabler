@@ -215,7 +215,7 @@ namespace PoochyEnabler.Forms
                 picPalettePreview);
             ControlHelper.AttachNumericUpDownNavigators(
                 nudPreviewIdx, btnPreviewPrev, btnPreviewNext);
-            ControlHelper.LoadComboBoxFromTextFile(cmbFootPrint, "txt/OverworldSpriteFootprint.txt");
+            ControlHelper.LoadComboBoxFromTextFile(cmbFootprint, "txt/OverworldSpriteFootprint.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbTextColor, "txt/OverworldSpriteTextColor.txt");
 
             UpdatePaletteComboBox();

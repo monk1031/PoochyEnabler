@@ -209,7 +209,7 @@ namespace PoochyEnabler.Helpers
                 case ComboBox cmb:
                     if (!string.IsNullOrEmpty(cmb.ValueMember))
                     {
-                        cmb.SelectedValue = value; // be careful
+                        cmb.SelectedValue = value;
                     }
                     else
                     {
