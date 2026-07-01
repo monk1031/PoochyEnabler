@@ -30,7 +30,7 @@ namespace PoochyEnabler.Forms
         private int _currentTableIdx = 0;
         private int _currentOwIdx = 0;
         private bool _isMultipleTable = false;
-        private List<List<int>> _dataPointers = null;
+        private List<Dictionary<int, int>> _dataPointers = null;
         private BindingList<PaletteComboItem> _paletteComboSource = null;
 
         private static class StateKeys
@@ -94,19 +94,18 @@ namespace PoochyEnabler.Forms
         {
             _isMultipleTable = _config.TryReadValue("EnableMultipleOverworldSpriteTable", out bool enabled) && enabled;
             int maxEntries = (int)byte.MaxValue;
-            string patternPtr = "ptr";
+            string patternStr = "ptr";
+            _dataPointers = new List<Dictionary<int, int>>();
 
-            _dataPointers = new List<List<int>>();
             var owTableOffsets = new List<int>(); // temporary
-
-            if (_isMultipleTable && _config.TryReadValue("MultipleOverworldSpriteTableOffset", out int baseGroupPtr))
+            if (_isMultipleTable && _config.TryReadValue("MultipleOverworldSpriteTableOffset", out int baseGroupOffset))
             {
                 // count ow table group
-                int groupCount = EntryCountHelper.Count(_romData, baseGroupPtr, patternPtr, maxEntries, true);
+                int groupCount = EntryCountHelper.Count(_romData, baseGroupOffset, patternStr, maxEntries, true);
                 for (int i = 0; i < groupCount; i++)
                 {
-                    int currentGroupPtr = baseGroupPtr + (i * Constants.UIntSize);
-                    if (IOHelper.TryReadPtr(currentGroupPtr, _romData, out int owTableOffset))
+                    int currentGroupOffset = baseGroupOffset + (i * Constants.UIntSize);
+                    if (IOHelper.TryReadPtr(currentGroupOffset, _romData, out int owTableOffset))
                     {
                         owTableOffsets.Add(owTableOffset); // include null pointer
                     }
@@ -123,7 +122,7 @@ namespace PoochyEnabler.Forms
             // add entry
             foreach (int owTableOffset in owTableOffsets)
             {
-                List<int> owEntryOffsets = null;
+                Dictionary<int, int> owEntryOffsets = null;
 
                 // null pointer?
                 if (owTableOffset == Constants.InvalidOffset)
@@ -132,28 +131,45 @@ namespace PoochyEnabler.Forms
                     continue;
                 }
 
-                owEntryOffsets = new List<int>();
-                int entryCount = EntryCountHelper.Count(_romData, owTableOffset, patternPtr, maxEntries, true);
+                owEntryOffsets = new Dictionary<int, int>();
+                int entryCount = EntryCountHelper.Count(_romData, owTableOffset, patternStr, maxEntries, true);
                 for (int i = 0; i < entryCount; i++)
                 {
-                    int currentEntryPtr = owTableOffset + (i * Constants.UIntSize);
-                    if (IOHelper.TryReadPtr(currentEntryPtr, _romData, out int owEntryOffset))
+                    int currentEntryOffset = owTableOffset + (i * Constants.UIntSize);
+                    if (IOHelper.TryReadPtr(currentEntryOffset, _romData, out int owDataOffset))
                     {
-                        owEntryOffsets.Add(owEntryOffset);
+                        owEntryOffsets.Add(i, owDataOffset);
                     }
                 }
                 _dataPointers.Add(owEntryOffsets);
             }
 
             // valid entry?
-            var keysToRemove = new List<int>();
-            string patternEntry = "FF FF ?? 11 ?? 11 ?? ?? ?? 00 ?? 00 ?? ?? ?? 00 ptr ptr ptr ptr ptr";
+            patternStr = "FF FF ?? 11 ?? 11 ?? ?? ?? 00 ?? 00 ?? ?? ?? 00 ptr ptr ptr ptr ptr";
+            foreach (var owTableIdx in _dataPointers)
+            {
+                var keysToRemove = new List<int>();
+                foreach (var kvp in owTableIdx)
+                {
+                    int targetOffset = kvp.Value;
+                    if (targetOffset == Constants.InvalidOffset ||
+                        !EntryCountHelper.Validate(_romData, targetOffset, patternStr, true)) // remove null entry
+                    {
+                        keysToRemove.Add(kvp.Key);
+                    }
+                }
+
+                foreach (var key in keysToRemove)
+                {
+                    owTableIdx.Remove(key);
+                }
+            }
 
             // palette
-            patternEntry = "ptr ?? 11 00 00";
+            patternStr = "ptr ?? 11 00 00";
             if (_config.TryReadValue("OverworldSpritePaletteTableOffset", out int palTableOffset))
             {
-                int palCount = EntryCountHelper.Count(_romData, palTableOffset, patternEntry, maxEntries, true);
+                int palCount = EntryCountHelper.Count(_romData, palTableOffset, patternStr, maxEntries, true);
                 _palManager = new EntryManager<OverworldPaletteEntry>(_romData, _config, _charmap);
                 _palManager.Load(palTableOffset, palCount);
             }
@@ -267,7 +283,23 @@ namespace PoochyEnabler.Forms
 
         private void LoadDataEntryListBox(int idx)
         {
-           txtEntryOffset.Text = _dataPointers[0][151].ToString("X8");
+            lstEntry.BeginUpdate();
+            lstEntry.Items.Clear();
+            int entryCount = _dataPointers[idx].Keys.Max() + 1;
+            for (int i = 0; i < entryCount; i++)
+            {
+                lstEntry.Items.Add($"No. {i:D4}");
+            }
+            lstEntry.EndUpdate();
+
+            _isUpdatingUI = true;
+            if (lstEntry.Items.Count > 0)
+            {
+                lstEntry.SelectedIndex = 0;
+            }
+            _isUpdatingUI = false;
+
+            txtEntryOffset.Text = _dataPointers[idx].Count.ToString("X8");
         }
     }
 }
