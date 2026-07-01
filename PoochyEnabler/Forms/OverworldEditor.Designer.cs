@@ -156,7 +156,7 @@ namespace PoochyEnabler.Forms
             this.lstEntry.Location = new System.Drawing.Point(20, 100);
             this.lstEntry.Name = "lstEntry";
             this.lstEntry.ScrollAlwaysVisible = true;
-            this.lstEntry.Size = new System.Drawing.Size(192, 292);
+            this.lstEntry.Size = new System.Drawing.Size(192, 304);
             this.lstEntry.TabIndex = 3;
             // 
             // grpEntryData
@@ -627,7 +627,7 @@ namespace PoochyEnabler.Forms
             // 
             // txtEntryOffset
             // 
-            this.txtEntryOffset.Location = new System.Drawing.Point(68, 400);
+            this.txtEntryOffset.Location = new System.Drawing.Point(68, 416);
             this.txtEntryOffset.Name = "txtEntryOffset";
             this.txtEntryOffset.ReadOnly = true;
             this.txtEntryOffset.Size = new System.Drawing.Size(80, 19);
@@ -636,7 +636,7 @@ namespace PoochyEnabler.Forms
             // lblEntryOffset
             // 
             this.lblEntryOffset.AutoSize = true;
-            this.lblEntryOffset.Location = new System.Drawing.Point(20, 404);
+            this.lblEntryOffset.Location = new System.Drawing.Point(20, 420);
             this.lblEntryOffset.Name = "lblEntryOffset";
             this.lblEntryOffset.Size = new System.Drawing.Size(43, 12);
             this.lblEntryOffset.TabIndex = 7;
@@ -644,7 +644,7 @@ namespace PoochyEnabler.Forms
             // 
             // btnCreateEntry
             // 
-            this.btnCreateEntry.Location = new System.Drawing.Point(156, 398);
+            this.btnCreateEntry.Location = new System.Drawing.Point(156, 414);
             this.btnCreateEntry.Name = "btnCreateEntry";
             this.btnCreateEntry.Size = new System.Drawing.Size(56, 23);
             this.btnCreateEntry.TabIndex = 9;

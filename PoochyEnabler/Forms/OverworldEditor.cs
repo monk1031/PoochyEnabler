@@ -39,7 +39,7 @@ namespace PoochyEnabler.Forms
 
         private static class StateKeys
         {
-            public static readonly string d1 = nameof(d1);
+            public static readonly string SpriteFrames = nameof(SpriteFrames);
             public static readonly string d2 = nameof(d2);
         }
 
@@ -89,7 +89,7 @@ namespace PoochyEnabler.Forms
 
             InitializeManagers();
             InitializeControls();
-            // InitializeEventHandlers();
+            InitializeEventHandlers();
 
             LoadDataEntryListBox(_currentTableIdx);
             LoadEntryToUI(_currentEntryIdx);
@@ -185,12 +185,8 @@ namespace PoochyEnabler.Forms
             _stateManager.AddControlsRecursive(
                 grpEntryData);
             _stateManager.AddBinaries(
-                (StateKeys.d1, null),
+                (StateKeys.SpriteFrames, null),
                 (StateKeys.d2, null));
-
-
-            // _owManager = new EntryManager<OverworldEntry>(_romData, _config, _charmap);
-            // _owManager.Load("TrainerImageTableOffset", "TrainerSpriteCount");
 
             // _FrameManager = new EntryManager<OverworldFrameEntry>(_romData, _config, _charmap);
             // _FrameManager.Load("TrainerYPositionTableOffset", "TrainerSpriteCount");
@@ -275,6 +271,30 @@ namespace PoochyEnabler.Forms
             }
         }
 
+        private void InitializeEventHandlers()
+        {
+            // btnSave.Click += btnSave_Click;
+            // this.FormClosing += OverworldSpriteEditor_FormClosing;
+
+            // nudDataTableIdx.ValueChanged += nudDataTableIdx_ValueChanged;
+            lstEntry.SelectedIndexChanged += lstEntry_SelectedIndexChanged;
+
+            // cmbDataPalIdx1.SelectedIndexChanged += cmbDataPalIdx1_SelectedIndexChanged;
+            // nudSpriteFrameCount.ValueChanged += nudSpriteFrameCount_ValueChanged;
+
+            // cmbPalIdx.SelectedIndexChanged += cmbPalIdx_SelectedIndexChanged;
+            // btnCreateNewPalIdx.Click += btnCreateNewPalIdx_Click;
+
+            // btnImportDataEntry.Click += btnImportDataEntry_Click;
+            // btnExportDataEntry.Click += btnExportDataEntry_Click;
+            // btnCreateNewDataEntry.Click += btnCreateNewDataEntry_Click;
+
+            // btnCreateNewImgTable.Click += btnCreateNewImgTable_Click;
+
+            // btnImportSpriteFrames.Click += btnImportSpriteFrames_Click;
+            // btnExportSpriteFrames.Click += btnExportSpriteFrames_Click;
+        }
+
         private void LoadDataEntryListBox(int idx)
         {
             lstEntry.BeginUpdate();
@@ -327,6 +347,9 @@ namespace PoochyEnabler.Forms
             chkUnkFlag2.Checked = (paletteSlotAndUnknown & OverworldSpriteUnkFlag2Mask) != 0;
             chkUnkFlag3.Checked = (paletteSlotAndUnknown & OverworldSpriteUnkFlag3Mask) != 0;
 
+            // grpPreview
+            LoadSpriteFrames();
+
 
             _isUpdatingUI = false;
             _stateManager.SetInitialValues();
@@ -376,9 +399,68 @@ namespace PoochyEnabler.Forms
             }
         }
 
+        private void LoadSpriteFrames()
+        {
+            // clear
+            picPreview?.Dispose();
+            picPreview.Image = null;
 
+            // check offset
+            bool isImgTableValid = 
+                !string.IsNullOrWhiteSpace(txtSpriteTablePtr.Text) &&
+                !txtSpriteTablePtr.Text.Equals("null");
+            ControlHelper.SetControlsEnabled(picPreview, isImgTableValid);
+            if(!isImgTableValid) // addtional reset
+            {
+                _isUpdatingUI = true;
+                ControlHelper.ResetControls(picPreview);
+                nudPreviewIdx.Maximum = 0;
+                _isUpdatingUI = false;
+                return;
+            }
+            if (!ControlHelper.TryParseOffset(txtSpriteTablePtr.Text, out int frameTableOffset)) return;
 
+            // frame size
+            var frameSize = cmbFrameSize.SelectedItem as FrameSizeComboItem;
+            if (frameSize == null) return;
+            int expectedVramSize = frameSize.VramSize;
+            int expectedWidth = frameSize.Width;
+            int expectedHeight = frameSize.Height;
+        }
 
+        private void lstEntry_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            int newentryIndex = lstEntry.SelectedIndex;
+            if (newentryIndex == _currentEntryIdx) return;
+
+            if (btnSave.Enabled)
+            {
+                ControlHelper.HandleUnsavedChanges(
+                    saveAction: () =>
+                    {
+                        // SaveCurrentData(_currentEntryIdx);
+                        LoadEntryToUI(newentryIndex);
+                    },
+                    discardAction: () =>
+                    {
+                        // DiscardTemporaryPalette();
+                        LoadEntryToUI(newentryIndex);
+                    },
+                    cancelAction: () =>
+                    {
+                        _isUpdatingUI = true;
+                        lstEntry.SelectedIndex = _currentEntryIdx;
+                        _isUpdatingUI = false;
+                    }
+                );
+            }
+            else
+            {
+                LoadEntryToUI(newentryIndex);
+            }
+        }
     }
 }
 
