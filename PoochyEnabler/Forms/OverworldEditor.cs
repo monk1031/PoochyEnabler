@@ -33,6 +33,10 @@ namespace PoochyEnabler.Forms
         private List<Dictionary<int, int>> _dataPointers = null;
         private BindingList<PaletteComboItem> _paletteComboSource = null;
 
+        private const byte OverworldSpriteUnkFlag1Mask = 0x10;
+        private const byte OverworldSpriteUnkFlag2Mask = 0x40;
+        private const byte OverworldSpriteUnkFlag3Mask = 0x80;
+
         private static class StateKeys
         {
             public static readonly string d1 = nameof(d1);
@@ -299,21 +303,30 @@ namespace PoochyEnabler.Forms
 
             _owManager = new EntryManager<OverworldDataEntry>(_romData, _config, _charmap);
             _owManager.Load(_dataPointers[_currentTableIdx][idx], 1); // this entry
+            var currentEntry = _owManager.Entries[0];
 
             // txtEntryOffset
             txtEntryOffset.Text = _owManager.Offset.ToString("X8");
 
             // grpEntryData
-            BindingHelper.BindObjectToControls(grpEntryData, _owManager.Entries[0]);
+            BindingHelper.BindObjectToControls(grpEntryData, currentEntry);
 
             // palette cmb
-            LoadToPaletteComboBox(cmbPaletteIdx1, _owManager.Entries[0]._PaletteIdx1);
-            LoadToPaletteComboBox(cmbPaletteIdx2, _owManager.Entries[0]._PaletteIdx2);
+            LoadToPaletteComboBox(cmbPaletteIdx1, currentEntry._PaletteIdx1);
+            LoadToPaletteComboBox(cmbPaletteIdx2, currentEntry._PaletteIdx2);
 
             // frame size cmb
-            ushort width = _owManager.Entries[0]._FrameSizeWidth;
-            ushort height = _owManager.Entries[0]._FrameSizeHeight;
+            ushort width = currentEntry._FrameSizeWidth;
+            ushort height = currentEntry._FrameSizeHeight;
             LoadToFrameSizeComboBox(width, height);
+
+            // palette slot and unknown flags
+            byte paletteSlotAndUnknown = currentEntry._PaletteSlotAndUnkFlags;
+            nudPaletteSlot.Value = paletteSlotAndUnknown & Constants.NibbleMask;
+            chkUnkFlag1.Checked = (paletteSlotAndUnknown & OverworldSpriteUnkFlag1Mask) != 0;
+            chkUnkFlag2.Checked = (paletteSlotAndUnknown & OverworldSpriteUnkFlag2Mask) != 0;
+            chkUnkFlag3.Checked = (paletteSlotAndUnknown & OverworldSpriteUnkFlag3Mask) != 0;
+
 
             _isUpdatingUI = false;
             _stateManager.SetInitialValues();
