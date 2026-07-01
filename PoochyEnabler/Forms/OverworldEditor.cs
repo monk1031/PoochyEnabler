@@ -39,6 +39,25 @@ namespace PoochyEnabler.Forms
             public static readonly string d2 = nameof(d2);
         }
 
+        private class FrameSizeComboItem
+        {
+            public string Key { get; set; }
+            public int Width { get; set; }
+            public int Height { get; set; }
+            public int VramSize { get; set; }
+            public string DisplayText => $"{Key} (0x{VramSize:X})";
+        }
+
+        private List<FrameSizeComboItem> _dataSizePresets = new List<FrameSizeComboItem>
+        {
+            new FrameSizeComboItem { Key = "16x32",  Width = 0x10, Height = 0x20, VramSize = 0x100 },
+            new FrameSizeComboItem { Key = "32x32",  Width = 0x20, Height = 0x20, VramSize = 0x200 },
+            new FrameSizeComboItem { Key = "16x16",  Width = 0x10, Height = 0x10, VramSize = 0x80 },
+            new FrameSizeComboItem { Key = "64x64",  Width = 0x40, Height = 0x40, VramSize = 0x800 },
+            new FrameSizeComboItem { Key = "128x64", Width = 0x80, Height = 0x40, VramSize = 0x1000 },
+            new FrameSizeComboItem { Key = "32x16",  Width = 0x20, Height = 0x10, VramSize = 0x100 }
+        };
+
         public OverworldEditor(
             byte[] romData,
             IniFileReader config,
@@ -56,7 +75,7 @@ namespace PoochyEnabler.Forms
             _saveAction = saveAction;
 
             InitializeManagers();
-            // InitializeControls();
+            InitializeControls();
             // InitializeEventHandlers();
 
             LoadEntryToUI(_currentTableIdx);
@@ -100,7 +119,7 @@ namespace PoochyEnabler.Forms
                 {
                     int currentEntryPtr = owTableOffset + (i * Constants.UIntSize);
                     if (IOHelper.TryReadPtr(currentEntryPtr, _romData, out int owDataOffset) && 
-                        owDataOffset != Constants.InvalidOffset)
+                        owDataOffset != Constants.InvalidOffset) // null pointer
                     {
                         _dataPointers.Add(i, owDataOffset);
                     }
@@ -146,6 +165,33 @@ namespace PoochyEnabler.Forms
 
             // _FrameManager = new EntryManager<OverworldFrameEntry>(_romData, _config, _charmap);
             // _FrameManager.Load("TrainerYPositionTableOffset", "TrainerSpriteCount");
+        }
+
+        private void InitializeControls()
+        {
+            // nudTableIdx
+            nudTableIdx.Maximum = _dataPointers.Count - 1;
+
+            // frame size cmb
+            cmbFrameSize.DataSource = new List<FrameSizeComboItem>(_dataSizePresets);
+            cmbFrameSize.DisplayMember = nameof(FrameSizeComboItem.DisplayText);
+
+            // picSpritePreviewFrame
+            picPreview.SizeMode = PictureBoxSizeMode.CenterImage;
+            picPreview.BackColor = Color.White;
+
+            ControlHelper.AttachOffsetAutoFormat(
+                (txtUnkPtr1, false), 
+                (txtSizeDrawPtr, false), 
+                (txtShiftRedrawPtr, false), 
+                (txtUnkPtr2, false));
+            ControlHelper.AttachExternalBorder(
+                picPreview,
+                picPalettePreview);
+            ControlHelper.AttachNumericUpDownNavigators(
+                nudPreviewIdx, btnPreviewPrev, btnPreviewNext);
+            ControlHelper.LoadComboBoxFromTextFile(cmbFootPrint, "txt/OverworldSpriteFootprint.txt");
+            ControlHelper.LoadComboBoxFromTextFile(cmbTextColor, "txt/OverworldSpriteTextColor.txt");
         }
 
         private void LoadEntryToUI(int idx)
