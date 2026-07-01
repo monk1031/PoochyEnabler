@@ -133,9 +133,9 @@ namespace PoochyEnabler.Forms
             this.lblEntryIdx.AutoSize = true;
             this.lblEntryIdx.Location = new System.Drawing.Point(20, 74);
             this.lblEntryIdx.Name = "lblEntryIdx";
-            this.lblEntryIdx.Size = new System.Drawing.Size(111, 12);
+            this.lblEntryIdx.Size = new System.Drawing.Size(116, 12);
             this.lblEntryIdx.TabIndex = 1;
-            this.lblEntryIdx.Text = "Entries -1 (unused) :";
+            this.lblEntryIdx.Text = "Entries -1 (unused?) :";
             // 
             // nudEntryIdx
             // 

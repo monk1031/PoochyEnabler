@@ -27,6 +27,7 @@ namespace PoochyEnabler.Forms
         private EntryManager<OverworldFrameEntry> _FrameManager = null;
 
         private bool _isUpdatingUI = false;
+        private int _currentTableIdx = 0;
         private int _currentOwIdx = 0;
         private bool _isMultipleTable = false;
         private Dictionary<int, int> _groupPointers = null;
@@ -55,90 +56,105 @@ namespace PoochyEnabler.Forms
             _saveAction = saveAction;
 
             InitializeManagers();
-            InitializeControls();
-            InitializeEventHandlers();
+            // InitializeControls();
+            // InitializeEventHandlers();
 
-            LoadEntryToUI(_currentOwIdx);
+            LoadEntryToUI(_currentTableIdx);
         }
 
         private void InitializeManagers()
         {
             _isMultipleTable = _config.TryReadValue("EnableMultipleOverworldSpriteTable", out bool enabled) && enabled;
-            if (_isMultipleTable && _config.TryReadValue("MultipleOverworldSpriteTableOffset", out int groupOffset))
-            {
-                int maxEntries = (int)byte.MaxValue;
+            int maxEntries = (int)byte.MaxValue;
+            string patternPtr = "ptr";
+            _groupPointers = new Dictionary<int, int>();
 
+            if (_isMultipleTable && _config.TryReadValue("MultipleOverworldSpriteTableOffset", out int groupPtr))
+            {
                 // count ow table group
-                string pattern = "ptr";
-                int groupCount = EntryCountHelper.Count(_romData, groupOffset, pattern, maxEntries, true);
+                int groupCount = EntryCountHelper.Count(_romData, groupPtr, patternPtr, maxEntries, true);
                 for (int i = 0; i < groupCount; i++)
                 {
-                    groupOffset += i * Constants.UIntSize;
-                    if (IOHelper.TryReadPtr(groupOffset, _romData, out int owTableOffset))
+                    int currentGroupPtr = groupPtr + (i * Constants.UIntSize);
+                    if (IOHelper.TryReadPtr(currentGroupPtr, _romData, out int owTableOffset))
                     {
                         _groupPointers.Add(i, owTableOffset);
                     }
                 }
-
-                // count entry
-                foreach (var groupPtr in _groupPointers)
+            }
+            else // single group
+            {
+                if (_config.TryReadValue("OverworldSpriteTableOffset", out int owTableOffset))
                 {
-                    int owTableOffset = groupPtr.Value;
-                    int entryCount = EntryCountHelper.Count(_romData, owTableOffset, pattern, maxEntries, true);
-                    
-                    for (int i = 0; i < entryCount; i++)
-                    {
-                        owTableOffset += i * Constants.UIntSize;
-                        if (IOHelper.TryReadPtr(groupOffset, _romData, out int owDataOffset))
-                        {
-                            _dataPointers.Add(i, owDataOffset);
-                        }
-                    }
+                    _groupPointers.Add(0, owTableOffset); // index 0
                 }
-
-                // valid entry?
-                pattern = "FF FF ?? 11 ?? 11 ?? ?? ?? 00 ?? 00 ?? ?? ?? 00 ptr ptr ptr ptr ptr";
-                foreach (var dataPtr in _dataPointers)
-                {
-                    if (!EntryCountHelper.Validate(_romData, dataPtr.Value, pattern, true))
-                    {
-                        _dataPointers.Remove(dataPtr.Key);
-                    }
-                }
-
-
-                    
-                
-
-
-
-
-
             }
 
+            // count entry
+            _dataPointers = new Dictionary<int, int>();
+            foreach (var owTableDict in _groupPointers)
+            {
+                int owTableOffset = owTableDict.Value;
+                int entryCount = EntryCountHelper.Count(_romData, owTableOffset, patternPtr, maxEntries, true);
+                for (int i = 0; i < entryCount; i++)
+                {
+                    int currentEntryPtr = owTableOffset + (i * Constants.UIntSize);
+                    if (IOHelper.TryReadPtr(currentEntryPtr, _romData, out int owDataOffset) && 
+                        owDataOffset != Constants.InvalidOffset)
+                    {
+                        _dataPointers.Add(i, owDataOffset);
+                    }
+                }
+            }
 
+            // valid entry?
+            var keysToRemove = new List<int>();
+            string patternEntry = "FF FF ?? 11 ?? 11 ?? ?? ?? 00 ?? 00 ?? ?? ?? 00 ptr ptr ptr ptr ptr";
+            foreach (var owDataDict in _dataPointers)
+            {
+                if (!EntryCountHelper.Validate(_romData, owDataDict.Value, patternEntry, true))
+                {
+                    keysToRemove.Add(owDataDict.Key);
+                }
+            }
+            foreach (var key in keysToRemove)
+            {
+                _dataPointers.Remove(key);
+            }
 
-
-            _owManager = new EntryManager<OverworldEntry>(_romData, _config, _charmap);
-            _owManager.Load("TrainerImageTableOffset", "TrainerSpriteCount");
-            _palManager = new EntryManager<OverworldPaletteEntry>(_romData, _config, _charmap);
-            _palManager.Load("TrainerPaletteTableOffset", "TrainerSpriteCount");
-
-
-
-
-            _FrameManager = new EntryManager<OverworldFrameEntry>(_romData, _config, _charmap);
-            _FrameManager.Load("TrainerYPositionTableOffset", "TrainerSpriteCount");
-
+            // palette
+            patternEntry = "ptr ?? 11 00 00";
+            if (_config.TryReadValue("OverworldSpritePaletteTableOffset", out int palTableOffset))
+            {
+                int palCount = EntryCountHelper.Count(_romData, palTableOffset, patternEntry, maxEntries, true);
+                _palManager = new EntryManager<OverworldPaletteEntry>(_romData, _config, _charmap);
+                _palManager.Load(palTableOffset, palCount);
+            }
 
             _stateManager.StateChanged += hasChanges => btnSave.Enabled = hasChanges;
             _stateManager.AddControls(
-                txtImageOffset,
-                txtPaletteOffset,
-                nudYPosition);
+                txtEntryOffset);
+            _stateManager.AddControlsRecursive(
+                grpEntryData);
             _stateManager.AddBinaries(
-                (StateKeys.ImageData, null),
-                (StateKeys.PaletteData, null));
+                (StateKeys.d1, null),
+                (StateKeys.d2, null));
+
+
+            // _owManager = new EntryManager<OverworldEntry>(_romData, _config, _charmap);
+            // _owManager.Load("TrainerImageTableOffset", "TrainerSpriteCount");
+
+            // _FrameManager = new EntryManager<OverworldFrameEntry>(_romData, _config, _charmap);
+            // _FrameManager.Load("TrainerYPositionTableOffset", "TrainerSpriteCount");
+        }
+
+        private void LoadEntryToUI(int idx)
+        {
+            _isUpdatingUI = true;
+            _reservationManager.ClearAllReservations();
+
+            _isUpdatingUI = false;
+            _stateManager.SetInitialValues();
         }
     }
 }
