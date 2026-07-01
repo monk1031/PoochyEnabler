@@ -193,14 +193,14 @@ namespace PoochyEnabler.Forms
             this.grpEntryData.Controls.Add(this.btnImportData);
             this.grpEntryData.Location = new System.Drawing.Point(232, 40);
             this.grpEntryData.Name = "grpEntryData";
-            this.grpEntryData.Size = new System.Drawing.Size(316, 493);
+            this.grpEntryData.Size = new System.Drawing.Size(316, 398);
             this.grpEntryData.TabIndex = 4;
             this.grpEntryData.TabStop = false;
             this.grpEntryData.Text = "Entry Data";
             // 
             // btnCreateSpriteTable
             // 
-            this.btnCreateSpriteTable.Location = new System.Drawing.Point(236, 327);
+            this.btnCreateSpriteTable.Location = new System.Drawing.Point(236, 331);
             this.btnCreateSpriteTable.Name = "btnCreateSpriteTable";
             this.btnCreateSpriteTable.Size = new System.Drawing.Size(56, 23);
             this.btnCreateSpriteTable.TabIndex = 6;
@@ -209,21 +209,21 @@ namespace PoochyEnabler.Forms
             // 
             // txtUnkPtr2
             // 
-            this.txtUnkPtr2.Location = new System.Drawing.Point(140, 354);
+            this.txtUnkPtr2.Location = new System.Drawing.Point(140, 358);
             this.txtUnkPtr2.Name = "txtUnkPtr2";
             this.txtUnkPtr2.Size = new System.Drawing.Size(88, 19);
             this.txtUnkPtr2.TabIndex = 5;
             // 
             // txtShiftRedrawPtr
             // 
-            this.txtShiftRedrawPtr.Location = new System.Drawing.Point(140, 302);
+            this.txtShiftRedrawPtr.Location = new System.Drawing.Point(140, 306);
             this.txtShiftRedrawPtr.Name = "txtShiftRedrawPtr";
             this.txtShiftRedrawPtr.Size = new System.Drawing.Size(88, 19);
             this.txtShiftRedrawPtr.TabIndex = 5;
             // 
             // txtSpriteTablePtr
             // 
-            this.txtSpriteTablePtr.Location = new System.Drawing.Point(140, 328);
+            this.txtSpriteTablePtr.Location = new System.Drawing.Point(140, 332);
             this.txtSpriteTablePtr.Name = "txtSpriteTablePtr";
             this.txtSpriteTablePtr.ReadOnly = true;
             this.txtSpriteTablePtr.Size = new System.Drawing.Size(88, 19);
@@ -231,14 +231,14 @@ namespace PoochyEnabler.Forms
             // 
             // txtSizeDrawPtr
             // 
-            this.txtSizeDrawPtr.Location = new System.Drawing.Point(140, 276);
+            this.txtSizeDrawPtr.Location = new System.Drawing.Point(140, 280);
             this.txtSizeDrawPtr.Name = "txtSizeDrawPtr";
             this.txtSizeDrawPtr.Size = new System.Drawing.Size(88, 19);
             this.txtSizeDrawPtr.TabIndex = 5;
             // 
             // txtUnkPtr1
             // 
-            this.txtUnkPtr1.Location = new System.Drawing.Point(140, 250);
+            this.txtUnkPtr1.Location = new System.Drawing.Point(140, 254);
             this.txtUnkPtr1.Name = "txtUnkPtr1";
             this.txtUnkPtr1.Size = new System.Drawing.Size(88, 19);
             this.txtUnkPtr1.TabIndex = 5;
@@ -246,7 +246,7 @@ namespace PoochyEnabler.Forms
             // chkUnkFlag3
             // 
             this.chkUnkFlag3.AutoSize = true;
-            this.chkUnkFlag3.Location = new System.Drawing.Point(216, 174);
+            this.chkUnkFlag3.Location = new System.Drawing.Point(216, 178);
             this.chkUnkFlag3.Name = "chkUnkFlag3";
             this.chkUnkFlag3.Size = new System.Drawing.Size(30, 16);
             this.chkUnkFlag3.TabIndex = 4;
@@ -256,7 +256,7 @@ namespace PoochyEnabler.Forms
             // chkUnkFlag2
             // 
             this.chkUnkFlag2.AutoSize = true;
-            this.chkUnkFlag2.Location = new System.Drawing.Point(178, 174);
+            this.chkUnkFlag2.Location = new System.Drawing.Point(178, 178);
             this.chkUnkFlag2.Name = "chkUnkFlag2";
             this.chkUnkFlag2.Size = new System.Drawing.Size(30, 16);
             this.chkUnkFlag2.TabIndex = 4;
@@ -266,7 +266,7 @@ namespace PoochyEnabler.Forms
             // chkUnkFlag1
             // 
             this.chkUnkFlag1.AutoSize = true;
-            this.chkUnkFlag1.Location = new System.Drawing.Point(140, 174);
+            this.chkUnkFlag1.Location = new System.Drawing.Point(140, 178);
             this.chkUnkFlag1.Name = "chkUnkFlag1";
             this.chkUnkFlag1.Size = new System.Drawing.Size(30, 16);
             this.chkUnkFlag1.TabIndex = 4;
@@ -275,7 +275,7 @@ namespace PoochyEnabler.Forms
             // 
             // nudPaletteSlot
             // 
-            this.nudPaletteSlot.Location = new System.Drawing.Point(140, 146);
+            this.nudPaletteSlot.Location = new System.Drawing.Point(140, 150);
             this.nudPaletteSlot.Maximum = new decimal(new int[] {
             15,
             0,
@@ -287,7 +287,7 @@ namespace PoochyEnabler.Forms
             // 
             // nudUnkValue
             // 
-            this.nudUnkValue.Location = new System.Drawing.Point(140, 94);
+            this.nudUnkValue.Location = new System.Drawing.Point(140, 98);
             this.nudUnkValue.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -301,7 +301,7 @@ namespace PoochyEnabler.Forms
             // 
             this.cmbPaletteIdx2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPaletteIdx2.FormattingEnabled = true;
-            this.cmbPaletteIdx2.Location = new System.Drawing.Point(220, 68);
+            this.cmbPaletteIdx2.Location = new System.Drawing.Point(220, 72);
             this.cmbPaletteIdx2.Name = "cmbPaletteIdx2";
             this.cmbPaletteIdx2.Size = new System.Drawing.Size(72, 20);
             this.cmbPaletteIdx2.TabIndex = 2;
@@ -310,7 +310,7 @@ namespace PoochyEnabler.Forms
             // 
             this.cmbFrameSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFrameSize.FormattingEnabled = true;
-            this.cmbFrameSize.Location = new System.Drawing.Point(140, 120);
+            this.cmbFrameSize.Location = new System.Drawing.Point(140, 124);
             this.cmbFrameSize.Name = "cmbFrameSize";
             this.cmbFrameSize.Size = new System.Drawing.Size(152, 20);
             this.cmbFrameSize.TabIndex = 2;
@@ -319,7 +319,7 @@ namespace PoochyEnabler.Forms
             // 
             this.cmbTextColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbTextColor.FormattingEnabled = true;
-            this.cmbTextColor.Location = new System.Drawing.Point(140, 224);
+            this.cmbTextColor.Location = new System.Drawing.Point(140, 228);
             this.cmbTextColor.Name = "cmbTextColor";
             this.cmbTextColor.Size = new System.Drawing.Size(88, 20);
             this.cmbTextColor.TabIndex = 2;
@@ -328,7 +328,7 @@ namespace PoochyEnabler.Forms
             // 
             this.cmbFootPrint.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFootPrint.FormattingEnabled = true;
-            this.cmbFootPrint.Location = new System.Drawing.Point(140, 198);
+            this.cmbFootPrint.Location = new System.Drawing.Point(140, 202);
             this.cmbFootPrint.Name = "cmbFootPrint";
             this.cmbFootPrint.Size = new System.Drawing.Size(88, 20);
             this.cmbFootPrint.TabIndex = 2;
@@ -337,7 +337,7 @@ namespace PoochyEnabler.Forms
             // 
             this.cmbPaletteIdx1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPaletteIdx1.FormattingEnabled = true;
-            this.cmbPaletteIdx1.Location = new System.Drawing.Point(140, 68);
+            this.cmbPaletteIdx1.Location = new System.Drawing.Point(140, 72);
             this.cmbPaletteIdx1.Name = "cmbPaletteIdx1";
             this.cmbPaletteIdx1.Size = new System.Drawing.Size(72, 20);
             this.cmbPaletteIdx1.TabIndex = 2;
@@ -345,7 +345,7 @@ namespace PoochyEnabler.Forms
             // lblUnkFlags
             // 
             this.lblUnkFlags.AutoSize = true;
-            this.lblUnkFlags.Location = new System.Drawing.Point(20, 176);
+            this.lblUnkFlags.Location = new System.Drawing.Point(20, 180);
             this.lblUnkFlags.Name = "lblUnkFlags";
             this.lblUnkFlags.Size = new System.Drawing.Size(89, 12);
             this.lblUnkFlags.TabIndex = 1;
@@ -354,7 +354,7 @@ namespace PoochyEnabler.Forms
             // lblPaletteSlot
             // 
             this.lblPaletteSlot.AutoSize = true;
-            this.lblPaletteSlot.Location = new System.Drawing.Point(20, 150);
+            this.lblPaletteSlot.Location = new System.Drawing.Point(20, 154);
             this.lblPaletteSlot.Name = "lblPaletteSlot";
             this.lblPaletteSlot.Size = new System.Drawing.Size(71, 12);
             this.lblPaletteSlot.TabIndex = 1;
@@ -363,7 +363,7 @@ namespace PoochyEnabler.Forms
             // lblUnkPtr2
             // 
             this.lblUnkPtr2.AutoSize = true;
-            this.lblUnkPtr2.Location = new System.Drawing.Point(20, 358);
+            this.lblUnkPtr2.Location = new System.Drawing.Point(20, 362);
             this.lblUnkPtr2.Name = "lblUnkPtr2";
             this.lblUnkPtr2.Size = new System.Drawing.Size(107, 12);
             this.lblUnkPtr2.TabIndex = 1;
@@ -372,7 +372,7 @@ namespace PoochyEnabler.Forms
             // lblShiftRedrawPtr
             // 
             this.lblShiftRedrawPtr.AutoSize = true;
-            this.lblShiftRedrawPtr.Location = new System.Drawing.Point(20, 306);
+            this.lblShiftRedrawPtr.Location = new System.Drawing.Point(20, 310);
             this.lblShiftRedrawPtr.Name = "lblShiftRedrawPtr";
             this.lblShiftRedrawPtr.Size = new System.Drawing.Size(115, 12);
             this.lblShiftRedrawPtr.TabIndex = 1;
@@ -381,7 +381,7 @@ namespace PoochyEnabler.Forms
             // lblSpriteTablePtr
             // 
             this.lblSpriteTablePtr.AutoSize = true;
-            this.lblSpriteTablePtr.Location = new System.Drawing.Point(20, 332);
+            this.lblSpriteTablePtr.Location = new System.Drawing.Point(20, 336);
             this.lblSpriteTablePtr.Name = "lblSpriteTablePtr";
             this.lblSpriteTablePtr.Size = new System.Drawing.Size(113, 12);
             this.lblSpriteTablePtr.TabIndex = 1;
@@ -390,7 +390,7 @@ namespace PoochyEnabler.Forms
             // lblSizeDrawPtr
             // 
             this.lblSizeDrawPtr.AutoSize = true;
-            this.lblSizeDrawPtr.Location = new System.Drawing.Point(20, 280);
+            this.lblSizeDrawPtr.Location = new System.Drawing.Point(20, 284);
             this.lblSizeDrawPtr.Name = "lblSizeDrawPtr";
             this.lblSizeDrawPtr.Size = new System.Drawing.Size(102, 12);
             this.lblSizeDrawPtr.TabIndex = 1;
@@ -399,7 +399,7 @@ namespace PoochyEnabler.Forms
             // lblUnkPtr1
             // 
             this.lblUnkPtr1.AutoSize = true;
-            this.lblUnkPtr1.Location = new System.Drawing.Point(20, 254);
+            this.lblUnkPtr1.Location = new System.Drawing.Point(20, 258);
             this.lblUnkPtr1.Name = "lblUnkPtr1";
             this.lblUnkPtr1.Size = new System.Drawing.Size(107, 12);
             this.lblUnkPtr1.TabIndex = 1;
@@ -408,7 +408,7 @@ namespace PoochyEnabler.Forms
             // lblUnkValue
             // 
             this.lblUnkValue.AutoSize = true;
-            this.lblUnkValue.Location = new System.Drawing.Point(20, 98);
+            this.lblUnkValue.Location = new System.Drawing.Point(20, 102);
             this.lblUnkValue.Name = "lblUnkValue";
             this.lblUnkValue.Size = new System.Drawing.Size(90, 12);
             this.lblUnkValue.TabIndex = 1;
@@ -417,7 +417,7 @@ namespace PoochyEnabler.Forms
             // lblFrameSize
             // 
             this.lblFrameSize.AutoSize = true;
-            this.lblFrameSize.Location = new System.Drawing.Point(20, 124);
+            this.lblFrameSize.Location = new System.Drawing.Point(20, 128);
             this.lblFrameSize.Name = "lblFrameSize";
             this.lblFrameSize.Size = new System.Drawing.Size(68, 12);
             this.lblFrameSize.TabIndex = 1;
@@ -426,7 +426,7 @@ namespace PoochyEnabler.Forms
             // lblTextColor
             // 
             this.lblTextColor.AutoSize = true;
-            this.lblTextColor.Location = new System.Drawing.Point(20, 228);
+            this.lblTextColor.Location = new System.Drawing.Point(20, 232);
             this.lblTextColor.Name = "lblTextColor";
             this.lblTextColor.Size = new System.Drawing.Size(65, 12);
             this.lblTextColor.TabIndex = 1;
@@ -435,7 +435,7 @@ namespace PoochyEnabler.Forms
             // lblFootprint
             // 
             this.lblFootprint.AutoSize = true;
-            this.lblFootprint.Location = new System.Drawing.Point(20, 202);
+            this.lblFootprint.Location = new System.Drawing.Point(20, 206);
             this.lblFootprint.Name = "lblFootprint";
             this.lblFootprint.Size = new System.Drawing.Size(57, 12);
             this.lblFootprint.TabIndex = 1;
@@ -444,7 +444,7 @@ namespace PoochyEnabler.Forms
             // lblPaletteIdx1
             // 
             this.lblPaletteIdx1.AutoSize = true;
-            this.lblPaletteIdx1.Location = new System.Drawing.Point(20, 72);
+            this.lblPaletteIdx1.Location = new System.Drawing.Point(20, 76);
             this.lblPaletteIdx1.Name = "lblPaletteIdx1";
             this.lblPaletteIdx1.Size = new System.Drawing.Size(62, 12);
             this.lblPaletteIdx1.TabIndex = 1;
@@ -452,7 +452,7 @@ namespace PoochyEnabler.Forms
             // 
             // btnExportData
             // 
-            this.btnExportData.Location = new System.Drawing.Point(124, 28);
+            this.btnExportData.Location = new System.Drawing.Point(124, 30);
             this.btnExportData.Name = "btnExportData";
             this.btnExportData.Size = new System.Drawing.Size(96, 23);
             this.btnExportData.TabIndex = 0;
@@ -461,7 +461,7 @@ namespace PoochyEnabler.Forms
             // 
             // btnImportData
             // 
-            this.btnImportData.Location = new System.Drawing.Point(20, 28);
+            this.btnImportData.Location = new System.Drawing.Point(20, 30);
             this.btnImportData.Name = "btnImportData";
             this.btnImportData.Size = new System.Drawing.Size(96, 23);
             this.btnImportData.TabIndex = 0;
@@ -655,7 +655,7 @@ namespace PoochyEnabler.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1004, 631);
+            this.ClientSize = new System.Drawing.Size(882, 459);
             this.Controls.Add(this.btnCreateEntry);
             this.Controls.Add(this.txtEntryOffset);
             this.Controls.Add(this.lblEntryOffset);

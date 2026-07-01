@@ -32,11 +32,21 @@ namespace PoochyEnabler.Forms
         private bool _isMultipleTable = false;
         private Dictionary<int, int> _groupPointers = null;
         private Dictionary<int, int> _dataPointers = null;
+        private BindingList<PaletteComboItem> _paletteComboSource;
 
         private static class StateKeys
         {
             public static readonly string d1 = nameof(d1);
             public static readonly string d2 = nameof(d2);
+        }
+
+        private class PaletteComboItem
+        {
+            public ushort PaletteIdx { get; set; }
+            public int? TableIdx { get; set; } // dummy = null, temporary = -1
+            public int PaletteOffset { get; set; }
+            public string DisplayText => 
+                $"{PaletteIdx:X4}" + (TableIdx == -1 ? "*" : ""); // temporary -> *
         }
 
         private class FrameSizeComboItem
@@ -192,6 +202,58 @@ namespace PoochyEnabler.Forms
                 nudPreviewIdx, btnPreviewPrev, btnPreviewNext);
             ControlHelper.LoadComboBoxFromTextFile(cmbFootPrint, "txt/OverworldSpriteFootprint.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbTextColor, "txt/OverworldSpriteTextColor.txt");
+
+            UpdatePaletteComboBox();
+        }
+
+        private void UpdatePaletteComboBox()
+        {
+            var items = new List<PaletteComboItem>();
+
+            // exist
+            for (int i = 0; i < _palManager.Entries.Count; i++)
+            {
+                var palEntry = _palManager.Entries[i];
+
+                // register
+                items.Add(new PaletteComboItem
+                {
+                    PaletteIdx = _palManager.Entries[i]._PaletteIdx,
+                    TableIdx = i,
+                    PaletteOffset =
+                        palEntry.pPaletteOffset == 0
+                        ? Constants.InvalidOffset
+                        : (int)(palEntry.pPaletteOffset - Constants.BaseAddr)
+                });
+            }
+
+            // 11FF (dummy)
+            if (!items.Any(x => x.PaletteIdx == 0x11FF))
+            {
+                items.Add(new PaletteComboItem
+                {
+                    PaletteIdx = 0x11FF,
+                    TableIdx = null,
+                    PaletteOffset = Constants.InvalidOffset
+                });
+            }
+
+            // sort
+            var sortedItems = items.OrderBy(x => x.PaletteIdx).ToList();
+            _paletteComboSource = new BindingList<PaletteComboItem>(sortedItems);
+
+            foreach (var cmb in new[] {
+                cmbPaletteIdx1,
+                cmbPaletteIdx2,
+                cmbPaletteIdx3 })
+            {
+                var bindingSource = new BindingSource();
+                bindingSource.DataSource = _paletteComboSource;
+
+                cmb.DisplayMember = nameof(PaletteComboItem.DisplayText);
+                cmb.ValueMember = nameof(PaletteComboItem.TableIdx);
+                cmb.DataSource = bindingSource;
+            }
         }
 
         private void LoadEntryToUI(int idx)
