@@ -306,9 +306,64 @@ namespace PoochyEnabler.Forms
             // grpEntryData
             BindingHelper.BindObjectToControls(grpEntryData, _owManager.Entries[0]);
 
+            // palette cmb
+            LoadToPaletteComboBox(cmbPaletteIdx1, _owManager.Entries[0]._PaletteIdx1);
+            LoadToPaletteComboBox(cmbPaletteIdx2, _owManager.Entries[0]._PaletteIdx2);
+
+            // frame size cmb
+            ushort width = _owManager.Entries[0]._FrameSizeWidth;
+            ushort height = _owManager.Entries[0]._FrameSizeHeight;
+            LoadToFrameSizeComboBox(width, height);
+
             _isUpdatingUI = false;
             _stateManager.SetInitialValues();
         }
+
+        private void LoadToPaletteComboBox(ComboBox cmb, ushort palIdx)
+        {
+            bool isFound = false;
+
+            for (int i = 0; i < cmb.Items.Count; i++)
+            {
+                var item = (PaletteComboItem)cmb.Items[i];
+
+                if (item.PaletteIdx == palIdx)
+                {
+                    cmb.SelectedIndex = i;
+                    isFound = true;
+                    break;
+                }
+            }
+
+            if (!isFound)
+            {
+                cmb.SelectedIndex = -1;
+            }
+        }
+
+        private void LoadToFrameSizeComboBox(ushort width, ushort height)
+        {
+            bool isFound = false;
+
+            for (int i = 0; i < cmbFrameSize.Items.Count; i++)
+            {
+                var item = (FrameSizeComboItem)cmbFrameSize.Items[i];
+
+                if (item.Width == width && item.Height == height)
+                {
+                    cmbFrameSize.SelectedIndex = i;
+                    isFound = true;
+                    break;
+                }
+            }
+
+            if (!isFound)
+            {
+                cmbFrameSize.SelectedIndex = -1;
+            }
+        }
+
+
 
 
     }
