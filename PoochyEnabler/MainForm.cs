@@ -16,7 +16,7 @@ namespace PoochyEnabler
         private bool _isRomLoaded = false;
         private string _romPath = string.Empty;
         private string _iniFolder = Path.Combine(Application.StartupPath, "ini");
-        private string _tblPath = Path.Combine(Application.StartupPath, "charmap.tbl");
+        private string _tblFolder = Path.Combine(Application.StartupPath, "lang");
 
         private IniFileReader _config;
         private TblFileReader _charmap;
@@ -28,6 +28,8 @@ namespace PoochyEnabler
         private const string EditorSuffix = "Editor";
         private const string FormsFolderName = "Forms";
 
+        /* ---------------------------------------------------------------- */
+
         public MainForm()
         {
             InitializeComponent();
@@ -36,7 +38,7 @@ namespace PoochyEnabler
             InitializeEventHandlers();
 
             _config = new IniFileReader(_iniFolder, cmbProfile);
-            _charmap = new TblFileReader(_tblPath);
+            _charmap = new TblFileReader(_tblFolder, cmbLang);
             _reservationManager = new ReservationManager();
             _stateManager = new StateManager();
         }
@@ -61,6 +63,8 @@ namespace PoochyEnabler
             btnLoadData.Enabled = canLoadConfig;
             lblProfile.Enabled = canLoadConfig;
             cmbProfile.Enabled = canLoadConfig;
+            lblLang.Enabled = canLoadConfig;
+            cmbLang.Enabled = canLoadConfig;
 
             // When ROM is loaded AND editor is not open
             bool canOpenEditor = _isRomLoaded && !isEditorOpen;
@@ -99,19 +103,19 @@ namespace PoochyEnabler
                     _romPath = openFileDialog.FileName;
                     _romData = File.ReadAllBytes(_romPath);
 
-                    // load _config
+                    // load config
                     string selectedConfig = cmbProfile.SelectedItem?.ToString() ?? string.Empty;
                     _config.LoadConfig(selectedConfig, _romData);
 
+                    // load lang
+                    string selectedLang = cmbLang.SelectedItem?.ToString() ?? string.Empty;
+                    _charmap.LoadLang(selectedConfig);
+
                     // txtStartOffset
-                    txtStartOffset.Text = _config.TryReadValue("FreeSpaceFinderOffset", out int offsetValue)
-                        ? offsetValue.ToString("X8")
-                        : string.Empty;
+                    txtStartOffset.Text = _config.ReadInt("FreeSpaceFinderOffset").ToString("X8");
 
                     // nudRequiredSize
-                    nudRequiredSize.Value = _config.TryReadValue("FreeSpaceByteAmount", out int sizeValue)
-                        ? sizeValue
-                        : Math.Max(nudRequiredSize.Minimum, 0);
+                    nudRequiredSize.Value = (decimal)_config.ReadInt("FreeSpaceByteAmount");
 
                     _isRomLoaded = true;
                     MainFormUIUpdate();
@@ -129,8 +133,9 @@ namespace PoochyEnabler
             ControlHelper.ResetControls(this);
             MainFormUIUpdate();
 
-            // reset _config
+            // reset configm, lang
             _config = new IniFileReader(_iniFolder, cmbProfile);
+            _charmap = new TblFileReader(_tblFolder, cmbLang);
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -208,11 +213,13 @@ namespace PoochyEnabler
             }
         }
 
+        /* ---------------------------------------------------------------- */
+
         private void EditorButton_Click(object sender, EventArgs e)
         {
             if (!(sender is Button btn)) return;
 
-            // example: btnPokemon -> Pokemon -> PokemonEditor
+            // e.g. btnPokemon -> Pokemon -> PokemonEditor
             string editorName = btn.Name.Substring(ButtonPrefix.Length);
             string targetClassName = $"{editorName}{EditorSuffix}";
 
@@ -258,7 +265,7 @@ namespace PoochyEnabler
                 _editorForm = null;
             }
 
-            _reservationManager.ClearAllReservations();
+            _reservationManager = new ReservationManager();
             _stateManager = new StateManager();
             MainFormUIUpdate();
         }

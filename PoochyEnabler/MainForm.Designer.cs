@@ -64,6 +64,8 @@ namespace PoochyEnabler
             this.lblResult = new System.Windows.Forms.Label();
             this.lblStartOffset = new System.Windows.Forms.Label();
             this.picPoochyena = new System.Windows.Forms.PictureBox();
+            this.cmbLang = new System.Windows.Forms.ComboBox();
+            this.lblLang = new System.Windows.Forms.Label();
             this.grpEditors.SuspendLayout();
             this.grpFreeSpaceFinder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudRequiredSize)).BeginInit();
@@ -72,7 +74,7 @@ namespace PoochyEnabler
             // 
             // btnLoadData
             // 
-            this.btnLoadData.Location = new System.Drawing.Point(20, 36);
+            this.btnLoadData.Location = new System.Drawing.Point(20, 68);
             this.btnLoadData.Name = "btnLoadData";
             this.btnLoadData.Size = new System.Drawing.Size(152, 23);
             this.btnLoadData.TabIndex = 0;
@@ -101,7 +103,7 @@ namespace PoochyEnabler
             this.grpEditors.Controls.Add(this.btnItem);
             this.grpEditors.Controls.Add(this.btnWildEncounter);
             this.grpEditors.Controls.Add(this.btnPokemon);
-            this.grpEditors.Location = new System.Drawing.Point(20, 68);
+            this.grpEditors.Location = new System.Drawing.Point(20, 98);
             this.grpEditors.Name = "grpEditors";
             this.grpEditors.Size = new System.Drawing.Size(426, 284);
             this.grpEditors.TabIndex = 1;
@@ -291,7 +293,7 @@ namespace PoochyEnabler
             // lblProfile
             // 
             this.lblProfile.AutoSize = true;
-            this.lblProfile.Location = new System.Drawing.Point(20, 14);
+            this.lblProfile.Location = new System.Drawing.Point(20, 18);
             this.lblProfile.Name = "lblProfile";
             this.lblProfile.Size = new System.Drawing.Size(44, 12);
             this.lblProfile.TabIndex = 2;
@@ -301,14 +303,14 @@ namespace PoochyEnabler
             // 
             this.cmbProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbProfile.FormattingEnabled = true;
-            this.cmbProfile.Location = new System.Drawing.Point(76, 10);
+            this.cmbProfile.Location = new System.Drawing.Point(88, 14);
             this.cmbProfile.Name = "cmbProfile";
-            this.cmbProfile.Size = new System.Drawing.Size(96, 20);
+            this.cmbProfile.Size = new System.Drawing.Size(128, 20);
             this.cmbProfile.TabIndex = 3;
             // 
             // btnUnloadData
             // 
-            this.btnUnloadData.Location = new System.Drawing.Point(184, 36);
+            this.btnUnloadData.Location = new System.Drawing.Point(184, 68);
             this.btnUnloadData.Name = "btnUnloadData";
             this.btnUnloadData.Size = new System.Drawing.Size(152, 23);
             this.btnUnloadData.TabIndex = 4;
@@ -324,7 +326,7 @@ namespace PoochyEnabler
             this.grpFreeSpaceFinder.Controls.Add(this.txtStartOffset);
             this.grpFreeSpaceFinder.Controls.Add(this.lblResult);
             this.grpFreeSpaceFinder.Controls.Add(this.lblStartOffset);
-            this.grpFreeSpaceFinder.Location = new System.Drawing.Point(464, 68);
+            this.grpFreeSpaceFinder.Location = new System.Drawing.Point(464, 98);
             this.grpFreeSpaceFinder.Name = "grpFreeSpaceFinder";
             this.grpFreeSpaceFinder.Size = new System.Drawing.Size(210, 144);
             this.grpFreeSpaceFinder.TabIndex = 5;
@@ -396,17 +398,37 @@ namespace PoochyEnabler
             // picPoochyena
             // 
             this.picPoochyena.Image = ((System.Drawing.Image)(resources.GetObject("picPoochyena.Image")));
-            this.picPoochyena.Location = new System.Drawing.Point(516, 248);
+            this.picPoochyena.Location = new System.Drawing.Point(516, 278);
             this.picPoochyena.Name = "picPoochyena";
             this.picPoochyena.Size = new System.Drawing.Size(136, 104);
             this.picPoochyena.TabIndex = 6;
             this.picPoochyena.TabStop = false;
             // 
+            // cmbLang
+            // 
+            this.cmbLang.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbLang.FormattingEnabled = true;
+            this.cmbLang.Location = new System.Drawing.Point(88, 40);
+            this.cmbLang.Name = "cmbLang";
+            this.cmbLang.Size = new System.Drawing.Size(128, 20);
+            this.cmbLang.TabIndex = 8;
+            // 
+            // lblLang
+            // 
+            this.lblLang.AutoSize = true;
+            this.lblLang.Location = new System.Drawing.Point(20, 44);
+            this.lblLang.Name = "lblLang";
+            this.lblLang.Size = new System.Drawing.Size(59, 12);
+            this.lblLang.TabIndex = 7;
+            this.lblLang.Text = "Language :";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(696, 369);
+            this.ClientSize = new System.Drawing.Size(696, 399);
+            this.Controls.Add(this.cmbLang);
+            this.Controls.Add(this.lblLang);
             this.Controls.Add(this.picPoochyena);
             this.Controls.Add(this.grpFreeSpaceFinder);
             this.Controls.Add(this.btnUnloadData);
@@ -464,6 +486,8 @@ namespace PoochyEnabler
         private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.Label lblStartOffset;
         private System.Windows.Forms.PictureBox picPoochyena;
+        private System.Windows.Forms.ComboBox cmbLang;
+        private System.Windows.Forms.Label lblLang;
     }
 }
 
