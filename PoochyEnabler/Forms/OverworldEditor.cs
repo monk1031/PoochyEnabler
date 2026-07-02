@@ -91,14 +91,14 @@ namespace PoochyEnabler.Forms
             InitializeControls();
             InitializeEventHandlers();
 
-            LoadDataEntryListBox(_currentTableIdx);
+            LoadEntryListBox(_currentTableIdx);
             LoadEntryToUI(_currentEntryIdx);
         }
 
         private void InitializeManagers()
         {
             _isMultipleTable = _config.ReadBool("EnableMultipleOverworldSpriteTable");
-            int maxEntries = (int)byte.MaxValue;
+            int maxEntries = (int)byte.MaxValue; // 255
             string patternStr = "ptr";
             _dataPointers = new List<Dictionary<int, int>>();
 
@@ -122,7 +122,7 @@ namespace PoochyEnabler.Forms
                 owTableOffsets.Add(_config.ReadInt("OverworldSpriteTableOffset")); // index 0
             }
 
-            // add entry
+            // add entry to dict
             foreach (int owTableOffset in owTableOffsets)
             {
                 Dictionary<int, int> owEntryOffsets = null;
@@ -149,10 +149,11 @@ namespace PoochyEnabler.Forms
 
             // valid entry?
             patternStr = "FF FF ?? 11 ?? 11 ?? ?? ?? 00 ?? 00 ?? ?? ?? 00 ptr ptr ptr ptr ptr";
-            foreach (var owTableIdx in _dataPointers)
+            foreach (var owTableDict in _dataPointers.Where(x => x != null))
             {
-                var keysToRemove = new List<int>();
-                foreach (var kvp in owTableIdx)
+                var keysToRemove = new List<int>(); // to store
+
+                foreach (var kvp in owTableDict)
                 {
                     int targetOffset = kvp.Value;
                     if (targetOffset == Constants.InvalidOffset || // remove null entry
@@ -164,7 +165,7 @@ namespace PoochyEnabler.Forms
 
                 foreach (var key in keysToRemove)
                 {
-                    owTableIdx.Remove(key);
+                    owTableDict.Remove(key);
                 }
             }
 
@@ -175,6 +176,7 @@ namespace PoochyEnabler.Forms
             _palManager = new EntryManager<OverworldPaletteEntry>(_romData, _config, _charmap);
             _palManager.Load(palTableOffset, palCount);
 
+            // state manager
             _stateManager.StateChanged += hasChanges => btnSave.Enabled = hasChanges;
             _stateManager.AddControls(
                 txtEntryOffset);
@@ -183,9 +185,6 @@ namespace PoochyEnabler.Forms
             _stateManager.AddBinaries(
                 (StateKeys.SpriteFrames, null),
                 (StateKeys.d2, null));
-
-            // _FrameManager = new EntryManager<OverworldFrameEntry>(_romData, _config, _charmap);
-            // _FrameManager.Load("TrainerYPositionTableOffset", "TrainerSpriteCount");
         }
 
         private void InitializeControls()
@@ -291,7 +290,7 @@ namespace PoochyEnabler.Forms
             // btnExportSpriteFrames.Click += btnExportSpriteFrames_Click;
         }
 
-        private void LoadDataEntryListBox(int idx)
+        private void LoadEntryListBox(int idx)
         {
             lstEntry.BeginUpdate();
             lstEntry.Items.Clear();
@@ -345,7 +344,6 @@ namespace PoochyEnabler.Forms
 
             // grpPreview
             LoadSpriteFrames();
-
 
             _isUpdatingUI = false;
             _stateManager.SetInitialValues();
