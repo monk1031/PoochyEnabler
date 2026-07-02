@@ -12,34 +12,26 @@ namespace PoochyEnabler.FileReaders
         private const string HexPrefix = "0x";
 
         // store all configs
-        private readonly Dictionary<string, HashSet<string>> _configBlocks =  new Dictionary<string, HashSet<string>>();
+        private readonly Dictionary<string, HashSet<string>> _configBlocks =
+            new Dictionary<string, HashSet<string>>();
+
         // analyzed lines
-        private readonly Dictionary<string, int> _iniCacheInt =  new Dictionary<string, int>();
-        private readonly Dictionary<string, bool> _iniCacheBool = new Dictionary<string, bool>();
+        private readonly Dictionary<string, int> _iniCacheInt =  
+            new Dictionary<string, int>();
+        private readonly Dictionary<string, bool> _iniCacheBool = 
+            new Dictionary<string, bool>();
 
         // get int
-        public bool TryReadValue(string key, out int value, int defaultValue = 0)
-        {
-            if (_iniCacheInt.TryGetValue(key, out value))
-            {
-                return true;
-            }
-
-            value = defaultValue;
-            return false;
-        }
+        public int ReadInt(string key, int defaultValue = 0) =>
+            _iniCacheInt.TryGetValue(key, out int value) 
+                ? value 
+                : defaultValue;
 
         // get bool
-        public bool TryReadValue(string key, out bool value, bool defaultValue = false)
-        {
-            if (_iniCacheBool.TryGetValue(key, out value))
-            {
-                return true;
-            }
-
-            value = defaultValue;
-            return false;
-        }
+        public bool ReadBool(string key, bool defaultValue = false) =>
+            _iniCacheBool.TryGetValue(key, out bool value) 
+                ? value 
+                : defaultValue;
 
         // for cmb items, still contain empty lines
         public IniFileReader(string folderPath, ComboBox targetCmb)
@@ -55,11 +47,12 @@ namespace PoochyEnabler.FileReaders
             // search for .ini
             foreach (string filePath in Directory.EnumerateFiles(folderPath, "*.ini"))
             {
-                // set config name
+                // get config name
                 string configName = Path.GetFileNameWithoutExtension(filePath);
 
                 // scan lines
-                HashSet<string> blockLines = new HashSet<string>(File.ReadLines(filePath, Encoding.UTF8));
+                HashSet<string> blockLines = 
+                    new HashSet<string>(File.ReadLines(filePath, Encoding.UTF8));
 
                 // add to dict and cmb
                 _configBlocks[configName] = blockLines;
@@ -91,7 +84,7 @@ namespace PoochyEnabler.FileReaders
                     continue;
                 }
 
-                // check pointer
+                // check pointer reference
                 if (rawString.StartsWith("*"))
                 {
                     if (TryParseNumber(rawString.Substring(1), out int ptrOffset))
@@ -112,7 +105,7 @@ namespace PoochyEnabler.FileReaders
             }
         }
 
-        // remove empty lines
+        // remove empty line
         private bool TryParseLine(string line, out string key, out string rawString)
         {
             key = string.Empty;
