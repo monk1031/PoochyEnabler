@@ -115,7 +115,7 @@ namespace PoochyEnabler.Forms
 
             // txtAnimDataOffset
             int ptrOffset = (int)(_animPointerManager.Entries[idx].pAnimPointer - Constants.BaseAddr);
-            if (IOHelper.TryReadPtr(ptrOffset, _romData, out int dataOffset))
+            if (IOHelper.TryReadPtr(_romData, ptrOffset, out int dataOffset))
             {
                 if (dataOffset == -1)
                 {

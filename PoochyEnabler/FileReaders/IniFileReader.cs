@@ -91,7 +91,7 @@ namespace PoochyEnabler.FileReaders
                 {
                     if (TryParseNumber(rawString.Substring(1), out int ptrOffset))
                     {
-                        if (IOHelper.TryReadPtr(ptrOffset, data, out int resultOffset))
+                        if (IOHelper.TryReadPtr(data, ptrOffset, out int resultOffset))
                         {
                             _iniCacheInt[key] = resultOffset;
                             continue;

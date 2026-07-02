@@ -111,7 +111,7 @@ namespace PoochyEnabler.Forms
                 for (int i = 0; i < groupCount; i++)
                 {
                     int currentGroupOffset = baseGroupOffset + (i * Constants.UIntSize);
-                    if (IOHelper.TryReadPtr(currentGroupOffset, _romData, out int owTableOffset))
+                    if (IOHelper.TryReadPtr(_romData, currentGroupOffset, out int owTableOffset))
                     {
                         owTableOffsets.Add(owTableOffset); // include null pointer
                     }
@@ -139,7 +139,7 @@ namespace PoochyEnabler.Forms
                 for (int i = 0; i < entryCount; i++)
                 {
                     int currentEntryOffset = owTableOffset + (i * Constants.UIntSize);
-                    if (IOHelper.TryReadPtr(currentEntryOffset, _romData, out int owDataOffset))
+                    if (IOHelper.TryReadPtr(_romData, currentEntryOffset, out int owDataOffset))
                     {
                         owEntryOffsets.Add(i, owDataOffset);
                     }

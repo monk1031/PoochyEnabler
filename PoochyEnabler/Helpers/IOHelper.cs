@@ -45,8 +45,8 @@ namespace PoochyEnabler.Helpers
         // addr -> uint (consider bese addr)
         // offset -> int
         public static bool TryReadPtr(
+            byte[] data,
             int ptrOffset, 
-            byte[] data, 
             out int resultOffset)
         {
             uint rawAddr = ReadUInt(data, ptrOffset, true); // uint
