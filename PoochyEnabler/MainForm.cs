@@ -109,7 +109,7 @@ namespace PoochyEnabler
 
                     // load lang
                     string selectedLang = cmbLang.SelectedItem?.ToString() ?? string.Empty;
-                    _charmap.LoadLang(selectedConfig);
+                    _charmap.LoadLang(selectedLang);
 
                     // txtStartOffset
                     txtStartOffset.Text = _config.ReadInt("FreeSpaceFinderOffset").ToString("X8");
