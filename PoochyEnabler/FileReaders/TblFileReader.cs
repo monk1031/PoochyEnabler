@@ -2,26 +2,67 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 namespace PoochyEnabler.FileReaders
 {
     public class TblFileReader
     {
+        // store all lang lines
+        private readonly Dictionary<string, HashSet<string>> _langBlocks =
+            new Dictionary<string, HashSet<string>>();
+
         // to search for
         private readonly ByteTrieNode _byteTrieRoot = new ByteTrieNode();
         private readonly StringTrieNode _stringTrieRoot = new StringTrieNode();
 
-        // read charmap.tbl
-        public TblFileReader(string filePath)
-        {
-            if (!File.Exists(filePath)) return;
+        /* ---------------------------------------------------------------- */
 
-            foreach (string line in File.ReadLines(filePath, Encoding.UTF8))
+        // create dict and cmb
+        public TblFileReader(string folderPath, ComboBox targetCmb)
+        {
+            if (!Directory.Exists(folderPath)) return;
+
+            // clear
+            _langBlocks.Clear();
+            _byteTrieRoot.Clear();
+            _stringTrieRoot.Clear();
+            targetCmb.Items.Clear();
+
+            // search for .tbl
+            foreach (string filePath in Directory.EnumerateFiles(folderPath, "*.tbl"))
             {
+                // get config name
+                string langName = Path.GetFileNameWithoutExtension(filePath);
+
+                // scan lines
+                HashSet<string> blockLines =
+                    new HashSet<string>(File.ReadLines(filePath, Encoding.UTF8));
+
+                // add to dict and cmb
+                _langBlocks[langName] = blockLines;
+                targetCmb.Items.Add(langName);
+            }
+
+            // select first index
+            if (targetCmb.Items.Count > 0)
+            {
+                targetCmb.SelectedIndex = 0;
+            }
+
+        }
+
+        public void LoadLang(string selectedLang)
+        {
+            if (!_langBlocks.ContainsKey(selectedLang)) return;
+
+            foreach (string line in _langBlocks[selectedLang])
+            {
+                // comment
                 if (string.IsNullOrEmpty(line) || line.StartsWith(";")) continue;
 
                 string[] parts = line.Split('=');
-                string hexKey = parts[0].Replace(" ", ""); // assume 2 bytes or more, exmaple [AB CD]
+                string hexKey = parts[0].Replace(" ", ""); // assume 2 bytes or more, e.g. [AB CD]
                 string value = parts[1]; // char
 
                 // key -> bytes
@@ -65,6 +106,8 @@ namespace PoochyEnabler.FileReaders
                 }
             }
         }
+
+        /* ---------------------------------------------------------------- */
 
         public string BytesToString(byte[] bytes, int offset = 0, int? maxLength = null)
         {
@@ -210,16 +253,32 @@ namespace PoochyEnabler.FileReaders
 
         private class ByteTrieNode
         {
-            public Dictionary<byte, ByteTrieNode> Children { get; } = new Dictionary<byte, ByteTrieNode>();
+            public Dictionary<byte, ByteTrieNode> Children { get; } =
+                new Dictionary<byte, ByteTrieNode>();
             public string Value { get; set; }
             public bool IsTerminal { get; set; }
+
+            public void Clear()
+            {
+                Children.Clear();
+                Value = null;
+                IsTerminal = false;
+            }
         }
 
         private class StringTrieNode
         {
-            public Dictionary<char, StringTrieNode> Children { get; } = new Dictionary<char, StringTrieNode>();
+            public Dictionary<char, StringTrieNode> Children { get; } = 
+                new Dictionary<char, StringTrieNode>();
             public byte[] Value { get; set; }
             public bool IsTerminal { get; set; }
+
+            public void Clear()
+            {
+                Children.Clear();
+                Value = null;
+                IsTerminal = false;
+            }
         }
     }
 }

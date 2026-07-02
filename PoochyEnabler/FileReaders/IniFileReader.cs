@@ -21,17 +21,19 @@ namespace PoochyEnabler.FileReaders
         private readonly Dictionary<string, bool> _iniCacheBool = 
             new Dictionary<string, bool>();
 
-        // get int
+        /* ---------------------------------------------------------------- */
+
         public int ReadInt(string key, int defaultValue = 0) =>
             _iniCacheInt.TryGetValue(key, out int value) 
                 ? value 
                 : defaultValue;
 
-        // get bool
         public bool ReadBool(string key, bool defaultValue = false) =>
             _iniCacheBool.TryGetValue(key, out bool value) 
                 ? value 
                 : defaultValue;
+
+        /* ---------------------------------------------------------------- */
 
         // for cmb items, still contain empty lines
         public IniFileReader(string folderPath, ComboBox targetCmb)
