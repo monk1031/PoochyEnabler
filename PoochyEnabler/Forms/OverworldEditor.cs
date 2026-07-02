@@ -97,15 +97,16 @@ namespace PoochyEnabler.Forms
 
         private void InitializeManagers()
         {
-            _isMultipleTable = _config.TryReadValue("EnableMultipleOverworldSpriteTable", out bool enabled) && enabled;
+            _isMultipleTable = _config.ReadBool("EnableMultipleOverworldSpriteTable");
             int maxEntries = (int)byte.MaxValue;
             string patternStr = "ptr";
             _dataPointers = new List<Dictionary<int, int>>();
 
             var owTableOffsets = new List<int>(); // temporary
-            if (_isMultipleTable && _config.TryReadValue("MultipleOverworldSpriteTableOffset", out int baseGroupOffset))
+            if (_isMultipleTable)
             {
                 // count ow table group
+                int baseGroupOffset = _config.ReadInt("MultipleOverworldSpriteTableOffset");
                 int groupCount = EntryCountHelper.Count(_romData, baseGroupOffset, patternStr, maxEntries, true);
                 for (int i = 0; i < groupCount; i++)
                 {
@@ -118,10 +119,7 @@ namespace PoochyEnabler.Forms
             }
             else // single group
             {
-                if (_config.TryReadValue("OverworldSpriteTableOffset", out int owTableOffset))
-                {
-                    owTableOffsets.Add(owTableOffset); // index 0
-                }
+                owTableOffsets.Add(_config.ReadInt("OverworldSpriteTableOffset")); // index 0
             }
 
             // add entry
@@ -172,12 +170,10 @@ namespace PoochyEnabler.Forms
 
             // palette
             patternStr = "ptr ?? 11 00 00";
-            if (_config.TryReadValue("OverworldSpritePaletteTableOffset", out int palTableOffset))
-            {
-                int palCount = EntryCountHelper.Count(_romData, palTableOffset, patternStr, maxEntries, true);
-                _palManager = new EntryManager<OverworldPaletteEntry>(_romData, _config, _charmap);
-                _palManager.Load(palTableOffset, palCount);
-            }
+            int palTableOffset = _config.ReadInt("OverworldSpritePaletteTableOffset");
+            int palCount = EntryCountHelper.Count(_romData, palTableOffset, patternStr, maxEntries, true);
+            _palManager = new EntryManager<OverworldPaletteEntry>(_romData, _config, _charmap);
+            _palManager.Load(palTableOffset, palCount);
 
             _stateManager.StateChanged += hasChanges => btnSave.Enabled = hasChanges;
             _stateManager.AddControls(

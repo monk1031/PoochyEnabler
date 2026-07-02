@@ -49,29 +49,19 @@ namespace PoochyEnabler.Managers
                     if (!string.IsNullOrEmpty(attr.EntryLength) &&
                         !_dynamicLengths.ContainsKey(attr.EntryLength))
                     {
-                        if (_config.TryReadValue(attr.EntryLength, out int len))
-                        {
-                            _dynamicLengths[attr.EntryLength] = len;
-                        }
+                        _dynamicLengths[attr.EntryLength] = _config.ReadInt(attr.EntryLength);
                     }
 
                     // AllowedLength
                     if (!string.IsNullOrEmpty(attr.AllowedLength) &&
                         !_dynamicLengths.ContainsKey(attr.AllowedLength))
                     {
-                        if (_config.TryReadValue(attr.AllowedLength, out int len))
-                        {
-                            _dynamicLengths[attr.AllowedLength] = len;
-                        }
+                        _dynamicLengths[attr.AllowedLength] = _config.ReadInt(attr.AllowedLength);
                     }
                 }
             }
-
-            if (_config.TryReadValue(offsetKey, out int offsetValue) &&
-                _config.TryReadValue(countKey, out int countValue))
-            {
-                Load(offsetValue, countValue);
-            }
+            
+            Load(_config.ReadInt(offsetKey), _config.ReadInt(countKey));
         }
 
         // type B : directly

@@ -77,10 +77,7 @@ namespace PoochyEnabler.Forms
 
         private void InitializeControls()
         {
-            if (_config.TryReadValue("TrainerSpriteCount", out int spriteCount))
-            {
-                nudSpriteIdx.Maximum = Math.Min(nudSpriteIdx.Maximum, spriteCount - 1);
-            }
+            nudSpriteIdx.Maximum = Math.Min(nudSpriteIdx.Maximum, _config.ReadInt("TrainerSpriteCount") - 1);
 
             ControlHelper.AttachOffsetAutoFormat((txtImageOffset, false), (txtPaletteOffset, false));
             ControlHelper.AttachExternalBorder(picSprite);

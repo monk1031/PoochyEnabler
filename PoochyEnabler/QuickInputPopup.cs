@@ -13,6 +13,8 @@ namespace PoochyEnabler
 
         private readonly string _fileFilter;
 
+        /* ---------------------------------------------------------------- */
+
         public QuickInputPopup(
             int? defaultOffset = null,
             string[] comboItems = null,

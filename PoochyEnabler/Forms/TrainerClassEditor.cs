@@ -63,10 +63,10 @@ namespace PoochyEnabler.Forms
             _prizeMultiManager.Load("ClassPrizeMultiTableOffset", "ClassPrizeMultiCount");
 
             // set flags
-            isEncounterMusicEnabled = _config.TryReadValue("EnableClassEncounterMusic", out bool enabled) && enabled;
-            isBattleMusicEnabled = _config.TryReadValue("EnableClassBattleMusic", out enabled) && enabled;
-            isPokeBallEnabled = _config.TryReadValue("EnableClassPokeBall", out enabled) && enabled;
-            isBaseIvEnabled = _config.TryReadValue("EnableClassBaseIV", out enabled) && enabled;
+            isEncounterMusicEnabled = _config.ReadBool("EnableClassEncounterMusic");
+            isBattleMusicEnabled = _config.ReadBool("EnableClassBattleMusic");
+            isPokeBallEnabled = _config.ReadBool("EnableClassPokeBall");
+            isBaseIvEnabled = _config.ReadBool("EnableClassBaseIV");
 
             if (isEncounterMusicEnabled)
             {
@@ -221,10 +221,9 @@ namespace PoochyEnabler.Forms
         private void txtClassName_TextChanged(object sender, EventArgs e)
         {
             if (_isUpdatingUI) return;
-            if (!_config.TryReadValue("ClassNameEntryLength", out int nameEntryLength)) return;
 
             // calc current
-            int maxBytes = nameEntryLength - 1;
+            int maxBytes = _config.ReadInt("ClassNameEntryLength") - 1;
             string currentText = txtClassName.Text;
             byte[] currentBytes = _charmap.StringToBytes(currentText, false);
 
